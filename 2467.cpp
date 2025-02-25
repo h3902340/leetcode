@@ -102,9 +102,9 @@ public:
     }
 };
 
-vector<vector<int>> edges = {{0,1},{1,2},{2,3}};
+vector<vector<int>> edges = {{0, 1}, {1, 2}, {2, 3}};
 int bob = 3;
-vector<int> amount = {-5644,-6018,1188,-8502};
+vector<int> amount = {-5644, -6018, 1188, -8502};
 
 int main()
 {
