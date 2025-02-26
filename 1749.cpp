@@ -33,3 +33,13 @@ public:
         return max;
     }
 };
+
+vector<int> nums = {2, -5, 1, -4, 3, -2};
+
+int main()
+{
+    Solution sol;
+    int ans = sol.maxAbsoluteSum(nums);
+    printf("ans = %d\n", ans);
+    return 0;
+}
