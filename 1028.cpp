@@ -95,6 +95,11 @@ int main()
     printf("[");
     for (int i = 0; i < nodes.size() - 1; i++)
     {
+        if (nodes[i] == -1)
+        {
+            printf("null,");
+            continue;
+        }
         printf("%d,", nodes[i]);
     }
     printf("%d", nodes[nodes.size() - 1]);
