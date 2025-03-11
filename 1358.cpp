@@ -9,16 +9,15 @@ public:
         int n = s.size();
         int i = 0;
         int num = 0;
-        int characterCount[3]{0};
+        int charCount[3]{0};
         for (int j = 0; j < n; j++)
         {
-            characterCount[s[j] - 'a']++;
+            charCount[s[j] - 'a']++;
             int endMargin = n - j;
-            while (characterCount[0] > 0 && characterCount[1] > 0 &&
-                   characterCount[2] > 0)
+            while (charCount[0] && charCount[1] && charCount[2])
             {
                 num += endMargin;
-                characterCount[s[i] - 'a']--;
+                charCount[s[i] - 'a']--;
                 i++;
             }
         }
