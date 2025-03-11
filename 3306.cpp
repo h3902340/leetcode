@@ -31,13 +31,13 @@ public:
         for (int j = 0; j < n; j++)
         {
             charCount[getIndex(word[j])]++;
-            int endMargin = n - j;
+            int iOld = i;
             while (charCount[0] && charCount[1] && charCount[2] && charCount[3] && charCount[4] && charCount[5] >= k)
             {
-                num += endMargin;
                 charCount[getIndex(word[i])]--;
                 i++;
             }
+            num += (i - iOld) * (n - j);
         }
         return num;
     }

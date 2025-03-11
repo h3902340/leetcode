@@ -13,13 +13,13 @@ public:
         for (int j = 0; j < n; j++)
         {
             charCount[s[j] - 'a']++;
-            int endMargin = n - j;
+            int iOld = i;
             while (charCount[0] && charCount[1] && charCount[2])
             {
-                num += endMargin;
                 charCount[s[i] - 'a']--;
                 i++;
             }
+            num += (i - iOld) * (n - j);
         }
         return num;
     }
