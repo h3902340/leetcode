@@ -33,15 +33,12 @@ public:
                 if (pileCount < k)
                     continue;
                 isSatisfied = true;
-                if (mid > max)
-                {
-                    max = mid;
-                }
                 break;
             }
             if (isSatisfied)
             {
                 l = mid + 1;
+                max = mid;
             }
             else
             {
