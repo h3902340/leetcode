@@ -15,8 +15,8 @@ public:
         int min = whiteCount;
         for (int i = 0; i < n - k; i++)
         {
-            whiteCount -= (blocks[i] == 'W');
-            whiteCount += (blocks[i + k] == 'W');
+            whiteCount -= blocks[i] == 'W';
+            whiteCount += blocks[i + k] == 'W';
             if (whiteCount < min)
             {
                 min = whiteCount;
@@ -33,6 +33,6 @@ int main()
 {
     Solution sol;
     int ans = sol.minimumRecolors(blocks, k);
-    printf("ans = %d\n", ans);
+    printf("ans = %d\n", ans); // 3
     return 0;
 }
