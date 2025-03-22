@@ -1,5 +1,4 @@
 #include <vector>
-#include <queue>
 using namespace std;
 
 class Solution
@@ -11,63 +10,49 @@ public:
         int i = 0;
         long long num = 0;
         int charCount[128]{0};
-        int consonantCount = 0;
         bool isVowel[128]{false};
         isVowel['a'] = true;
         isVowel['e'] = true;
         isVowel['i'] = true;
         isVowel['o'] = true;
         isVowel['u'] = true;
-        queue<int> consonantQueue;
-        int firstRightConsonant = -1;
+        int vowelCount = 0;
+        int consonantCount = 0;
+        int bonus = 1;
         for (int j = 0; j < n; j++)
         {
-            if (!isVowel[word[j]])
+            if (isVowel[word[j]])
             {
-                consonantQueue.push(j);
-                if (consonantCount == k)
-                {
-                    while (i < consonantQueue.front() + 1)
-                    {
-                        charCount[word[i]]--;
-                        i++;
-                    }
-                    consonantQueue.pop();
-                }
-                else
-                {
-                    consonantCount++;
-                }
+                vowelCount += (charCount[word[j]] == 0);
             }
-            charCount[word[j]]++;
-            int iOld = i;
-            while (charCount['a'] && charCount['e'] && charCount['i'] &&
-                   charCount['o'] && charCount['u'] && consonantCount == k)
+            else
+            {
+                consonantCount++;
+            }
+            while (consonantCount > k)
             {
                 charCount[word[i]]--;
-                consonantCount -= !isVowel[word[i]];
-                i++;
-            }
-            if (i > iOld)
-            {
-                if (consonantCount == k - 1)
+                if (isVowel[word[i]])
                 {
-                    consonantQueue.pop();
-                }
-                int jNew = j + 1;
-                if (firstRightConsonant == -1 || jNew > firstRightConsonant)
-                {
-                    while (jNew < n && isVowel[word[jNew]])
-                    {
-                        jNew++;
-                    }
-                    firstRightConsonant = jNew;
+                    vowelCount -= (charCount[word[i]] == 0);
                 }
                 else
                 {
-                    jNew = firstRightConsonant;
+                    consonantCount--;
                 }
-                num += (i - iOld) * (jNew - j);
+                i++;
+                bonus = 1;
+            }
+            charCount[word[j]]++;
+            if (consonantCount == k && vowelCount == 5)
+            {
+                while (isVowel[word[i]] && charCount[word[i]] > 1)
+                {
+                    charCount[word[i]]--;
+                    i++;
+                    bonus++;
+                }
+                num += bonus;
             }
         }
         return num;
