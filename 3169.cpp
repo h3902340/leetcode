@@ -2,73 +2,37 @@
 #include <unordered_map>
 using namespace std;
 
-struct Node
+struct Meeting
 {
-    int day;
-    int delta;
+    int start;
+    int end;
 };
 class Solution
 {
 private:
-    void radixSort(vector<Node> &nums)
+    const int BUCKET_SIZE = 256;
+    const int MASK = 255;
+    void radixSort(vector<Meeting> &nums)
     {
         int n = nums.size();
-        int buckets[256]{0};
-        vector<Node> ans(n);
-        // 7-0 bit
-        for (int i = 0; i < n; i++)
+        vector<int> buckets(BUCKET_SIZE);
+        vector<Meeting> temp(n);
+        for (int j = 0; j < 32; j += 8)
         {
-            buckets[nums[i].day & 255]++;
-        }
-        for (int i = 0; i < 255; i++)
-        {
-            buckets[i + 1] += buckets[i];
-        }
-        for (int i = n - 1; i >= 0; i--)
-        {
-            ans[--buckets[nums[i].day & 255]] = nums[i];
-        }
-        fill_n(buckets, 256, 0);
-        // 15-8 bit
-        for (int i = 0; i < n; i++)
-        {
-            buckets[(ans[i].day >> 8) & 255]++;
-        }
-        for (int i = 0; i < 255; i++)
-        {
-            buckets[i + 1] += buckets[i];
-        }
-        for (int i = n - 1; i >= 0; i--)
-        {
-            nums[--buckets[(ans[i].day >> 8) & 255]] = ans[i];
-        }
-        // 23-16 bit
-        fill_n(buckets, 256, 0);
-        for (int i = 0; i < n; i++)
-        {
-            buckets[(nums[i].day >> 16) & 255]++;
-        }
-        for (int i = 0; i < 255; i++)
-        {
-            buckets[i + 1] += buckets[i];
-        }
-        for (int i = n - 1; i >= 0; i--)
-        {
-            ans[--buckets[(nums[i].day >> 16) & 255]] = nums[i];
-        }
-        // 31-24 bit
-        fill_n(buckets, 256, 0);
-        for (int i = 0; i < n; i++)
-        {
-            buckets[(ans[i].day >> 24) & 255]++;
-        }
-        for (int i = 0; i < 255; i++)
-        {
-            buckets[i + 1] += buckets[i];
-        }
-        for (int i = n - 1; i >= 0; i--)
-        {
-            nums[--buckets[(ans[i].day >> 24) & 255]] = ans[i];
+            for (auto &e : nums)
+            {
+                buckets[(e.start >> j) & MASK]++;
+            }
+            for (int i = 1; i < BUCKET_SIZE; i++)
+            {
+                buckets[i] += buckets[i - 1];
+            }
+            for (int i = n - 1; i >= 0; i--)
+            {
+                temp[--buckets[(nums[i].start >> j) & MASK]] = nums[i];
+            }
+            fill(buckets.begin(), buckets.end(), 0);
+            nums.swap(temp);
         }
     }
 
@@ -76,46 +40,32 @@ public:
     int countDays(int days, vector<vector<int>> &meetings)
     {
         int n = meetings.size();
-        vector<Node> nodes(n << 1);
-        int dayBeyondCount = 0;
+        vector<Meeting> vec(n);
         for (int i = 0; i < n; i++)
         {
-            nodes[i << 1] = {meetings[i][0], 1};
-            nodes[(i << 1) + 1] = {meetings[i][1] + 1, -1};
-            dayBeyondCount += (meetings[i][1] == days);
+            vec[i] = {meetings[i][0], meetings[i][1]};
         }
-        radixSort(nodes);
-        int ans = nodes[0].day - 1;
-        int meetingCount = 0;
-        int i = 0;
-        int nodeCount = nodes.size() - dayBeyondCount;
-        int firstNoMeetingDay = 0;
-        while (i < nodeCount)
+        radixSort(vec);
+        int ans = days;
+        int start = 0;
+        int end = -1;
+        for (auto &v : vec)
         {
-            meetingCount += nodes[i].delta;
-            while (i < nodeCount - 1 && nodes[i].day == nodes[i + 1].day)
+            if (v.start > end)
             {
-                i++;
-                meetingCount += nodes[i].delta;
-            }
-            if (meetingCount == 0)
-            {
-                firstNoMeetingDay = nodes[i].day;
+                ans -= (end - start + 1);
+                start = v.start;
+                end = v.end;
             }
             else
             {
-                if (firstNoMeetingDay > 0)
+                if (v.end > end)
                 {
-                    ans += (nodes[i].day - firstNoMeetingDay);
-                    firstNoMeetingDay = 0;
+                    end = v.end;
                 }
             }
-            i++;
         }
-        if (firstNoMeetingDay > 0)
-        {
-            ans += (days - firstNoMeetingDay + 1);
-        }
+        ans -= (end - start + 1);
         return ans;
     }
 };
