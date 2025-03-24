@@ -75,10 +75,10 @@ private:
 public:
     int countDays(int days, vector<vector<int>> &meetings)
     {
-        int m = meetings.size();
-        vector<Node> nodes(m << 1);
+        int n = meetings.size();
+        vector<Node> nodes(n << 1);
         int dayBeyondCount = 0;
-        for (int i = 0; i < m; i++)
+        for (int i = 0; i < n; i++)
         {
             nodes[i << 1] = {meetings[i][0], 1};
             nodes[(i << 1) + 1] = {meetings[i][1] + 1, -1};
