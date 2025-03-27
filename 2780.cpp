@@ -9,6 +9,7 @@ public:
         int n = nums.size();
         int counter = 0;
         int dominant = 0;
+        // Boyer-Moore Majority Voting Algorithm
         for (int i = 0; i < n; i++)
         {
             if (counter == 0)
