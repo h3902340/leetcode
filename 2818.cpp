@@ -9,9 +9,8 @@ vector<int> primeScore(PRIME_SCORE_SIZE, 0);
 struct NumInfo
 {
     int value;
-    int primeFactor;
-    int left;
-    int right;
+    long left;
+    long right;
 };
 class Solution
 {
@@ -76,18 +75,15 @@ public:
     {
         int n = nums.size();
         vector<NumInfo> numInfos(n);
-        for (int i = 0; i < n; i++)
-        {
-            numInfos[i].value = nums[i];
-            numInfos[i].primeFactor = primeScore[nums[i]];
-        }
         stack<int> stack;
         stack.push(0);
         numInfos[0].left = 1;
+        numInfos[0].value = nums[0];
         for (int i = 1; i < n; i++)
         {
+            numInfos[i].value = nums[i];
             int right = 1;
-            while (!stack.empty() && numInfos[stack.top()].primeFactor < numInfos[i].primeFactor)
+            while (!stack.empty() && primeScore[nums[stack.top()]] < primeScore[nums[i]])
             {
                 numInfos[stack.top()].right = right;
                 right += numInfos[stack.top()].left;
@@ -105,28 +101,28 @@ public:
         }
         radixSortByNum(numInfos);
         long ans = 1;
-        int i = n - 1;
         const int divider = 1000000007;
-        while (k > 0 && i >= 0)
+        for (int i = n - 1; i >= 0; i--)
         {
-            long subArrayCount = (long)numInfos[i].left * numInfos[i].right;
-            while (i > 0 && numInfos[i].value == numInfos[i - 1].value)
+            long subArrayCount = numInfos[i].left * numInfos[i].right;
+            while (i > 0 && numInfos[i].value == numInfos[i - 1].value && k > subArrayCount)
             {
                 i--;
-                subArrayCount += (long)numInfos[i].left * numInfos[i].right;
+                subArrayCount += numInfos[i].left * numInfos[i].right;
             }
-            if (k < subArrayCount)
-            {
-                ans *= powModulo(numInfos[i].value, k, divider);
-                k = 0;
-            }
-            else
+            if (k > subArrayCount)
             {
                 ans *= powModulo(numInfos[i].value, subArrayCount, divider);
                 k -= subArrayCount;
             }
+            else
+            {
+                ans *= powModulo(numInfos[i].value, k, divider);
+                k = 0;
+            }
             ans %= divider;
-            i--;
+            if (k == 0)
+                break;
         }
         return ans;
     }
