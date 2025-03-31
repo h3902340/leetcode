@@ -1,5 +1,4 @@
 #include <vector>
-#include <stack>
 using namespace std;
 
 class Solution
@@ -16,44 +15,43 @@ public:
             queriesVec[i] = {i, queries[i]};
         }
         radixSort(queriesVec);
-        vector<stack<pair<int, int>>> s(k + 1);
-        addToStack(grid, 0, 0, s, queriesVec, k, 0);
+        vector<vector<pair<int, int>>> s(k + 1);
+        addToQueue(grid, 0, 0, s, queriesVec, k, 0);
         int sum = 0;
-        vector<int> ans(k);
         for (int x = 0; x < k; x++)
         {
-            while (!s[x].empty())
+            int l = 0;
+            while (l < s[x].size())
             {
-                pair<int, int> cell = s[x].top();
-                s[x].pop();
+                pair<int, int> cell = s[x][l++];
                 if (grid[cell.first][cell.second] == -1)
                     continue;
                 sum++;
                 if (cell.first > 0)
                 {
-                    addToStack(grid, cell.first - 1, cell.second, s, queriesVec, k, x);
+                    addToQueue(grid, cell.first - 1, cell.second, s, queriesVec, k, x);
                 }
-                if (cell.first < m - 1)
+                if (cell.first + 1 < m)
                 {
-                    addToStack(grid, cell.first + 1, cell.second, s, queriesVec, k, x);
+                    addToQueue(grid, cell.first + 1, cell.second, s, queriesVec, k, x);
                 }
                 if (cell.second > 0)
                 {
-                    addToStack(grid, cell.first, cell.second - 1, s, queriesVec, k, x);
+                    addToQueue(grid, cell.first, cell.second - 1, s, queriesVec, k, x);
                 }
-                if (cell.second < n - 1)
+                if (cell.second + 1 < n)
                 {
-                    addToStack(grid, cell.first, cell.second + 1, s, queriesVec, k, x);
+                    addToQueue(grid, cell.first, cell.second + 1, s, queriesVec, k, x);
                 }
                 grid[cell.first][cell.second] = -1;
             }
-            ans[queriesVec[x].first] = sum;
+            queries[queriesVec[x].first] = sum;
         }
-        return ans;
+        return queries;
     }
 
 private:
-    void addToStack(vector<vector<int>> &grid, int i, int j, vector<stack<pair<int, int>>> &s, vector<pair<int, int>> &queries, int k, int curr_x)
+    void addToQueue(vector<vector<int>> &grid, int i, int j, vector<vector<pair<int, int>>> &s, vector<pair<int, int>> &queries, int k, int curr_x)
     {
         if (grid[i][j] <= 0)
             return;
@@ -73,7 +71,7 @@ private:
                 left = mid + 1;
             }
         }
-        s[x].push({i, j});
+        s[x].emplace_back(i, j);
         grid[i][j] = 0;
     }
     const int BUCKET_SIZE = 1024;
@@ -103,8 +101,8 @@ private:
     }
 };
 
-vector<vector<int>> grid = {{1, 2, 3}, {2, 5, 7}, {3, 5, 1}};
-vector<int> queries = {5, 6, 2};
+vector<vector<int>> grid = {{420766, 806051, 922751}, {181527, 815280, 904568}, {952102, 4037, 140319}, {324081, 17907, 799523}, {176688, 90257, 83661}, {932477, 621193, 623068}, {135839, 554701, 511427}, {227575, 450848, 178065}, {785644, 204668, 835141}, {313774, 167359, 501496}, {641317, 620688, 74989}, {324499, 122376, 270369}, {2121, 887154, 848859}, {456704, 7763, 662087}, {286827, 145349, 468865}, {277137, 858176, 725551}, {106131, 93684, 576512}, {372563, 944355, 497187}, {884187, 600892, 268120}, {576578, 515031, 807686}};
+vector<int> queries = {352655, 586228, 169685, 541073, 584647, 413832, 576537, 616413};
 
 int main()
 {
@@ -115,6 +113,6 @@ int main()
     {
         printf(", %d", ans[i]);
     }
-    printf("]\n"); // [5,8,1]
+    printf("]\n"); // [0,2,0,2,2,0,2,2]
     return 0;
 }
