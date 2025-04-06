@@ -48,33 +48,6 @@ public:
         }
         return ans;
     }
-
-private:
-    const int BUCKET_SIZE = 256;
-    const int MASK = 255;
-    void radixSort(vector<int> &nums)
-    {
-        int n = nums.size();
-        vector<int> buckets(BUCKET_SIZE);
-        vector<int> temp(n);
-        for (int j = 0; j < 32; j += 8)
-        {
-            for (auto &e : nums)
-            {
-                buckets[(e >> j) & MASK]++;
-            }
-            for (int i = 1; i < BUCKET_SIZE; i++)
-            {
-                buckets[i] += buckets[i - 1];
-            }
-            for (int i = n - 1; i >= 0; i--)
-            {
-                temp[--buckets[(nums[i] >> j) & MASK]] = nums[i];
-            }
-            fill(buckets.begin(), buckets.end(), 0);
-            nums.swap(temp);
-        }
-    }
 };
 
 vector<int> nums = {1, 2, 3};
