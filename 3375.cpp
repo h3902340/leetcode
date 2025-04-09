@@ -10,16 +10,11 @@ public:
         int n = nums.size();
         const u_long one = 1;
         u_long bits[2]{0};
+        bool tmp = false;
         for (int i = 0; i < n; i++)
         {
-            if (nums[i] < 64)
-            {
-                bits[0] |= one << nums[i];
-            }
-            else
-            {
-                bits[1] |= one << (nums[i] - 64);
-            }
+            tmp = nums[i] >= 64;
+            bits[tmp] |= one << (nums[i] - (tmp << 6));
         }
         int ans = 0;
         if (k >= 64)
@@ -53,7 +48,6 @@ public:
                 bits[1] >>= 1;
             }
         }
-
         return ans;
     }
 };
