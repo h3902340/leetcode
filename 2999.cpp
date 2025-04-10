@@ -70,9 +70,8 @@ public:
         lo = lo_div.rem;
         hi = hi_div.rem;
         ten_d /= 10;
-        d--;
         exp /= (limit + 1);
-        while (d >= 0)
+        while (ten_d >= 1)
         {
             hi_div = div(hi, ten_d);
             lo_div = div(lo, ten_d);
@@ -108,7 +107,6 @@ public:
             lo = lo_div.rem;
             hi = hi_div.rem;
             ten_d /= 10;
-            d--;
             exp /= (limit + 1);
         }
         ans += !isLowEnd + !isHighEnd;
