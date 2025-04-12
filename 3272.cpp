@@ -64,6 +64,10 @@ public:
                     dividend = dividend * 10 + digits[j];
                 }
             }
+            if (dividend % k)
+            {
+                continue;
+            }
             long freToLong = 0;
             long m = 1;
             for (int j = 0; j < 10; j++)
@@ -71,7 +75,7 @@ public:
                 freToLong += m * fre[j];
                 m *= 10;
             }
-            if (dividend % k || seen.count(freToLong))
+            if (seen.count(freToLong))
             {
                 continue;
             }
