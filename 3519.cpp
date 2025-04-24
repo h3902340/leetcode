@@ -3,18 +3,64 @@
 using namespace std;
 // TODO: optimize to 0 ms
 const int MOD = 1000000007;
+bool isInit = false;
+const int D = 334;
+int C[D][D];
+const int B = 11;
+const int N = 100;
+int bases[B][N][D];
+static void buildBases()
+{
+    for (int k = 2; k < B; k++)
+    {
+        bases[k][0][0] = 1;
+        for (int i = 1; i < N; i++)
+        {
+            for (int j = 0; j < D; j++)
+            {
+                bases[k][i][j] = bases[k][i - 1][j] * 10;
+            }
+            for (int j = 0; j < D - 1; j++)
+            {
+                bases[k][i][j + 1] += bases[k][i][j] / k;
+                bases[k][i][j] = bases[k][i][j] % k;
+            }
+        }
+    }
+}
+
+static void init()
+{
+    if (isInit)
+        return;
+    for (int i = 1; i < D; i++)
+    {
+        C[i][0] = 1;
+        C[i][i] = 1;
+        for (int j = 1; j < i; j++)
+        {
+            C[i][j] = C[i - 1][j - 1] + C[i - 1][j];
+            if (C[i][j] > MOD)
+            {
+                C[i][j] -= MOD;
+            }
+        }
+    }
+    buildBases();
+    isInit = true;
+}
+
 class Solution
 {
 public:
     int countNumbers(string l, string r, int b)
     {
+        init();
         int NMAX = r.size();
         int DMAX = int(ceil(100 / log10(b)));
-        buildBases(b, NMAX, DMAX);
         vector<int> digit_r(DMAX, 0);
         int len_r = 0;
         changeBase(r, b, digit_r, len_r, DMAX);
-        runDP(len_r, b);
         int c_r = countNonDecreasing(digit_r, len_r, b);
         vector<int> digit_l(DMAX, 0);
         int len_l = 0;
@@ -38,25 +84,6 @@ public:
     }
 
 private:
-    vector<int> dp;
-    vector<vector<int>> bases;
-    void buildBases(int b, int NMAX, int DMAX)
-    {
-        bases = vector<vector<int>>(NMAX, vector<int>(DMAX));
-        bases[0][0] = 1;
-        for (int i = 1; i < NMAX; i++)
-        {
-            for (int j = 0; j < DMAX; j++)
-            {
-                bases[i][j] = bases[i - 1][j] * 10;
-            }
-            for (int j = 0; j < DMAX - 1; j++)
-            {
-                bases[i][j + 1] += bases[i][j] / b;
-                bases[i][j] = bases[i][j] % b;
-            }
-        }
-    }
     void changeBase(string s, int b, vector<int> &digit, int &len, int DMAX)
     {
         int n = s.size();
@@ -66,7 +93,7 @@ private:
             int d = s[i] - '0';
             for (int j = 0; j < DMAX; j++)
             {
-                digit[j] += bases[c][j] * d;
+                digit[j] += bases[b][c][j] * d;
             }
         }
         for (int j = 0; j < DMAX - 1; j++)
@@ -80,33 +107,6 @@ private:
             {
                 len = i + 1;
                 break;
-            }
-        }
-    }
-    vector<vector<int>> C;
-    void runDP(int len, int b)
-    {
-        C = vector<vector<int>>(b + len - 1, vector<int>(len));
-        for (int i = 1; i < b + len - 1; i++)
-        {
-            C[i][0] = 1;
-            int cap = i;
-            if (cap > len - 1)
-            {
-                cap = len - 1;
-            }
-            else
-            {
-                C[i][i] = 1;
-                cap--;
-            }
-            for (int j = 1; j <= cap; j++)
-            {
-                C[i][j] = C[i - 1][j - 1] + C[i - 1][j];
-                if (C[i][j] > MOD)
-                {
-                    C[i][j] -= MOD;
-                }
             }
         }
     }
