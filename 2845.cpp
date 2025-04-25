@@ -2,8 +2,6 @@
 #include <unordered_map>
 using namespace std;
 
-const int NMAX = 1e+5;
-int prefix[NMAX + 1];
 class Solution
 {
 public:
@@ -23,15 +21,15 @@ public:
                 int r = (j - k + modulo) % modulo;
                 if (r < j)
                 {
-                    ans += diff * prefix[r];
+                    ans += diff * nums[r];
                 }
                 if (j < modulo)
                 {
-                    prefix[j] = diff;
+                    nums[j] = diff;
                 }
                 else
                 {
-                    prefix[j % modulo] += diff;
+                    nums[j % modulo] += diff;
                 }
                 gap_total += (long long)diff * (diff - 1) >> 1;
                 j++;
@@ -41,7 +39,7 @@ public:
         int r = (j - k + modulo) % modulo;
         if (r < j)
         {
-            ans += diff * prefix[r];
+            ans += diff * nums[r];
         }
         gap_total += (long long)diff * (diff - 1) >> 1;
         if (k == 0)
