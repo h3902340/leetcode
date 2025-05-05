@@ -9,26 +9,9 @@ static void init() {
     if (isInit) return;
     dp[0] = 1;
     dp[1] = 1;
-    for (int i = 2; i < NMAX; i++) {
-        dp[i] = 0;
-        for (int j = i - 3; j >= 0; j--) {
-            dp[i] += dp[j];
-            if (dp[i] >= MOD) {
-                dp[i] -= MOD;
-            }
-        }
-        dp[i] <<= 1;
-        if (dp[i] >= MOD) {
-            dp[i] -= MOD;
-        }
-        dp[i] += dp[i - 1];
-        if (dp[i] >= MOD) {
-            dp[i] -= MOD;
-        }
-        dp[i] += dp[i - 2];
-        if (dp[i] >= MOD) {
-            dp[i] -= MOD;
-        }
+    dp[2] = 2;
+    for (int i = 3; i < NMAX; i++) {
+        dp[i] = ((dp[i - 1] * 2) % MOD + dp[i - 3]) % MOD;
     }
     isInit = true;
 }
