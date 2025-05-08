@@ -20,12 +20,8 @@ class Solution {
         priority_queue<Position, vector<Position>, decltype(cmp)> pq(cmp);
         pq.push({0, 0, 0});
         moveTime[0][0] = -1;
-        Position p;
         while (true) {
-            p = pq.top();
-            if (p.i == n - 1 && p.j == m - 1) {
-                break;
-            }
+            Position p = pq.top();
             pq.pop();
             for (int i = 0; i < dirLen; i++) {
                 int x = p.i + dir[i][0];
@@ -33,12 +29,16 @@ class Solution {
                 if (x < 0 || x >= n || y < 0 || y >= m) continue;
                 int& v = moveTime[x][y];
                 if (v != -1) {
-                    pq.push({x, y, max(v, p.v) + 1});
+                    int t = max(v, p.v) + 1;
+                    if (x == n - 1 && y == m - 1) {
+                        return t;
+                    }
+                    pq.push({x, y, t});
                     v = -1;
                 }
             }
         }
-        return p.v;
+        return -1;
     }
 };
 
