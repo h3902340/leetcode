@@ -1,17 +1,23 @@
 #include <vector>
 using namespace std;
 
-// TODO: runtime is too bad (986 ms), try to optimize
+// TODO: use union-find, path-compression, etc...
 struct Component {
     bool isCycle;
     int nodeCount;
+    vector<int> nodes;
 };
+const int NMAX = 50000;
+int compIndexes[NMAX];
+vector<Component> comp(NMAX);
 class Solution {
    public:
     long long maxScore(int n, vector<vector<int>>& edges) {
         int m = edges.size();
-        vector<Component> comp;
-        vector<int> compIndexes(n, -1);
+        for (int i = 0; i < n; i++) {
+            compIndexes[i] = -1;
+        }
+        int index = 0;
         for (int i = 0; i < m; i++) {
             int u = edges[i][0];
             int v = edges[i][1];
@@ -19,34 +25,38 @@ class Solution {
             int vIndex = compIndexes[v];
             if (uIndex == -1) {
                 if (vIndex == -1) {
-                    int compIndex = comp.size();
-                    comp.push_back({false, 2});
-                    compIndexes[u] = compIndex;
-                    compIndexes[v] = compIndex;
+                    comp[index].isCycle = false;
+                    comp[index].nodeCount = 2;
+                    comp[index].nodes = {u, v};
+                    compIndexes[u] = index;
+                    compIndexes[v] = index++;
                 } else {
                     comp[vIndex].nodeCount++;
+                    comp[vIndex].nodes.push_back(u);
                     compIndexes[u] = vIndex;
                 }
             } else {
                 if (vIndex == -1) {
                     comp[uIndex].nodeCount++;
+                    comp[uIndex].nodes.push_back(v);
                     compIndexes[v] = uIndex;
                 } else {
                     if (uIndex == vIndex) {
                         comp[uIndex].isCycle = true;
                     } else {
                         comp[uIndex].nodeCount += comp[vIndex].nodeCount;
-                        for (int j = 0; j < n; j++) {
-                            if (compIndexes[j] == vIndex) {
-                                compIndexes[j] = uIndex;
-                            }
+                        for (int j = 0; j < comp[vIndex].nodes.size(); j++) {
+                            compIndexes[comp[vIndex].nodes[j]] = uIndex;
                         }
+                        comp[uIndex].nodes.insert(comp[uIndex].nodes.begin(),
+                                                  comp[vIndex].nodes.begin(),
+                                                  comp[vIndex].nodes.end());
                         comp[vIndex].nodeCount = 0;
                     }
                 }
             }
         }
-        sort(comp.begin(), comp.end(),
+        sort(comp.begin(), comp.begin() + index,
              [](const Component& a, const Component& b) {
                  if (a.isCycle) {
                      if (b.isCycle) {
@@ -64,7 +74,7 @@ class Solution {
              });
         long long ans = 0;
         int curr = n;
-        for (int i = 0; i < comp.size(); i++) {
+        for (int i = 0; i < index; i++) {
             if (comp[i].nodeCount == 0) continue;
             int left = curr;
             int right = curr;
