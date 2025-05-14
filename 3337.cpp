@@ -1,5 +1,4 @@
 #include <string>
-#include <vector>
 
 #include "Jutilities.h"
 using namespace std;
@@ -10,11 +9,17 @@ using namespace std;
 
 // TODO: time is bad (217 ms), use Berlekamp–Massey algo. instead
 const int MOD = 1e9 + 7;
-vector<vector<int>> I(26, vector<int>(26));
+const int dim = 26;
+using vec26 = array<int, dim>;
+using matrix = array<vec26, dim>;
+matrix I;
 bool isInit = false;
 static void init() {
     if (isInit) return;
-    for (int i = 0; i < 26; i++) {
+    for (int i = 0; i < dim; i++) {
+        for (int j = 0; j < dim; j++) {
+            I[i][j] = 0;
+        }
         I[i][i] = 1;
     }
     isInit = false;
@@ -25,31 +30,36 @@ class Solution {
     int lengthAfterTransformations(string s, int t, vector<int>& nums) {
         init();
         int n = s.size();
-        vector<vector<int>> fre(26, vector<int>(1));
-        for (int i = 0; i < n; i++) {
-            fre[s[i] - 'a'][0]++;
+        vec26 fre;
+        for (int i = 0; i < dim; i++) {
+            fre[i] = 0;
         }
-        vector<vector<int>> a(26, vector<int>(26));
-        for (int i = 0; i < 26; i++) {
-            for (int j = i + 1; j <= i + nums[i]; j++) {
-                a[j % 26][i] = 1;
+        for (int i = 0; i < n; i++) {
+            fre[s[i] - 'a']++;
+        }
+        matrix a;
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                a[i][j] = 0;
             }
         }
-        vector<vector<int>> c = powMatrix(a, t, I);
-        fre = mulMatrix(c, fre);
-        int res = fre[0][0];
-        for (int i = 1; i < 26; i++) {
-            res += fre[i][0];
-            if (res >= MOD) {
-                res -= MOD;
+        for (int i = 0; i < dim; i++) {
+            for (int j = i + 1; j <= i + nums[i]; j++) {
+                a[j % dim][i] = 1;
+            }
+        }
+        matrix c = powMatrix(a, t, I);
+        int res = 0;
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                res = (res + (long long)c[i][j] * fre[j]) % MOD;
             }
         }
         return res;
     }
 
    private:
-    vector<vector<int>> powMatrix(vector<vector<int>> a, int b,
-                                  vector<vector<int>> v) {
+    matrix powMatrix(matrix a, int b, matrix v) {
         if (b == 0) {
             return v;
         }
@@ -58,16 +68,17 @@ class Solution {
         }
         return powMatrix(mulMatrix(a, a), b >> 1, v);
     }
-    vector<vector<int>> mulMatrix(vector<vector<int>> a,
-                                  vector<vector<int>> b) {
-        int m = a.size();
-        int p = b.size();
-        int n = b[0].size();
-        vector<vector<int>> c(m, vector<int>(n));
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < p; j++) {
+    matrix mulMatrix(matrix a, matrix b) {
+        matrix c;
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                c[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
                 if (a[i][j] == 0) continue;
-                for (int k = 0; k < n; k++) {
+                for (int k = 0; k < dim; k++) {
                     c[i][k] = (c[i][k] + (long long)a[i][j] * b[j][k]) % MOD;
                 }
             }
