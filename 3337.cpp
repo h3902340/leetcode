@@ -7,7 +7,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-// TODO: time is bad (217 ms), use Berlekamp–Massey algo. instead
+// TODO: use Berlekamp–Massey algo. instead
 const int MOD = 1e9 + 7;
 const int dim = 26;
 using vec26 = array<int, dim>;
