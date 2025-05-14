@@ -8,25 +8,34 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-// TODO: time is bad (348 ms), use Berlekamp–Massey algo. instead
+// TODO: time is bad (217 ms), use Berlekamp–Massey algo. instead
 const int MOD = 1e9 + 7;
+vector<vector<int>> I(26, vector<int>(26));
+bool isInit = false;
+static void init() {
+    if (isInit) return;
+    for (int i = 0; i < 26; i++) {
+        I[i][i] = 1;
+    }
+    isInit = false;
+}
+
 class Solution {
    public:
     int lengthAfterTransformations(string s, int t, vector<int>& nums) {
+        init();
         int n = s.size();
         vector<vector<int>> fre(26, vector<int>(1));
         for (int i = 0; i < n; i++) {
             fre[s[i] - 'a'][0]++;
         }
-        vector<vector<int>> identity(26, vector<int>(26));
         vector<vector<int>> a(26, vector<int>(26));
         for (int i = 0; i < 26; i++) {
-            for (int j = 1; j <= nums[i]; j++) {
-                a[(i + j) % 26][i] = 1;
+            for (int j = i + 1; j <= i + nums[i]; j++) {
+                a[j % 26][i] = 1;
             }
-            identity[i][i] = 1;
         }
-        vector<vector<int>> c = powMatrix(a, t, identity);
+        vector<vector<int>> c = powMatrix(a, t, I);
         fre = mulMatrix(c, fre);
         int res = fre[0][0];
         for (int i = 1; i < 26; i++) {
@@ -45,11 +54,9 @@ class Solution {
             return v;
         }
         if (b & 1) {
-            vector<vector<int>> tmp = mulMatrix(v, a);
-            return powMatrix(a, b - 1, tmp);
+            return powMatrix(a, b - 1, mulMatrix(v, a));
         }
-        vector<vector<int>> aa = mulMatrix(a, a);
-        return powMatrix(aa, b >> 1, v);
+        return powMatrix(mulMatrix(a, a), b >> 1, v);
     }
     vector<vector<int>> mulMatrix(vector<vector<int>> a,
                                   vector<vector<int>> b) {
@@ -58,9 +65,10 @@ class Solution {
         int n = b[0].size();
         vector<vector<int>> c(m, vector<int>(n));
         for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < p; k++) {
-                    c[i][j] = (c[i][j] + (long long)a[i][k] * b[k][j]) % MOD;
+            for (int j = 0; j < p; j++) {
+                if (a[i][j] == 0) continue;
+                for (int k = 0; k < n; k++) {
+                    c[i][k] = (c[i][k] + (long long)a[i][j] * b[j][k]) % MOD;
                 }
             }
         }
