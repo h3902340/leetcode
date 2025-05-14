@@ -19,6 +19,44 @@ int jread_int(string line) {
     return num;
 }
 
+long jread_long(string line) {
+    int i = 0;
+    bool isNeg = false;
+    if (line[0] == '-') {
+        isNeg = true;
+        i++;
+    }
+    long num = 0;
+    for (; i < line.size(); i++) {
+        num *= 10;
+        if (isNeg) {
+            num -= (line[i] - '0');
+        } else {
+            num += (line[i] - '0');
+        }
+    }
+    return num;
+}
+
+long long jread_longlong(string line) {
+    int i = 0;
+    bool isNeg = false;
+    if (line[0] == '-') {
+        isNeg = true;
+        i++;
+    }
+    long long num = 0;
+    for (; i < line.size(); i++) {
+        num *= 10;
+        if (isNeg) {
+            num -= (line[i] - '0');
+        } else {
+            num += (line[i] - '0');
+        }
+    }
+    return num;
+}
+
 string jread_string(string line) {
     if (line.size() == 2) return "";
     return line.substr(1, line.size() - 2);
