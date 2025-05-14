@@ -1,0 +1,1 @@
+g++ -L. -lJreader -o a.out $1.cpp && ./a.out
