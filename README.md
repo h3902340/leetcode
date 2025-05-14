@@ -1,2 +1,10 @@
-阿禾的leetcode解答。執行指令：
-gcc -std=c++11 -lstdc++ xxxx.cpp
+jiahojian0228's leetcode solutions
+
+
+Compile static libraries ("Jreader" for example):
+g++ -c Jreader.cpp -o Jreader.o
+ar rcs libJreader.a Jreader.o
+
+
+Compile & Run solution (xxxx is the problem number):
+bash ./exe.sh xxxx
