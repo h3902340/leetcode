@@ -2,6 +2,8 @@
 #include <unordered_set>
 #include <queue>
 using namespace std;
+
+// TODO: time is bad (3 ms), most of the submissions are 0 ms
 struct Node
 {
     Node *left;
