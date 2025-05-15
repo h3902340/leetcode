@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "Jutilities.h"
+#include "Jutil.h"
 using namespace std;
 
 #define KNRM "\x1B[0m"

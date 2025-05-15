@@ -1,2 +1,2 @@
-g++ -c Jutilities.cpp -o Jutilities.o
-ar rcs libJutilities.a Jutilities.o
+g++ -c Jutil.cpp -o Jutil.o
+ar rcs libJutil.a Jutil.o

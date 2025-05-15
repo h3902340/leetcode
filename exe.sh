@@ -1,3 +1,3 @@
 clear
-g++ -L. -lJutilities -o a.out $1.cpp
+g++ -L. -lJutil -o a.out $1.cpp
 ./a.out
