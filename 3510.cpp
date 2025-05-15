@@ -4,7 +4,7 @@
 #include <set>
 using namespace std;
 
-// TODO: time is not good (1022 ms, beat 38.77%)
+// TODO: this code is unfinished, it has runtime error
 struct SegmentTree
 {
     long min;
