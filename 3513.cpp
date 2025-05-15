@@ -1,6 +1,7 @@
 #include <vector>
 using namespace std;
 
+// TODO: time is bad (2123 ms)
 class Solution {
    public:
     int uniqueXorTriplets(vector<int> &nums) {
