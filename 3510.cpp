@@ -1,30 +1,21 @@
 #include <vector>
 #include <unordered_set>
 #include <queue>
+#include <set>
 using namespace std;
-struct Node
+
+// TODO: time is not good (1022 ms, beat 38.77%)
+struct SegmentTree
 {
-    Node *left;
-    Node *right;
-    int leftIndex;
-    int rightIndex;
-    int leftRange;
-    int rightRange;
+    long min;
+    int minIndex;
+};
+struct Leaf
+{
     long leftSum;
     long rightSum;
-    long sum;
-    Node() : left(nullptr), right(nullptr), leftIndex(-1), rightIndex(-1), leftRange(0), rightRange(0), leftSum(0), rightSum(0), sum(0) {}
-};
-struct nodeGreater
-{
-    bool operator()(const Node &a, const Node &b) const
-    {
-        if (a.sum == b.sum)
-        {
-            return a.leftIndex > b.leftIndex;
-        }
-        return a.sum > b.sum;
-    }
+    int leftRange;
+    int rightRange;
 };
 class Solution
 {
@@ -32,129 +23,200 @@ public:
     int minimumPairRemoval(vector<int> &nums)
     {
         int n = nums.size();
-        if (n == 1)
-            return 0;
-        if (n == 2)
-            return nums[0] > nums[1];
-        int ans = 0;
+        int size = 1;
+        while (size < n)
+        {
+            size <<= 1;
+        }
+        int leafStart = size - 1;
+        size = (size << 1) - 1;
+        vector<SegmentTree> nodes(size);
+        vector<Leaf> leaves(n - 1);
         int decreasingPair = 0;
-        vector<Node> nodes(n - 1);
         for (int i = 0; i < n - 1; i++)
         {
-            int l = nums[i];
-            int r = nums[i + 1];
-            decreasingPair += l > r;
-            nodes[i].leftIndex = i;
-            nodes[i].rightIndex = i + 1;
-            nodes[i].leftRange = 1;
-            nodes[i].rightRange = 1;
-            nodes[i].leftSum = l;
-            nodes[i].rightSum = r;
-            nodes[i].sum = l + r;
-            nums[i] = 1;
+            if (nums[i] > nums[i + 1])
+            {
+                decreasingPair++;
+            }
+            nodes[leafStart + i] = {nums[i] + nums[i + 1], i};
+            leaves[i] = {nums[i], nums[i + 1], 1, 1};
         }
-        nums[n - 1] = 1;
-        nodes[0].right = &nodes[1];
-        for (int i = 1; i < n - 2; i++)
+        for (int i = n - 1; i < size; i++)
         {
-            nodes[i].right = &nodes[i + 1];
-            nodes[i].left = &nodes[i - 1];
+            nodes[leafStart + i] = {INT64_MAX, i};
         }
-        nodes[n - 2].left = &nodes[n - 3];
-        vector<Node> heap((n - 1) << 1);
-        for (int i = 0; i < n - 1; i++)
+        for (int i = leafStart - 1; i >= 0; i--)
         {
-            heap[i] = nodes[i];
+            SegmentTree left = nodes[(i << 1) + 1];
+            SegmentTree right = nodes[(i << 1) + 2];
+            int min = left.min;
+            int minIndex = left.minIndex;
+            if (min > right.min)
+            {
+                min = right.min;
+                minIndex = right.minIndex;
+            }
+            nodes[i] = {min, minIndex};
         }
-        int heapSize = n - 1;
-        make_heap(heap.begin(), heap.begin() + heapSize, nodeGreater());
+        int ans = 0;
         while (decreasingPair > 0)
         {
-            Node f = heap.front();
-            pop_heap(heap.begin(), heap.begin() + heapSize, nodeGreater());
-            heapSize--;
-            int l_new = nums[f.leftIndex];
-            int r_new = nums[f.rightIndex];
-            if (l_new == f.leftRange && r_new == f.rightRange)
+            SegmentTree node = nodes[0];
+            Leaf leaf = leaves[node.minIndex];
+            int leftIndex = node.minIndex - leaf.leftRange;
+            if (leftIndex >= 0)
             {
-                if (f.left)
+                Leaf *left = &leaves[leftIndex];
+                bool isDecreasingBefore = left->leftSum > left->rightSum;
+                left->rightSum += leaf.rightSum;
+                bool isDecreasingAfter = left->leftSum > left->rightSum;
+                if (isDecreasingBefore)
                 {
-                    Node *leftNode = f.left;
-                    if (leftNode->leftSum > f.leftSum)
+                    if (!isDecreasingAfter)
                     {
-                        if (leftNode->leftSum <= f.sum)
-                        {
-                            decreasingPair--;
-                        }
+                        decreasingPair--;
                     }
-                    else
-                    {
-                        if (leftNode->leftSum > f.sum)
-                        {
-                            decreasingPair++;
-                        }
-                    }
-                    leftNode->rightRange += f.rightRange;
-                    nums[leftNode->rightIndex] = leftNode->rightRange;
-                    leftNode->right = f.right;
-                    leftNode->rightSum = f.sum;
-                    leftNode->sum = leftNode->leftSum + leftNode->rightSum;
-                    heap[heapSize] = *leftNode;
-                    heapSize++;
-                    push_heap(heap.begin(), heap.begin() + heapSize, nodeGreater());
                 }
-                if (f.right)
+                else
                 {
-                    Node *rightNode = f.right;
-                    if (rightNode->rightSum < f.rightSum)
+                    if (isDecreasingAfter)
                     {
-                        if (rightNode->rightSum >= f.sum)
-                        {
-                            decreasingPair--;
-                        }
+                        decreasingPair++;
                     }
-                    else
-                    {
-                        if (rightNode->rightSum < f.sum)
-                        {
-                            decreasingPair++;
-                        }
-                    }
-                    rightNode->leftRange += f.leftRange;
-                    nums[rightNode->leftIndex] = rightNode->leftRange;
-                    rightNode->left = f.left;
-                    rightNode->leftSum = f.sum;
-                    rightNode->sum = rightNode->leftSum + rightNode->rightSum;
-                    heap[heapSize] = *rightNode;
-                    heapSize++;
-                    push_heap(heap.begin(), heap.begin() + heapSize, nodeGreater());
                 }
-                if (f.leftSum > f.rightSum)
-                {
-                    decreasingPair--;
-                }
-                ans++;
+                left->rightRange += leaf.rightRange;
+                int c = leafStart + leftIndex;
+                nodes[c].min = left->leftSum + left->rightSum;
             }
+            int rightIndex = node.minIndex + leaf.rightRange;
+            if (rightIndex < n - 1)
+            {
+                Leaf *right = &leaves[rightIndex];
+                bool isDecreasingBefore = right->leftSum > right->rightSum;
+                right->leftSum += leaf.leftSum;
+                bool isDecreasingAfter = right->leftSum > right->rightSum;
+                if (isDecreasingBefore)
+                {
+                    if (!isDecreasingAfter)
+                    {
+                        decreasingPair--;
+                    }
+                }
+                else
+                {
+                    if (isDecreasingAfter)
+                    {
+                        decreasingPair++;
+                    }
+                }
+                right->leftRange += leaf.leftRange;
+                int c = leafStart + rightIndex;
+                nodes[c].min = right->leftSum + right->rightSum;
+                int p = (c - 1) >> 1;
+                while (p >= 0)
+                {
+                    if (nodes[c].min < nodes[p].min)
+                    {
+                        nodes[p].min = nodes[c].min;
+                        nodes[p].minIndex = nodes[c].minIndex;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    c = p;
+                    p = (c - 1) >> 1;
+                }
+            }
+            int c = leafStart + node.minIndex;
+            nodes[c].min = INT64_MAX;
+            int p = (c - 1) >> 1;
+            while (p >= 0)
+            {
+                int minNode = (p << 1) + 1;
+                if (nodes[minNode].min > nodes[minNode + 1].min)
+                {
+                    minNode++;
+                }
+                nodes[p].min = nodes[minNode].min;
+                nodes[p].minIndex = nodes[minNode].minIndex;
+                printf("p: %d, nodes[p].minIndex: %d, nodes[p].min: %ld\n", p, nodes[p].minIndex, nodes[p].min);
+                p = (p - 1) >> 1;
+            }
+            if (leaf.leftSum > leaf.rightSum)
+            {
+                decreasingPair--;
+            }
+            if (leftIndex >= 0)
+            {
+                Leaf left = leaves[leftIndex];
+                int c = leafStart + leftIndex;
+                int p = (c - 1) >> 1;
+                while (p >= 0)
+                {
+                    if (nodes[c].min < nodes[p].min)
+                    {
+                        nodes[p].min = nodes[c].min;
+                        nodes[p].minIndex = nodes[c].minIndex;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    c = p;
+                    p = (c - 1) >> 1;
+                }
+            }
+            if (rightIndex < n - 1)
+            {
+                Leaf right = leaves[rightIndex];
+                int c = leafStart + rightIndex;
+                int p = (c - 1) >> 1;
+                while (p >= 0)
+                {
+                    if (nodes[c].min < nodes[p].min)
+                    {
+                        nodes[p].min = nodes[c].min;
+                        nodes[p].minIndex = nodes[c].minIndex;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    c = p;
+                    p = (c - 1) >> 1;
+                }
+            }
+            ans++;
+            printf("{%ld,%ld}\n", leaf.leftSum, leaf.rightSum);
         }
         return ans;
     }
 };
 
-vector<int> nums = {2, 2, -1, 3, -2, 2, 1, 1, 1, 0, -1};
-// 1. {2, 2, -1, 3, -2, 2, 1, 1, 1, 0, -1} // 5 {0, -1}
-// 2. {2, 2, -1, 3, -2, 2, 1, 1, 1, -1} // 4 {-2, 2}
-// 3. {2, 2, -1, 3, 0, 1, 1, 1, -1} // 3 {1,-1}
-// 4. {2, 2, -1, 3, 0, 1, 1, 0} // 3 {2,-1}
-// 5. {2, 1, 3, 0, 1, 1, 0} // 3 {0,1}
-// 6. {2, 1, 3, 1, 1, 0} // 3 {1,0}
-// 7. {2, 1, 3, 1, 1} // 2 {1,1}
-// 8. {2, 1, 3, 2} // 2 {2,1}
-// 9. {3, 3, 2} // 1 {3,2}
-// {3, 5}
+vector<int> nums = {2, 2, -1, 3, -2, 2, 1, 1, 1, 0, -1}; // 9
+//  1. {2, 2, -1, 3, -2, 2, 1, 1, 1, 0, -1} // 5 {0, -1}
+//  2. {2, 2, -1, 3, -2, 2, 1, 1, 1, -1} // 4 {-2, 2}
+//  3. {2, 2, -1, 3, 0, 1, 1, 1, -1} // 3 {1,-1}
+//  4. {2, 2, -1, 3, 0, 1, 1, 0} // 3 {2,-1}
+//  5. {2, 1, 3, 0, 1, 1, 0} // 3 {0,1}
+//  6. {2, 1, 3, 1, 1, 0} // 3 {1,0}
+//  7. {2, 1, 3, 1, 1} // 2 {1,1}
+//  8. {2, 1, 3, 2} // 2 {2,1}
+//  9. {3, 3, 2} // 1 {3,2}
+//  {3, 5}
+
+// vector<int> nums = {5, 2, 3, 1}; // 2
+// vector<int> nums = {3, 4, 1, 1, -3, 2, 4, 3}; // 5
+// {3, 4, 1, 1, -3, 2, 4, 3}
+// {3, 4, 1, -2, 2, 4, 3}
+// {3, 4, -1, 2, 4, 3}
+// {3, 4, 1, 4, 3}
 int main()
 {
     Solution sol;
     int ans = sol.minimumPairRemoval(nums);
-    printf("ans = %d\n", ans); // 9
+    printf("ans = %d\n", ans);
     return 0;
 }
