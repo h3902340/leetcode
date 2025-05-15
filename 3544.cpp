@@ -86,10 +86,11 @@ class Solution {
 };
 
 int main() {
+    string problemName = "3544";
     auto begin = jtimer();
     Solution sol;
-    ifstream file_in("testcases/3544_in.txt");
-    ifstream file_out("testcases/3544_out.txt");
+    ifstream file_in("testcases/" + problemName + "_in.txt");
+    ifstream file_out("testcases/" + problemName + "_out.txt");
     bool allPass = true;
     int caseCount = 0;
     int passCount = 0;
