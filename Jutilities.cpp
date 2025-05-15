@@ -98,6 +98,23 @@ vector<vector<int>> jread_vector2d(string line) {
     return res;
 }
 
+vector<string> jread_vector_string(string line) {
+    vector<string> res;
+    if (line[1] == ']') return res;
+    for (int i = 1; i < line.size(); i++) {
+        i++;
+        string s;
+        while (line[i] != '"') {
+            s += line[i];
+            i++;
+        }
+        res.push_back(s);
+        i++;
+        if (line[i] == ']') break;
+    }
+    return res;
+}
+
 void jprint_int(int num, string name) {
     printf("%s = %d\n", name.c_str(), num);
 }
@@ -122,6 +139,18 @@ void jprint_vector(vector<int> vec, string name) {
     printf("%s = [%d", name.c_str(), vec[0]);
     for (int i = 1; i < vec.size(); i++) {
         printf(",%d", vec[i]);
+    }
+    printf("]\n");
+}
+
+void jprint_vector_string(vector<string> vec, string name) {
+    if (vec.size() == 0) {
+        printf("%s = []\n", name.c_str());
+        return;
+    }
+    printf("%s = [%s", name.c_str(), vec[0].c_str());
+    for (int i = 1; i < vec.size(); i++) {
+        printf(",%s", vec[i].c_str());
     }
     printf("]\n");
 }
@@ -166,7 +195,7 @@ void jprint_array(int vec[], int n, string name) {
     printf("]\n");
 }
 
-void jprint_vector2d_sizw(vector<vector<int>> vec, string name) {
+void jprint_vector2d_size(vector<vector<int>> vec, string name) {
     printf("%s: %zux%zu\n", name.c_str(), vec.size(), vec[0].size());
 }
 
