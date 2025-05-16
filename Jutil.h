@@ -8,6 +8,7 @@ string jread_string(string line);
 vector<int> jread_vector(string line);
 vector<vector<int>> jread_vector2d(string line);
 vector<string> jread_vector_string(string line);
+vector<vector<string>> jread_vector2d_string(string line);
 
 void jprint_int(int num, string name);
 void jprint_long(long num, string name);
@@ -16,6 +17,7 @@ void jprint_string(string s, string name);
 void jprint_vector(vector<int> vec, string name);
 void jprint_vector2d(vector<vector<int>> vec, string name);
 void jprint_vector_string(vector<string> vec, string name);
+void jprint_vector2d_string(vector<vector<string>> vec, string name);
 void jprint_vector_size(vector<int> vec, string name);
 void jprint_vector2d_size(vector<vector<int>> vec, string name);
 void jprint_array(int vec[], int n, string name);
