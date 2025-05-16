@@ -8,81 +8,91 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-// TODO: Wrong Answer
+// TODO: time is bad (656 ms, beat 54.94%)
+const int CMAX = 1e5;
 class Solution {
    public:
     bool canPartitionGrid(vector<vector<int>>& grid) {
         int m = grid.size();
         int n = grid[0].size();
-        long target = 0;
-        vector<long> v(n);
-        vector<long> h(m);
+        long long target = 0;
+        vector<long long> v(n);
+        vector<long long> h(m);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 target += grid[j][i];
             }
         }
         unordered_set<int> set;
-        long left = 0;
+        long long left = 0;
         // left to right
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < m; j++) {
                 v[i] += grid[j][i];
                 set.insert(grid[j][i]);
             }
             left += v[i];
-            if (left * 2 == target) return true;
-            if (left * 2 > target) {
+            long long diff = left * 2 - target;
+            if (diff == 0) {
+                return true;
+            }
+            if (diff > 0 && diff <= CMAX) {
                 if (i == 0) {
-                    if (left * 2 - grid[0][0] == target) {
+                    if (diff == grid[0][0]) {
                         return true;
                     }
-                    if (left * 2 - grid[m - 1][0] == target) {
+                    if (diff == grid[m - 1][0]) {
                         return true;
                     }
                 } else {
                     if (m == 1) {
-                        if (left * 2 - grid[0][0] == target) {
+                        if (diff == grid[0][0]) {
                             return true;
                         }
-                        if (left * 2 - grid[0][i] == target) {
+                        if (diff == grid[0][i]) {
                             return true;
                         }
                     } else {
-                        if (set.count(left * 2 - target)) {
+                        if (set.count(diff)) {
                             return true;
                         }
                     }
                 }
             }
         }
+        for (int j = 0; j < m; j++) {
+            v[n - 1] += grid[j][n - 1];
+        }
         set.clear();
         // right to left
-        long right = 0;
-        for (int i = n - 1; i >= 0; i--) {
+        long long right = 0;
+        for (int i = n - 1; i >= 1; i--) {
             for (int j = 0; j < m; j++) {
                 set.insert(grid[j][i]);
             }
             right += v[i];
-            if (right * 2 == target) return true;
-            if (right * 2 > target) {
+            long long diff = right * 2 - target;
+            if (diff == 0) {
+                return true;
+            }
+            if (diff > 0 && diff <= CMAX) {
                 if (i == n - 1) {
-                    if (right * 2 - grid[0][n - 1] == target) {
+                    if (diff == grid[0][n - 1]) {
                         return true;
                     }
-                    if (right * 2 - grid[m - 1][n - 1] == target) {
+                    if (diff == grid[m - 1][n - 1]) {
                         return true;
                     }
                 } else {
                     if (m == 1) {
-                        if (right * 2 - grid[0][n - 1] == target) {
+                        if (diff == grid[0][n - 1]) {
                             return true;
                         }
-                        if (right * 2 - grid[0][i] == target) {
+                        if (diff == grid[0][i]) {
                             return true;
                         }
                     } else {
-                        if (set.count(right * 2 - target)) {
+                        if (set.count(diff)) {
                             return true;
                         }
                     }
@@ -90,66 +100,75 @@ class Solution {
             }
         }
         set.clear();
-        long top = 0;
+        long long top = 0;
         // top to bottom
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m - 1; i++) {
             for (int j = 0; j < n; j++) {
                 h[i] += grid[i][j];
                 set.insert(grid[i][j]);
             }
             top += h[i];
-            if (top * 2 == target) return true;
-            if (top * 2 > target) {
+            long long diff = top * 2 - target;
+            if (diff == 0) {
+                return true;
+            }
+            if (diff > 0 && diff <= CMAX) {
                 if (i == 0) {
-                    if (top * 2 - grid[0][0] == target) {
+                    if (diff == grid[0][0]) {
                         return true;
                     }
-                    if (top * 2 - grid[0][n - 1] == target) {
+                    if (diff == grid[0][n - 1]) {
                         return true;
                     }
                 } else {
                     if (n == 1) {
-                        if (top * 2 - grid[0][0] == target) {
+                        if (diff == grid[0][0]) {
                             return true;
                         }
-                        if (top * 2 - grid[i][0] == target) {
+                        if (diff == grid[i][0]) {
                             return true;
                         }
                     } else {
-                        if (set.count(top * 2 - target)) {
+                        if (set.count(diff)) {
                             return true;
                         }
                     }
                 }
             }
         }
+        for (int j = 0; j < n; j++) {
+            h[m - 1] += grid[m - 1][j];
+        }
         set.clear();
         // bottom to top
-        long bottom = 0;
-        for (int i = m - 1; i >= 0; i--) {
+        long long bottom = 0;
+        for (int i = m - 1; i >= 1; i--) {
             for (int j = 0; j < n; j++) {
                 set.insert(grid[i][j]);
             }
             bottom += h[i];
-            if (bottom * 2 == target) return true;
-            if (bottom * 2 > target) {
+            long long diff = bottom * 2 - target;
+            if (diff == 0) {
+                return true;
+            }
+            if (diff > 0 && diff <= CMAX) {
                 if (i == m - 1) {
-                    if (bottom * 2 - grid[m - 1][0] == target) {
+                    if (diff == grid[m - 1][0]) {
                         return true;
                     }
-                    if (bottom * 2 - grid[m - 1][n - 1] == target) {
+                    if (diff == grid[m - 1][n - 1]) {
                         return true;
                     }
                 } else {
                     if (n == 1) {
-                        if (bottom * 2 - grid[m - 1][0] == target) {
+                        if (diff == grid[m - 1][0]) {
                             return true;
                         }
-                        if (bottom * 2 - grid[i][0] == target) {
+                        if (diff == grid[i][0]) {
                             return true;
                         }
                     } else {
-                        if (set.count(bottom * 2 - target)) {
+                        if (set.count(diff)) {
                             return true;
                         }
                     }
@@ -185,6 +204,7 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
+        jprint_vector2d_size(grid, "grid");
         // printf("grid = %s\n", line_in1.c_str());
         jprint_int(res, "res");
         jprint_int(ans, "ans");
