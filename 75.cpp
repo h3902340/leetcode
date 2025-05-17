@@ -25,7 +25,7 @@ class Solution {
                     while (j >= 0 && nums[j] == 2) {
                         j--;
                     }
-                    if (j < k) {
+                    if (j <= k) {
                         break;
                     }
                     swap(nums[k], nums[j]);
