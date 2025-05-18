@@ -10,24 +10,50 @@ using namespace std;
 const int MOD = 1e9 + 7;
 const int MMAX = 5;
 const int NMAX = 1000;
+const int TMAX = 1 << (MMAX - 2);
 int dp[MMAX + 1][NMAX + 1];
-int terms[8][MMAX] = {
-    {0, 1, 0, 1, 0}, {0, 1, 0, 1, 2}, {0, 1, 0, 2, 0}, {0, 1, 0, 2, 1},
-    {0, 1, 2, 0, 1}, {0, 1, 2, 0, 2}, {0, 1, 2, 1, 0}, {0, 1, 2, 1, 2},
-};
+int terms[TMAX][MMAX];
 bool isInit = false;
 void static init() {
     if (isInit) return;
+    for (int i = 0; i < MMAX; i += 2) {
+        terms[0][i] = 0;
+    }
+    for (int i = 1; i < MMAX; i += 2) {
+        terms[0][i] = 1;
+    }
+    for (int i = 1; i < TMAX; i++) {
+        for (int j = 0; j < MMAX; j++) {
+            terms[i][j] = terms[i - 1][j];
+        }
+        bool isValid = false;
+        while (!isValid) {
+            int k = MMAX - 1;
+            terms[i][k]++;
+            while (terms[i][k] == 3) {
+                terms[i][k] = 0;
+                k--;
+                terms[i][k]++;
+            }
+            isValid = true;
+            for (int j = 1; j < MMAX; j++) {
+                if (terms[i][j - 1] == terms[i][j]) {
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+    }
     dp[1][1] = 3;
     for (int i = 2; i <= NMAX; i++) {
         dp[1][i] = (long long)dp[1][i - 1] * 2 % MOD;
     }
-    int d = 8;
+    int d = TMAX;
     for (int i = 2; i <= MMAX; i++) {
-        int coef[8][8];
-        int var[8];
-        for (int j = 0; j < 8; j += d) {
-            for (int k = 0; k < 8; k += d) {
+        int coef[TMAX][TMAX];
+        int var[TMAX];
+        for (int j = 0; j < TMAX; j += d) {
+            for (int k = 0; k < TMAX; k += d) {
                 coef[j][k] = 0;
             }
             var[j] = 6;
@@ -60,7 +86,7 @@ void static init() {
                     }
                 }
                 if (isValid) {
-                    for (int jj = 0; jj < 8; jj += d) {
+                    for (int jj = 0; jj < TMAX; jj += d) {
                         int a0 = a[0];
                         int a1 = a[1];
                         int a2 = 3 - a0 - a1;
@@ -90,20 +116,20 @@ void static init() {
             }
         }
         dp[i][1] = 0;
-        for (int k = 0; k < 8; k += d) {
+        for (int k = 0; k < TMAX; k += d) {
             dp[i][1] += var[k];
         }
-        int temp[8];
+        int temp[TMAX];
         for (int j = 2; j <= NMAX; j++) {
-            for (int k = 0; k < 8; k += d) {
+            for (int k = 0; k < TMAX; k += d) {
                 temp[k] = 0;
-                for (int kk = 0; kk < 8; kk += d) {
+                for (int kk = 0; kk < TMAX; kk += d) {
                     temp[k] =
                         ((long long)coef[k][kk] * var[kk] + temp[k]) % MOD;
                 }
             }
             dp[i][j] = 0;
-            for (int k = 0; k < 8; k += d) {
+            for (int k = 0; k < TMAX; k += d) {
                 var[k] = temp[k];
                 dp[i][j] = (dp[i][j] + var[k]) % MOD;
             }
