@@ -61,16 +61,9 @@ void static init() {
             for (int k = 0; k < i; k++) {
                 a[k] = 0;
             }
-            while (true) {
+            int kk = 0;
+            while (kk < i) {
                 bool isValid = true;
-                int kk = 0;
-                while (a[kk] == 3) {
-                    a[kk] = 0;
-                    kk++;
-                    if (kk == i) break;
-                    a[kk]++;
-                }
-                if (kk == i) break;
                 for (int k = 1; k < i; k++) {
                     if (a[k - 1] == a[k]) {
                         isValid = false;
@@ -113,6 +106,13 @@ void static init() {
                     }
                 }
                 a[0]++;
+                kk = 0;
+                while (a[kk] == 3) {
+                    a[kk] = 0;
+                    kk++;
+                    if (kk == i) break;
+                    a[kk]++;
+                }
             }
         }
         dp[i][1] = 0;
