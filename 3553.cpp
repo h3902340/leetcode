@@ -7,6 +7,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+// TODO: try Tarjan's offline LCA
 struct Neighbor {
     int v;
     int w;
