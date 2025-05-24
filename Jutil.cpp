@@ -57,6 +57,8 @@ long long jread_longlong(string line) {
     return num;
 }
 
+char jread_char(string line) { return line[1]; }
+
 string jread_string(string line) {
     if (line.size() == 2) return "";
     return line.substr(1, line.size() - 2);
@@ -137,6 +139,8 @@ void jprint_long(long num, string name) {
 void jprint_longlong(long long num, string name) {
     printf("%s = %lld\n", name.c_str(), num);
 }
+
+void jprint_char(char c, string name) { printf("%s = %c\n", name.c_str(), c); }
 
 void jprint_string(string s, string name) {
     printf("%s = %s\n", name.c_str(), s.c_str());
