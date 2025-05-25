@@ -23,6 +23,7 @@ void jprint_vector2d_string(vector<vector<string>> vec, string name);
 void jprint_vector_size(vector<int> vec, string name);
 void jprint_vector2d_size(vector<vector<int>> vec, string name);
 void jprint_array(int vec[], int n, string name);
+void jprint_array_char(char vec[], int n, string name);
 
 chrono::steady_clock::time_point jtimer();
 void jprint_time(chrono::steady_clock::time_point begin,

@@ -234,6 +234,18 @@ void jprint_array(int vec[], int n, string name) {
     printf("]\n");
 }
 
+void jprint_array_char(char vec[], int n, string name) {
+    if (n == 0) {
+        printf("%s = []\n", name.c_str());
+        return;
+    }
+    printf("%s = [%c", name.c_str(), vec[0]);
+    for (int i = 1; i < n; i++) {
+        printf(",%c", vec[i]);
+    }
+    printf("]\n");
+}
+
 void jprint_vector2d_size(vector<vector<int>> vec, string name) {
     printf("%s: %zux%zu\n", name.c_str(), vec.size(), vec[0].size());
 }
