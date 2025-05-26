@@ -7,62 +7,74 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-const int MOD = 1e9 + 7;
-const int NMAX = 1e5;
-vector<int> adj[NMAX];
-int q[NMAX];
-int parent[NMAX];
-int dp[NMAX][2];
+const int PMAX = 1e5;
 bool isInit = false;
+vector<int> prime(PMAX, 1);
 static void init() {
     if (isInit) return;
-    dp[1][0] = 1;
-    dp[1][1] = 1;
-    for (int i = 2; i < NMAX; i++) {
-        dp[i][0] = (dp[i - 1][0] + dp[i - 1][1]) % MOD;
-        dp[i][1] = (dp[i - 1][1] + dp[i - 1][0]) % MOD;
+    prime[2] = 1;
+    int i = 2;
+    while (prime[i]) {
+        for (int j = i * 2; j < PMAX; j += i) {
+            prime[j] = 0;
+        }
     }
     isInit = true;
 }
 
 class Solution {
    public:
-    int assignEdgeWeights(vector<vector<int>>& edges) {
-        init();
-        int m = edges.size();
-        int n = m + 1;
-        for (int i = 0; i < n; i++) {
-            adj[i].clear();
-        }
-        for (int i = 0; i < m; i++) {
-            adj[edges[i][0] - 1].push_back(edges[i][1] - 1);
-            adj[edges[i][1] - 1].push_back(edges[i][0] - 1);
-        }
-        int l = 0;
-        int r = 1;
-        q[0] = 0;
-        parent[0] = -1;
-        while (l < r) {
-            int f = q[l++];
-            int p = parent[f];
-            for (auto& e : adj[f]) {
-                if (e == p) continue;
-                q[r++] = e;
-                parent[e] = f;
+    long long sumOfLargestPrimes(string s) {
+        int n = s.size();
+        long long p1 = 0;
+        long long p2 = 0;
+        long long p3 = 0;
+        for (int i = n; i > 0; i--) {
+            for (int j = 0; j <= n - i; j++) {
+                long long num = 0;
+                for (int k = j; k < j + i; k++) {
+                    num = num * 10 + (s[k] - '0');
+                }
+                if (num == 1) continue;
+                bool isPrime = true;
+                long long l = 2;
+                while (l * l <= num) {
+                    if (num % l == 0) {
+                        isPrime = false;
+                        break;
+                    }
+                    l++;
+                    if (l == PMAX) break;
+                    while (!prime[l]) {
+                        l++;
+                    }
+                }
+                if (p1 == num || p2 == num || p3 == num) continue;
+                if (!isPrime) continue;
+                if (p1 > num) {
+                    if (p2 > num) {
+                        if (p3 > num) {
+                            continue;
+                        } else {
+                            p3 = num;
+                        }
+                    } else {
+                        p3 = p2;
+                        p2 = num;
+                    }
+                } else {
+                    p3 = p2;
+                    p2 = p1;
+                    p1 = num;
+                }
             }
         }
-        int d = 0;
-        int leaf = q[r - 1];
-        while (leaf != 0) {
-            leaf = parent[leaf];
-            d++;
-        }
-        return dp[d][1];
+        return p1 + p2 + p3;
     }
 };
 
 int main() {
-    string problemName = "3556";
+    string problemName = "3554";
     auto begin = jtimer();
     Solution sol;
     ifstream file_in("testcases/" + problemName + "_in.txt");
@@ -73,10 +85,10 @@ int main() {
     string line_in;
     string line_out;
     while (getline(file_in, line_in)) {
-        auto edges = jread_vector2d(line_in);
-        auto res = sol.assignEdgeWeights(edges);
+        auto s = jread_string(line_in);
+        auto res = sol.sumOfLargestPrimes(s);
         getline(file_out, line_out);
-        auto ans = jread_int(line_out);
+        auto ans = jread_longlong(line_out);
         printf("Case %d", ++caseCount);
         if (res == ans) {
             passCount++;
@@ -86,8 +98,9 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint_string(s, "s");
+        jprint_longlong(res, "res");
+        jprint_longlong(ans, "ans");
         printf("\n");
     }
     if (allPass) {
