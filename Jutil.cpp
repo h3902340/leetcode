@@ -158,6 +158,18 @@ void jprint_vector(vector<int> vec, string name) {
     printf("]\n");
 }
 
+void jprint_vector_char(vector<char> vec, string name) {
+    if (vec.size() == 0) {
+        printf("%s = []\n", name.c_str());
+        return;
+    }
+    printf("%s = [%c", name.c_str(), vec[0]);
+    for (int i = 1; i < vec.size(); i++) {
+        printf(",%c", vec[i]);
+    }
+    printf("]\n");
+}
+
 void jprint_vector_string(vector<string> vec, string name) {
     if (vec.size() == 0) {
         printf("%s = []\n", name.c_str());

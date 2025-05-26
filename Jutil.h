@@ -17,6 +17,7 @@ void jprint_longlong(long long num, string name);
 void jprint_char(char c, string name);
 void jprint_string(string s, string name);
 void jprint_vector(vector<int> vec, string name);
+void jprint_vector_char(vector<char> vec, string name);
 void jprint_vector2d(vector<vector<int>> vec, string name);
 void jprint_vector_string(vector<string> vec, string name);
 void jprint_vector2d_string(vector<vector<string>> vec, string name);
