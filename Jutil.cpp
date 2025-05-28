@@ -128,6 +128,41 @@ vector<vector<string>> jread_vector2d_string(string line) {
     return res;
 }
 
+vector<TreeNode*> jread_binary_tree(string line) {
+    vector<TreeNode*> res;
+    if (line[1] == ']') return res;
+    for (int i = 1; i < line.size(); i++) {
+        if (line[i] == 'n') {
+            res.push_back(nullptr);
+            i += 4;
+            continue;
+        }
+        int d = 0;
+        while (line[i] != ']' && line[i] != ',') {
+            d = d * 10 + line[i] - '0';
+            i++;
+        }
+        res.push_back(new TreeNode(d));
+        if (line[i] == ']') break;
+    }
+    for (int i = 0; i < res.size(); i++) {
+        if (res[i] == nullptr) continue;
+        if (i * 2 + 1 < res.size()) {
+            res[i]->left = res[i * 2 + 1];
+        } else {
+            res[i]->left = nullptr;
+            res[i]->right = nullptr;
+            continue;
+        }
+        if (i * 2 + 2 < res.size()) {
+            res[i]->right = res[i * 2 + 2];
+        } else {
+            res[i]->right = nullptr;
+        }
+    }
+    return res;
+}
+
 void jprint_int(int num, string name) {
     printf("%s = %d\n", name.c_str(), num);
 }
@@ -262,6 +297,42 @@ void jprint_vector2d_size(vector<vector<int>> vec, string name) {
     printf("%s: %zux%zu\n", name.c_str(), vec.size(), vec[0].size());
 }
 
+void jprint_binary_tree(TreeNode* root, string name) {
+    printf("%s = ", name.c_str());
+    if (root == nullptr) {
+        printf("[]\n");
+        return;
+    }
+    int l = 0;
+    int r = 1;
+    vector<TreeNode*> q;
+    q.push_back(root);
+    while (l < r) {
+        auto t = q[l++];
+        if (t == nullptr) {
+            continue;
+        }
+        q.push_back(t->left);
+        q.push_back(t->right);
+        r += 2;
+    }
+    while (q.back() == nullptr) {
+        q.pop_back();
+        r--;
+    }
+    l = 0;
+    printf("[%d", q[l]->val);
+    while (l < r) {
+        if (q[l] == nullptr) {
+            printf(",null");
+        } else {
+            printf(",%d", q[l]->val);
+        }
+        l++;
+    }
+    printf("]\n");
+}
+
 chrono::steady_clock::time_point jtimer() {
     return std::chrono::steady_clock::now();
 }
@@ -271,4 +342,14 @@ void jprint_time(chrono::steady_clock::time_point begin,
     printf(
         "time = %lld (ms)\n",
         chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
+}
+
+bool anyOrderEqual(vector<int> a, vector<int> b) {
+    if (a.size() != b.size()) return false;
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
+    for (int i = 0; i < a.size(); i++) {
+        if (a[i] != b[i]) return false;
+    }
+    return true;
 }

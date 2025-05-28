@@ -1,6 +1,13 @@
 #include <fstream>
 using namespace std;
 
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
 int jread_int(string line);
 long jread_long(string line);
 long long jread_longlong(string line);
@@ -10,6 +17,7 @@ vector<int> jread_vector(string line);
 vector<vector<int>> jread_vector2d(string line);
 vector<string> jread_vector_string(string line);
 vector<vector<string>> jread_vector2d_string(string line);
+vector<TreeNode*> jread_binary_tree(string line);
 
 void jprint_int(int num, string name);
 void jprint_long(long num, string name);
@@ -25,7 +33,10 @@ void jprint_vector_size(vector<int> vec, string name);
 void jprint_vector2d_size(vector<vector<int>> vec, string name);
 void jprint_array(int vec[], int n, string name);
 void jprint_array_char(char vec[], int n, string name);
+void jprint_binary_tree(TreeNode* root, string name);
 
 chrono::steady_clock::time_point jtimer();
 void jprint_time(chrono::steady_clock::time_point begin,
                  chrono::steady_clock::time_point end);
+
+bool anyOrderEqual(vector<int> a, vector<int> b);
