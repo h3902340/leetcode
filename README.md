@@ -16,7 +16,6 @@ TODO:
 | Problem | Rating | Difficulty |
 | ------- | ------ | ---------- |
 | 3501    | 2940   | Hard       |
-| 3503    | 1548   | Medium     |
 | 3504    | 2397   | Hard       |
 | 3505    | 2538   | Hard       |
 | 3529    | N/A    | Medium     |
