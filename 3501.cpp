@@ -7,6 +7,8 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+// TODO: Finding left and right can also be done using RMQ, the time complexity overall will be reduced
+// from O(nlogn + mlogn) to O(nlogn + m), might be faster.
 struct Seg {
     int end;
     int len;
