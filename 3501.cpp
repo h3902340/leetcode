@@ -7,17 +7,16 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-const int QMAX = 4;
-struct Node {
-    int l[QMAX];
-    int r[QMAX];
-    int lt;
-    int rt;
-    int v;
+struct Seg {
+    int end;
+    int len;
 };
 const int NMAX = 1e5;
-const int LGNMAX = 17;
-Node dp[NMAX][LGNMAX];
+const int ZOZMAX = (NMAX - 1) >> 1;
+const int LOGZOZMAX = 17;
+Seg segs[NMAX];
+Seg zeroOneZero[ZOZMAX][3];
+int rmq[ZOZMAX][LOGZOZMAX];
 
 class Solution {
    public:
@@ -25,159 +24,128 @@ class Solution {
                                             vector<vector<int>>& queries) {
         int n = s.size();
         int m = queries.size();
-        const int lgn = log2(n) + 1;
+        int t = 0;
+        bool isFirstOne = s[0] == '1';
+        int cur = s[0];
+        int seg = 1;
         int totalActive = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < lgn; j++) {
-                dp[i][j].lt = 0;
-                dp[i][j].rt = QMAX - 1;
-            }
-            Node& e = dp[i][0];
-            if (s[i] == '0') {
-                e.l[e.lt] = -1;
-                e.r[e.rt] = -1;
+        for (int i = 1; i < n; i++) {
+            if (s[i] == cur) {
+                seg++;
             } else {
-                e.l[e.lt] = 1;
-                e.r[e.rt] = 1;
-                totalActive++;
+                if ((t + isFirstOne) & 1) {
+                    totalActive += seg;
+                }
+                segs[t++] = {i - 1, seg};
+                seg = 1;
+                cur = s[i];
             }
-            e.v = 0;
+        }
+        if ((t + isFirstOne) & 1) {
+            totalActive += seg;
+        }
+        segs[t++] = {n - 1, seg};
+        int u = 0;
+        for (int i = isFirstOne; i < t - 2; i += 2) {
+            for (int j = 0; j < 3; j++) {
+                zeroOneZero[u][j] = segs[i + j];
+            }
+            u++;
+        }
+        if (u == 0) {
+            vector<int> res(m);
+            for (int i = 0; i < m; i++) {
+                res[i] = totalActive;
+            }
+            return res;
+        }
+        int lgu = log2(u) + 1;
+        for (int i = 0; i < u; i++) {
+            rmq[i][0] = zeroOneZero[i][0].len + zeroOneZero[i][2].len;
         }
         int k = 1;
-        for (int j = 1; j < lgn; j++) {
-            int tmp = n - (k << 1) + 1;
+        for (int j = 1; j < lgu; j++) {
+            int tmp = u - (k << 1) + 1;
             for (int i = 0; i < tmp; i++) {
-                Node& a = dp[i][j - 1];
-                Node& b = dp[i + k][j - 1];
-                dp[i][j] = merge(a, b);
+                int a = rmq[i][j - 1];
+                int b = rmq[i + k][j - 1];
+                rmq[i][j] = max(a, b);
             }
             k <<= 1;
         }
         vector<int> res(m);
         for (int i = 0; i < m; i++) {
-            int l = queries[i][0];
-            int r = queries[i][1];
-            int d = log2(r - l + 1);
-            Node temp = dp[l][d];
-            l += (1 << d);
+            int x = queries[i][0];
+            int y = queries[i][1];
+            int l = 0;
+            int r = u - 1;
+            int left = u;
             while (l <= r) {
-                d = log2(r - l + 1);
-                temp = merge(temp, dp[l][d]);
-                l += (1 << d);
+                int mid = (l + r) >> 1;
+                if (x > zeroOneZero[mid][0].end) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                    left = mid;
+                }
             }
-            res[i] = temp.v + totalActive;
+            l = 0;
+            r = u - 1;
+            int right = -1;
+            while (l <= r) {
+                int mid = (l + r) >> 1;
+                if (y > zeroOneZero[mid][2].end - zeroOneZero[mid][2].len) {
+                    l = mid + 1;
+                    right = mid;
+                } else {
+                    r = mid - 1;
+                }
+            }
+            if (left > right) {
+                res[i] = totalActive;
+                continue;
+            }
+            int a = left + 1;
+            int b = right - 1;
+            int maxActive = 0;
+            if (a <= b) {
+                int d = log2(b - a + 1);
+                maxActive = max(rmq[a][d], rmq[b - (1 << d) + 1][d]);
+            }
+            int maxLeft = 0;
+            if (x >= zeroOneZero[left][0].end - zeroOneZero[left][0].len + 1) {
+                maxLeft += zeroOneZero[left][0].end - x + 1;
+            } else {
+                maxLeft += zeroOneZero[left][0].len;
+            }
+            if (y <= zeroOneZero[left][2].end) {
+                maxLeft +=
+                    y - zeroOneZero[left][2].end + zeroOneZero[left][2].len;
+            } else {
+                maxLeft += zeroOneZero[left][2].len;
+            }
+            int maxRight = 0;
+            if (x >=
+                zeroOneZero[right][0].end - zeroOneZero[right][0].len + 1) {
+                maxRight += zeroOneZero[right][0].end - x + 1;
+            } else {
+                maxRight += zeroOneZero[right][0].len;
+            }
+            if (y <= zeroOneZero[right][2].end) {
+                maxRight +=
+                    y - zeroOneZero[right][2].end + zeroOneZero[right][2].len;
+            } else {
+                maxRight += zeroOneZero[right][2].len;
+            }
+            if (maxActive < maxLeft) {
+                maxActive = maxLeft;
+            }
+            if (maxActive < maxRight) {
+                maxActive = maxRight;
+            }
+            res[i] = totalActive + maxActive;
         }
         return res;
-    }
-
-   private:
-    Node merge(Node& a, Node& b) {
-        Node c;
-        c.lt = a.lt;
-        c.rt = b.rt;
-        c.v = 0;
-        for (int x = 0; x < QMAX; x++) {
-            c.l[x] = a.l[x];
-            c.r[x] = b.r[x];
-        }
-        int l = 0;
-        while (c.lt < QMAX && l <= b.lt) {
-            if ((c.l[c.lt] > 0) == (b.l[l] > 0)) {
-                c.l[c.lt] += b.l[l];
-            } else {
-                c.lt++;
-                if (c.lt == QMAX) {
-                    break;
-                }
-                c.l[c.lt] = b.l[l];
-            }
-            l++;
-            if (l == QMAX) {
-                break;
-            }
-        }
-        int r = QMAX - 1;
-        while (c.rt >= 0 && r >= a.rt) {
-            if ((c.r[c.rt] > 0) == (a.r[r] > 0)) {
-                c.r[c.rt] += a.r[r];
-            } else {
-                c.rt--;
-                if (c.rt == -1) {
-                    break;
-                }
-                c.r[c.rt] = a.r[r];
-            }
-            r--;
-            if (r == -1) {
-                break;
-            }
-        }
-        if (c.lt >= QMAX - 1 && c.l[0] < 0 && c.l[1] > 0 && c.l[2] < 0) {
-            int v = c.l[0] + c.l[2];
-            v = -v;
-            if (c.v < v) {
-                c.v = v;
-            }
-        }
-        if (c.rt <= 0 && c.r[QMAX - 3] < 0 && c.r[QMAX - 2] > 0 &&
-            c.r[QMAX - 1] < 0) {
-            int v = c.r[QMAX - 3] + c.r[QMAX - 1];
-            v = -v;
-            if (c.v < v) {
-                c.v = v;
-            }
-        }
-        if (c.v < a.v) {
-            c.v = a.v;
-        }
-        if (c.v < b.v) {
-            c.v = b.v;
-        }
-        if (a.r[QMAX - 1] > 0) {
-            if (b.l[0] > 0) {
-                if (a.rt <= QMAX - 2 && b.lt >= 1) {
-                    int v = a.r[QMAX - 2] + b.l[1];
-                    v = -v;
-                    if (c.v < v) {
-                        c.v = v;
-                    }
-                }
-            } else {
-                if (a.rt <= QMAX - 2) {
-                    int v = a.r[QMAX - 2] + b.l[0];
-                    v = -v;
-                    if (c.v < v) {
-                        c.v = v;
-                    }
-                }
-            }
-        } else {
-            if (b.l[0] > 0) {
-                if (a.rt <= QMAX - 1 && b.lt >= 1) {
-                    int v = a.r[QMAX - 1] + b.l[1];
-                    v = -v;
-                    if (c.v < v) {
-                        c.v = v;
-                    }
-                }
-            } else {
-                if (a.rt <= QMAX - 3) {
-                    int v = a.r[QMAX - 3] + a.r[QMAX - 1] + b.l[0];
-                    v = -v;
-                    if (c.v < v) {
-                        c.v = v;
-                    }
-                }
-                if (b.lt >= 2) {
-                    int v = a.r[QMAX - 1] + b.l[0] + b.l[2];
-                    v = -v;
-                    if (c.v < v) {
-                        c.v = v;
-                    }
-                }
-            }
-        }
-        return c;
     }
 };
 
