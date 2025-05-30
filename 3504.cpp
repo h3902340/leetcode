@@ -7,10 +7,11 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-const int NMAX = 30;
+const int NMAX = 1e3;
 int maxSubStr[NMAX];
 int sPal[NMAX];
 int tPal[NMAX];
+bool dp[NMAX][NMAX];
 
 class Solution {
    public:
@@ -85,29 +86,33 @@ class Solution {
    private:
     void calcPal(string s, int n, int pal[NMAX]) {
         for (int i = 0; i < n; i++) {
-            pal[i] = 1;
-            for (int j = i + 1; j < n; j++) {
-                int l = i;
-                int r = j;
-                int cur = 0;
-                while (l <= r) {
-                    if (l == r) {
-                        cur++;
-                        break;
-                    }
-                    if (s[l] == s[r]) {
-                        l++;
-                        r--;
-                        cur += 2;
-                    } else {
-                        cur = 0;
-                        break;
-                    }
-                }
-                if (pal[i] < cur) {
-                    pal[i] = cur;
+            dp[i][i] = 1;
+        }
+        for (int i = 1; i < n; i++) {
+            if (s[i - 1] == s[i]) {
+                dp[i - 1][i] = 1;
+            } else {
+                dp[i - 1][i] = 0;
+            }
+        }
+        for (int len = 3; len <= n; len++) {
+            for (int i = 0; i <= n - len; i++) {
+                int j = i + len - 1;
+                if (s[i] == s[j]) {
+                    dp[i][j] = dp[i + 1][j - 1];
+                } else {
+                    dp[i][j] = 0;
                 }
             }
+        }
+        for (int i = 0; i < n; i++) {
+            int maxj = 0;
+            for (int j = i; j < n; j++) {
+                if (dp[i][j]) {
+                    maxj = j;
+                }
+            }
+            pal[i] = maxj - i + 1;
         }
     }
 };
