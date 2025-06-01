@@ -9,7 +9,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-// TODO: Is update function O(N) in the worst case?
+// TODO: Is update function O(N) in the worst case? Maybe use doubly linked list?
 struct SegmentTree {
     int l;
     int r;
