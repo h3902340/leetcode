@@ -9,7 +9,8 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-// TODO: Is update function O(N) in the worst case? Maybe use doubly linked list?
+// TODO: Is update function O(N) in the worst case? Maybe use doubly linked
+// list?
 struct SegmentTree {
     int l;
     int r;
@@ -29,7 +30,8 @@ static void init() {
     for (int i = 2; i <= NUMMAX; i++) {
         prime[i] = true;
     }
-    for (int i = 2; i <= NUMMAX; i++) {
+    int cap = sqrt(NUMMAX);
+    for (int i = 2; i <= cap; i++) {
         if (prime[i]) {
             for (int j = i + i; j <= NUMMAX; j += i) {
                 prime[j] = false;

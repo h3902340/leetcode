@@ -136,6 +136,7 @@ vector<string> jread_vector_string(string line) {
         res.push_back(s);
         i++;
         if (line[i] == ']') break;
+        i++;
     }
     return res;
 }
