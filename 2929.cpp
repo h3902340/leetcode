@@ -10,20 +10,20 @@ using namespace std;
 class Solution {
    public:
     long long distributeCandies(int n, int limit) {
-        long long res = (long long)(n + 2) * (n + 1) >> 1;
+        long long res = (long long)(n + 2) * (n + 1);
         int exceed = limit + 1;
         if (n >= exceed) {
-            res -= ((long long)(n - exceed + 2) * (n - exceed + 1) >> 1) * 3;
+            res -= (long long)(n - exceed + 2) * (n - exceed + 1) * 3;
         }
         exceed += limit + 1;
         if (n >= exceed) {
-            res += ((long long)(n - exceed + 2) * (n - exceed + 1) >> 1) * 3;
+            res += (long long)(n - exceed + 2) * (n - exceed + 1) * 3;
         }
         exceed += limit + 1;
         if (n >= exceed) {
-            res -= (long long)(n - exceed + 2) * (n - exceed + 1) >> 1;
+            res -= (long long)(n - exceed + 2) * (n - exceed + 1);
         }
-        return res;
+        return res >> 1;
     }
 };
 
