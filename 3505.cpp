@@ -8,8 +8,10 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-// TODO: The time complexity is still O(NX) because finding a element in a
-// multiset requires O(X) time.
+// The time complexity is still O(NX) because finding a element in a
+// multiset requires O(X) time. Using set should bring the time complexity down
+// to O(NlogX). But the official testcases are too weak, using set is actually
+// slower (1092 ms).
 const int N = 1e5;
 const int K = 15;
 long long op[N];
