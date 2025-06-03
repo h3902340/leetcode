@@ -22,6 +22,15 @@ int memo[1 << NMAX];
 class Solution {
    public:
     int maxProfit(int n, vector<vector<int>>& edges, vector<int>& score) {
+        // switch to Greedy
+        if (edges.size() == 0) {
+            int res = 0;
+            sort(score.begin(), score.end());
+            for (int i = 0; i < n; i++) {
+                res += (i + 1) * score[i];
+            }
+            return res;
+        }
         if (n == 1) {
             return score[0];
         }
