@@ -40,7 +40,8 @@ class Solution {
             deg[i] = 0;
             ancestor[i] = 0;
         }
-        for (int i = 0; i < (1 << n); i++) {
+        int cap = 1 << n;
+        for (int i = 0; i < cap; i++) {
             memo[i] = 0;
         }
         for (auto& e : edges) {
@@ -75,7 +76,6 @@ class Solution {
         }
         l = lold;
         r = rold;
-        int allRemoved = (1 << n) - 1;
         while (l < r) {
             Node& f = q[l++];
             for (int i = 0; i < n; i++) {
@@ -83,17 +83,18 @@ class Solution {
                 if (f.mask & m) continue;
                 if ((f.mask | ancestor[i]) != f.mask) continue;
                 int mask = f.mask | m;
-                int value = f.value + score[i] * (f.count + 1);
+                int count = f.count + 1;
+                int value = f.value + score[i] * count;
                 if (memo[mask] >= value) continue;
                 memo[mask] = value;
                 Node node;
                 node.mask = mask;
                 node.value = value;
-                node.count = f.count + 1;
+                node.count = count;
                 q[r++] = node;
             }
         }
-        return memo[allRemoved];
+        return memo[cap - 1];
     }
 };
 
