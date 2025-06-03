@@ -14,8 +14,8 @@ struct Node {
     int count;
 };
 vector<int> adj[NMAX];
-Node q[1 << NMAX];
-int q2[NMAX];
+Node s[1 << NMAX];
+int q[NMAX];
 int deg[NMAX];
 int ancestor[NMAX];
 int memo[1 << NMAX];
@@ -57,27 +57,25 @@ class Solution {
                 node.mask = 1 << i;
                 node.value = score[i];
                 node.count = 1;
-                q[r] = node;
-                q2[r] = i;
+                s[r] = node;
+                q[r] = i;
                 r++;
             }
         }
-        int lold = l;
         int rold = r;
         while (l < r) {
-            int f = q2[l++];
+            int f = q[l++];
             for (auto e : adj[f]) {
                 ancestor[e] |= ancestor[f];
                 deg[e]--;
                 if (deg[e] == 0) {
-                    q2[r++] = e;
+                    q[r++] = e;
                 }
             }
         }
-        l = lold;
         r = rold;
-        while (l < r) {
-            Node& f = q[l++];
+        while (r > 0) {
+            Node f = s[--r];
             for (int i = 0; i < n; i++) {
                 int m = 1 << i;
                 if (f.mask & m) continue;
@@ -87,11 +85,12 @@ class Solution {
                 int value = f.value + score[i] * count;
                 if (memo[mask] >= value) continue;
                 memo[mask] = value;
+                if (mask == cap - 1) continue;
                 Node node;
                 node.mask = mask;
                 node.value = value;
                 node.count = count;
-                q[r++] = node;
+                s[r++] = node;
             }
         }
         return memo[cap - 1];
