@@ -11,12 +11,13 @@ const int NMAX = 22;
 struct Node {
     int mask;
     int value;
-    int deg[NMAX];
     int count;
 };
 vector<int> adj[NMAX];
 Node q[1 << NMAX];
+int q2[NMAX];
 int deg[NMAX];
+int ancestor[NMAX];
 int memo[1 << NMAX];
 
 class Solution {
@@ -37,6 +38,7 @@ class Solution {
         for (int i = 0; i < n; i++) {
             adj[i].clear();
             deg[i] = 0;
+            ancestor[i] = 0;
         }
         for (int i = 0; i < (1 << n); i++) {
             memo[i] = 0;
@@ -44,6 +46,7 @@ class Solution {
         for (auto& e : edges) {
             adj[e[0]].push_back(e[1]);
             deg[e[1]]++;
+            ancestor[e[1]] |= (1 << e[0]);
         }
         int l = 0;
         int r = 0;
@@ -53,22 +56,32 @@ class Solution {
                 node.mask = 1 << i;
                 node.value = score[i];
                 node.count = 1;
-                for (int i = 0; i < n; i++) {
-                    node.deg[i] = deg[i];
-                }
-                for (auto e : adj[i]) {
-                    node.deg[e]--;
-                }
-                q[r++] = node;
+                q[r] = node;
+                q2[r] = i;
+                r++;
             }
         }
+        int lold = l;
+        int rold = r;
+        while (l < r) {
+            int f = q2[l++];
+            for (auto e : adj[f]) {
+                ancestor[e] |= ancestor[f];
+                deg[e]--;
+                if (deg[e] == 0) {
+                    q2[r++] = e;
+                }
+            }
+        }
+        l = lold;
+        r = rold;
         int allRemoved = (1 << n) - 1;
         while (l < r) {
             Node& f = q[l++];
             for (int i = 0; i < n; i++) {
                 int m = 1 << i;
                 if (f.mask & m) continue;
-                if (f.deg[i] > 0) continue;
+                if ((f.mask | ancestor[i]) != f.mask) continue;
                 int mask = f.mask | m;
                 int value = f.value + score[i] * (f.count + 1);
                 if (memo[mask] >= value) continue;
@@ -77,12 +90,6 @@ class Solution {
                 node.mask = mask;
                 node.value = value;
                 node.count = f.count + 1;
-                for (int j = 0; j < n; j++) {
-                    node.deg[j] = f.deg[j];
-                }
-                for (auto e : adj[i]) {
-                    node.deg[e]--;
-                }
                 q[r++] = node;
             }
         }
