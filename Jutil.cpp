@@ -18,6 +18,40 @@ int jread_int(string line) {
     }
     return num;
 }
+double jread_double(string line) {
+    int i = 0;
+    bool isNeg = false;
+    if (line[0] == '-') {
+        isNeg = true;
+        i++;
+    }
+    double num = 0;
+    double multi = .1;
+    bool isAfterDot = false;
+    for (; i < line.size(); i++) {
+        if (line[i] == '.') {
+            isAfterDot = true;
+            i++;
+            continue;
+        }
+        if (isAfterDot) {
+            if (isNeg) {
+                num -= multi * (line[i] - '0');
+            } else {
+                num += multi * (line[i] - '0');
+            }
+            multi *= 0.1;
+        } else {
+            num *= 10;
+            if (isNeg) {
+                num -= (line[i] - '0');
+            } else {
+                num += (line[i] - '0');
+            }
+        }
+    }
+    return num;
+}
 
 long jread_long(string line) {
     int i = 0;
@@ -68,6 +102,7 @@ vector<int> jread_vector(string line) {
     vector<int> res;
     if (line[1] == ']') return res;
     for (int i = 1; i < line.size(); i++) {
+        if (line[i] == ' ') continue;
         bool isNeg = false;
         if (line[i] == '-') {
             isNeg = true;
@@ -89,10 +124,53 @@ vector<int> jread_vector(string line) {
     return res;
 }
 
+vector<double> jread_vector_double(string line) {
+    vector<double> res;
+    if (line[1] == ']') return res;
+    for (int i = 1; i < line.size(); i++) {
+        if (line[i] == ' ') continue;
+        bool isNeg = false;
+        if (line[i] == '-') {
+            isNeg = true;
+            i++;
+        }
+        double num = 0;
+        double multi = .1;
+        bool isAfterDot = false;
+        while (line[i] != ',' && line[i] != ']') {
+            if (line[i] == '.') {
+                isAfterDot = true;
+                i++;
+                continue;
+            }
+            if (isAfterDot) {
+                if (isNeg) {
+                    num -= multi * (line[i] - '0');
+                } else {
+                    num += multi * (line[i] - '0');
+                }
+                multi *= .1;
+            } else {
+                num *= 10;
+                if (isNeg) {
+                    num -= (line[i] - '0');
+                } else {
+                    num += (line[i] - '0');
+                }
+            }
+            i++;
+        }
+        res.push_back(num);
+        if (line[i] == ']') break;
+    }
+    return res;
+}
+
 vector<char> jread_vector_char(string line) {
     vector<char> res;
     if (line[1] == ']') return res;
     for (int i = 1; i < line.size(); i++) {
+        if (line[i] == ' ') continue;
         i++;
         res.push_back(line[i]);
         i += 2;
@@ -127,6 +205,7 @@ vector<string> jread_vector_string(string line) {
     vector<string> res;
     if (line[1] == ']') return res;
     for (int i = 1; i < line.size(); i++) {
+        if (line[i] == ' ') continue;
         i++;
         string s;
         while (line[i] != '"') {
@@ -136,7 +215,6 @@ vector<string> jread_vector_string(string line) {
         res.push_back(s);
         i++;
         if (line[i] == ']') break;
-        i++;
     }
     return res;
 }
@@ -191,6 +269,10 @@ void jprint_int(int num, string name) {
     printf("%s = %d\n", name.c_str(), num);
 }
 
+void jprint_double(double num, string name) {
+    printf("%s = %f\n", name.c_str(), num);
+}
+
 void jprint_long(long num, string name) {
     printf("%s = %ld\n", name.c_str(), num);
 }
@@ -199,10 +281,12 @@ void jprint_longlong(long long num, string name) {
     printf("%s = %lld\n", name.c_str(), num);
 }
 
-void jprint_char(char c, string name) { printf("%s = %c\n", name.c_str(), c); }
+void jprint_char(char c, string name) {
+    printf("%s = \"%c\"\n", name.c_str(), c);
+}
 
 void jprint_string(string s, string name) {
-    printf("%s = %s\n", name.c_str(), s.c_str());
+    printf("%s = \"%s\"\n", name.c_str(), s.c_str());
 }
 
 void jprint_vector(vector<int> vec, string name) {
@@ -217,26 +301,41 @@ void jprint_vector(vector<int> vec, string name) {
     printf("]\n");
 }
 
-void jprint_vector_char(vector<char> vec, string name) {
+void jprint_vector_double(vector<double> vec, string name) {
+    printf("%s = [", name.c_str());
     if (vec.size() == 0) {
-        printf("%s = []\n", name.c_str());
+        printf("]\n");
         return;
     }
-    printf("%s = [%c", name.c_str(), vec[0]);
+    printf("%f", vec[0]);
     for (int i = 1; i < vec.size(); i++) {
-        printf(",%c", vec[i]);
+        printf(",%f", vec[i]);
+    }
+    printf("]\n");
+}
+
+void jprint_vector_char(vector<char> vec, string name) {
+    printf("%s = [", name.c_str());
+    if (vec.size() == 0) {
+        printf("]\n");
+        return;
+    }
+    printf("\"%c\"", vec[0]);
+    for (int i = 1; i < vec.size(); i++) {
+        printf(",\"%c\"", vec[i]);
     }
     printf("]\n");
 }
 
 void jprint_vector_string(vector<string> vec, string name) {
+    printf("%s = [", name.c_str());
     if (vec.size() == 0) {
-        printf("%s = []\n", name.c_str());
+        printf("]\n");
         return;
     }
-    printf("%s = [%s", name.c_str(), vec[0].c_str());
+    printf("\"%s\"", vec[0].c_str());
     for (int i = 1; i < vec.size(); i++) {
-        printf(",%s", vec[i].c_str());
+        printf(",\"%s\"", vec[i].c_str());
     }
     printf("]\n");
 }
@@ -266,18 +365,19 @@ void jprint_vector2d(vector<vector<int>> vec, string name) {
 }
 
 void jprint_vector2d_char(vector<vector<char>> vec, string name) {
+    printf("%s = [", name.c_str());
     if (vec.size() == 0) {
-        printf("%s = [[]]\n", name.c_str());
+        printf("[]]\n");
         return;
     }
-    printf("%s = [\n", name.c_str());
+    printf("\n");
     for (int i = 0; i < vec.size(); i++) {
         if (vec[i].size() == 0) {
             printf("[]");
         } else {
-            printf("[%c", vec[i][0]);
+            printf("[\"%c\"", vec[i][0]);
             for (int j = 1; j < vec[i].size(); j++) {
-                printf(",%c", vec[i][j]);
+                printf(",\"%c\"", vec[i][j]);
             }
             printf("]");
         }
@@ -290,18 +390,19 @@ void jprint_vector2d_char(vector<vector<char>> vec, string name) {
 }
 
 void jprint_vector2d_string(vector<vector<string>> vec, string name) {
+    printf("%s = [", name.c_str());
     if (vec.size() == 0) {
-        printf("%s = [[]]\n", name.c_str());
+        printf("[]]\n");
         return;
     }
-    printf("%s = [\n", name.c_str());
+    printf("\n");
     for (int i = 0; i < vec.size(); i++) {
         if (vec[i].size() == 0) {
             printf("[]");
         } else {
-            printf("[%s", vec[i][0].c_str());
+            printf("[\"%s\"", vec[i][0].c_str());
             for (int j = 1; j < vec[i].size(); j++) {
-                printf(",%s", vec[i][j].c_str());
+                printf(",\"%s\"", vec[i][j].c_str());
             }
             printf("]");
         }
@@ -330,13 +431,14 @@ void jprint_array(int vec[], int n, string name) {
 }
 
 void jprint_array_char(char vec[], int n, string name) {
+    printf("%s = [", name.c_str());
     if (n == 0) {
-        printf("%s = []\n", name.c_str());
+        printf("]\n");
         return;
     }
-    printf("%s = [%c", name.c_str(), vec[0]);
+    printf("\"%c\"", vec[0]);
     for (int i = 1; i < n; i++) {
-        printf(",%c", vec[i]);
+        printf(",\"%c\"", vec[i]);
     }
     printf("]\n");
 }

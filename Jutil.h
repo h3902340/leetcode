@@ -9,11 +9,13 @@ struct TreeNode {
 };
 
 int jread_int(string line);
+double jread_double(string line);
 long jread_long(string line);
 long long jread_longlong(string line);
 char jread_char(string line);
 string jread_string(string line);
 vector<int> jread_vector(string line);
+vector<double> jread_vector_double(string line);
 vector<char> jread_vector_char(string line);
 vector<vector<int>> jread_vector2d(string line);
 vector<vector<char>> jread_vector2d_char(string line);
@@ -22,11 +24,13 @@ vector<vector<string>> jread_vector2d_string(string line);
 vector<TreeNode*> jread_binary_tree(string line);
 
 void jprint_int(int num, string name);
+void jprint_double(double num, string name);
 void jprint_long(long num, string name);
 void jprint_longlong(long long num, string name);
 void jprint_char(char c, string name);
 void jprint_string(string s, string name);
 void jprint_vector(vector<int> vec, string name);
+void jprint_vector_double(vector<double> vec, string name);
 void jprint_vector_char(vector<char> vec, string name);
 void jprint_vector2d(vector<vector<int>> vec, string name);
 void jprint_vector2d_char(vector<vector<char>> vec, string name);
