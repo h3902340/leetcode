@@ -55,8 +55,16 @@ class Solution {
         for (int i = 0; i < m; i++) {
             int a = labelToIndex[queries[i][0]];
             int b = labelToIndex[queries[i][1]];
+            if (a == b) {
+                res[i] = 0;
+                continue;
+            }
             if (a > b) {
                 swap(a, b);
+            }
+            if (dp[a][0] >= b) {
+                res[i] = 1;
+                continue;
             }
             res[i] = 0;
             while (a < b) {
