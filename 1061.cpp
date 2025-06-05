@@ -50,18 +50,6 @@ class Solution {
         }
         return res;
     }
-    int getRoot(int a) {
-        int p = a;
-        while (p != group[p]) {
-            p = group[p];
-        }
-        while (p != a) {
-            int tmp = group[a];
-            group[a] = p;
-            a = tmp;
-        }
-        return a;
-    }
 };
 
 int main() {
