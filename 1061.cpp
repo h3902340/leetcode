@@ -21,7 +21,6 @@ class Solution {
         int m = baseStr.size();
         for (int i = 0; i < CHARMAX; i++) {
             adj[i].clear();
-            group[i] = i;
             out[i] = false;
         }
         for (int i = 0; i < n; i++) {
