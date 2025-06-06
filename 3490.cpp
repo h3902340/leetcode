@@ -22,19 +22,7 @@ bool possibleSum[SUM + 1];
 bool isInit = false;
 static void init() {
     if (isInit) return;
-    for (int d = 0; d <= D; d++) {
-        for (int sum = 0; sum <= SUM; sum++) {
-            for (int p2 = 0; p2 <= P2; p2++) {
-                for (int p3 = 0; p3 <= P3; p3++) {
-                    for (int p5 = 0; p5 <= P5; p5++) {
-                        for (int p7 = 0; p7 <= P7; p7++) {
-                            memo[d][sum][p2][p3][p5][p7] = -1;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    memset(memo, -1, sizeof(memo));
     tenPower[0] = 1;
     for (int i = 1; i <= D; i++) {
         tenPower[i] = tenPower[i - 1] * 10;
