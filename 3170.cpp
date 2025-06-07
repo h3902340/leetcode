@@ -18,18 +18,22 @@ class Solution {
         for (int i = 0; i < CHARMAX; i++) {
             c[i].clear();
         }
+        priority_queue<int, vector<int>, greater<int>> pq;
         for (int i = 0; i < n; i++) {
             if (s[i] == '*') {
-                for (int j = 0; j < CHARMAX; j++) {
-                    if (c[j].size() > 0) {
-                        s[c[j].back()] = '*';
-                        c[j].pop_back();
-                        break;
-                    }
+                int j = pq.top();
+                s[c[j].back()] = '*';
+                c[j].pop_back();
+                if (c[j].size() == 0) {
+                    pq.pop();
                 }
                 size -= 2;
             } else {
-                c[s[i] - 'a'].push_back(i);
+                int ch = s[i] - 'a';
+                if (c[ch].size() == 0) {
+                    pq.push(ch);
+                }
+                c[ch].push_back(i);
             }
         }
         string res(size, 0);
