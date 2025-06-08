@@ -7,35 +7,35 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+const int MOD = 1e9 + 7;
+const int N = 1e5;
+bool isInit = false;
+int fac[N];
+static void init() {
+    if (isInit) return;
+    fac[0] = 1;
+    for (int i = 1; i < N; i++) {
+        fac[i] = (long long)fac[i - 1] * i % MOD;
+    }
+    isInit = true;
+}
+
 class Solution {
    public:
-    bool canMakeEqual(vector<int>& nums, int k) {
-        return f(nums, k, 1) || f(nums, k, -1);
-    }
-    bool f(vector<int>& nums, int k, int a) {
-        int n = nums.size();
-        int c = 0;
-        vector<int> indexes;
-        for (int i = 0; i < n; i++) {
-            if (nums[i] == a) {
-                c++;
-                indexes.push_back(i);
+    int countPermutations(vector<int>& complexity) {
+        init();
+        int n = complexity.size();
+        for (int i = 1; i < n; i++) {
+            if (complexity[0] >= complexity[i]) {
+                return 0;
             }
         }
-        if (c & 1) return false;
-        int d = 0;
-        for (int i = 0; i < indexes.size(); i += 2) {
-            d += indexes[i + 1] - indexes[i];
-        }
-        if (d > k) {
-            return false;
-        }
-        return true;
+        return fac[n - 1];
     }
 };
 
 int main() {
-    string problemName = "3576";
+    string problemName = "3577";
     auto begin = jtimer();
     Solution sol;
     ifstream file_in("testcases/" + problemName + "_in.txt");
@@ -46,10 +46,8 @@ int main() {
     string line_in;
     string line_out;
     while (getline(file_in, line_in)) {
-        auto nums = jread_vector(line_in);
-        getline(file_in, line_in);
-        auto k = jread_int(line_in);
-        auto res = sol.canMakeEqual(nums, k);
+        auto complexity = jread_vector(line_in);
+        auto res = sol.countPermutations(complexity);
         getline(file_out, line_out);
         auto ans = jread_int(line_out);
         printf("Case %d", ++caseCount);
