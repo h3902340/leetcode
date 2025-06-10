@@ -8,13 +8,14 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+const int C = 26;
 const int LENSUM = 1e5;
+const int WORDLEN = 1e4;
 struct Trie {
-    int cnt[26];
-    int idx[26];
+    int cnt[C];
+    int idx[C];
 };
 Trie arr[LENSUM];
-const int WORDLEN = 1e4;
 int fre[WORDLEN + 1];
 
 class Solution {
@@ -22,7 +23,7 @@ class Solution {
     vector<int> longestCommonPrefix(vector<string> &words, int k) {
         int n = words.size();
         int maxLen = 0;
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < C; i++) {
             arr[0].cnt[i] = 0;
             arr[0].idx[i] = -1;
         }
@@ -47,7 +48,7 @@ class Solution {
                     r++;
                     arr[index].idx[c] = r;
                     index = r;
-                    for (int i = 0; i < 26; i++) {
+                    for (int i = 0; i < C; i++) {
                         arr[index].cnt[i] = 0;
                         arr[index].idx[i] = -1;
                     }
