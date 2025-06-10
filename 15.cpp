@@ -1,0 +1,87 @@
+#include <vector>
+
+#include "Jutil.h"
+using namespace std;
+
+#define KNRM "\x1B[0m"
+#define KRED "\x1B[31m"
+#define KGRN "\x1B[32m"
+
+class Solution {
+   public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < n; i++) {
+            int target = -nums[i];
+            int j = i + 1;
+            int k = n - 1;
+            while (j < k) {
+                int sum = nums[j] + nums[k];
+                if (sum == target) {
+                    res.push_back({nums[i], nums[j], nums[k]});
+                    while (j + 1 < n && nums[j + 1] == nums[j]) {
+                        j++;
+                    }
+                    j++;
+                    k--;
+                } else if (sum < target) {
+                    j++;
+                } else {
+                    k--;
+                }
+            }
+            while (i + 1 < n && nums[i + 1] == nums[i]) {
+                i++;
+            }
+        }
+        return res;
+    }
+};
+
+int main() {
+    string problemName = "15";
+    auto begin = jtimer();
+    Solution sol;
+    ifstream file_in("testcases/" + problemName + "_in.txt");
+    ifstream file_out("testcases/" + problemName + "_out.txt");
+    bool allPass = true;
+    int caseCount = 0;
+    int passCount = 0;
+    string line_in;
+    string line_out;
+    while (getline(file_in, line_in)) {
+        auto nums = jread_vector(line_in);
+        auto res = sol.threeSum(nums);
+        getline(file_out, line_out);
+        auto ans = jread_vector2d(line_out);
+        printf("Case %d", ++caseCount);
+        if (res.size() != ans.size()) {
+            printf(" %s(WRONG)", KRED);
+            allPass = false;
+        } else {
+            sort(res.begin(), res.end());
+            sort(ans.begin(), ans.end());
+            if (res != ans) {
+                printf(" %s(WRONG)", KRED);
+                allPass = false;
+            } else {
+                passCount++;
+                printf(" %s(PASS)", KGRN);
+            }
+        }
+        printf("\n%s", KNRM);
+        jprint_vector2d(res, "res");
+        jprint_vector2d(ans, "ans");
+        printf("\n");
+    }
+    if (allPass) {
+        printf("%sALL CORRECT [%d/%d]\n%s", KGRN, passCount, caseCount, KNRM);
+    } else {
+        printf("%sWRONG ANSWER [%d/%d]\n%s", KRED, passCount, caseCount, KNRM);
+    }
+    auto end = jtimer();
+    jprint_time(begin, end);
+    return 0;
+}
