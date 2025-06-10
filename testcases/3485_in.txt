@@ -1,0 +1,6 @@
+["jump","run","run","jump","run"]
+2
+["dog","racer","car"]
+2
+["ccd","adc","dba","bff","cbfae","fcae","cbbc"]
+3
