@@ -230,6 +230,50 @@ vector<vector<string>> jread_vector2d_string(string line) {
     return res;
 }
 
+ListNode* jread_list(string line) {
+    ListNode* res = nullptr;
+    ListNode* cur = nullptr;
+    if (line[1] == ']') return res;
+    for (int i = 1; i < line.size(); i++) {
+        if (line[i] == ' ') continue;
+        bool isNeg = false;
+        if (line[i] == '-') {
+            isNeg = true;
+            i++;
+        }
+        int num = 0;
+        while (line[i] != ',' && line[i] != ']') {
+            num *= 10;
+            if (isNeg) {
+                num -= (line[i] - '0');
+            } else {
+                num += (line[i] - '0');
+            }
+            i++;
+        }
+        if (res == nullptr) {
+            res = new ListNode(num);
+            cur = res;
+        } else {
+            cur->next = new ListNode(num);
+            cur = cur->next;
+        }
+        if (line[i] == ']') break;
+    }
+    return res;
+}
+
+vector<ListNode*> jread_vector_list(string line) {
+    vector<ListNode*> res;
+    for (int i = 1; i < line.size(); i++) {
+        if (line[i] == '[') {
+            ListNode* vec = jread_list(line.substr(i));
+            res.push_back(vec);
+        }
+    }
+    return res;
+}
+
 vector<TreeNode*> jread_binary_tree(string line) {
     vector<TreeNode*> res;
     if (line[1] == ']') return res;
@@ -287,6 +331,19 @@ void jprint_char(char c, string name) {
 
 void jprint_string(string s, string name) {
     printf("%s = \"%s\"\n", name.c_str(), s.c_str());
+}
+
+void jprint_list(ListNode* vec, string name) {
+    if (vec == nullptr) {
+        printf("%s = []\n", name.c_str());
+        return;
+    }
+    printf("%s = [%d", name.c_str(), vec->val);
+    while (vec->next != nullptr) {
+        vec = vec->next;
+        printf(",%d", vec->val);
+    }
+    printf("]\n");
 }
 
 void jprint_vector(vector<int> vec, string name) {
@@ -502,4 +559,23 @@ bool anyOrderEqual(vector<int> a, vector<int> b) {
         if (a[i] != b[i]) return false;
     }
     return true;
+}
+
+bool listEqual(ListNode* a, ListNode* b) {
+    while (true) {
+        if (a == nullptr && b == nullptr) {
+            return true;
+        }
+        if (a == nullptr && b != nullptr) {
+            return false;
+        }
+        if (a != nullptr && b == nullptr) {
+            return false;
+        }
+        if (a->val != b->val) {
+            return false;
+        }
+        a = a->next;
+        b = b->next;
+    }
 }
