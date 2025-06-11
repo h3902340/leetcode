@@ -8,45 +8,50 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 const int N = 1e3;
-bool dp[N][N];
+const int ODDITY = 2;
+bool dp[N][ODDITY];
 
 class Solution {
    public:
     string longestPalindrome(string s) {
         int n = s.size();
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j < n; j++) {
-                dp[i][j] = false;
-            }
-        }
         int imax = 0;
         int lmax = 0;
         for (int i = 0; i < n; i++) {
-            dp[i][i] = true;
-            if (i + 1 < n && s[i] == s[i + 1]) {
-                dp[i][i + 1] = true;
-                imax = i;
-                lmax = 1;
+            dp[i][0] = true;
+            if (i + 1 < n) {
+                if (s[i] == s[i + 1]) {
+                    dp[i][1] = true;
+                    imax = i;
+                    lmax = 1;
+                } else {
+                    dp[i][1] = false;
+                }
             }
         }
-        bool flags[2]{false};
+        bool flags[ODDITY]{false};
+        bool oddity = false;
         for (int l = 2; l < n; l++) {
             if (flags[0] && flags[1]) break;
-            if (flags[l & 1]) continue;
+            if (flags[oddity]) {
+                oddity = !oddity;
+                continue;
+            }
             bool allFalse = true;
             for (int i = 0; i + l < n; i++) {
-                if (s[i] == s[i + l] && dp[i + 1][i + l - 1]) {
-                    dp[i][i + l] = true;
+                if (s[i] == s[i + l] && dp[i + 1][oddity]) {
+                    dp[i][oddity] = true;
                     imax = i;
                     lmax = l;
                     allFalse = false;
                 } else {
-                    dp[i][i + l] = false;
+                    dp[i][oddity] = false;
                 }
             }
             if (allFalse) {
-                flags[l & 1] = true;
+                flags[oddity] = true;
             }
+            oddity = !oddity;
         }
         return s.substr(imax, lmax + 1);
     }
