@@ -563,6 +563,15 @@ bool anyOrderEqual(vector<string> a, vector<string> b) {
     return true;
 }
 
+bool anyOrderEqual(vector<vector<string>> a, vector<vector<string>> b) {
+    if (a.size() != b.size()) return false;
+    for (int i = 0; i < a.size(); i++) {
+        bool tmp = anyOrderEqual(a[i], b[i]);
+        if (!tmp) return false;
+    }
+    return true;
+}
+
 bool listEqual(ListNode* a, ListNode* b) {
     while (true) {
         if (a == nullptr && b == nullptr) {
