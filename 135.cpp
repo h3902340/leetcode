@@ -98,9 +98,9 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        // jprint_vector(ratings, "ratings");
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        // jprint(ratings, "ratings");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

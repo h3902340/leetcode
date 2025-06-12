@@ -82,8 +82,8 @@ int main() {
         printf("\n%s", KNRM);
         printf("words = %s\n", line_in1.c_str());
         printf("groups = %s\n", line_in2.c_str());
-        jprint_vector_string(res, "res");
-        jprint_vector_string(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

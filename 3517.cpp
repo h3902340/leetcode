@@ -62,8 +62,8 @@ int main() {
         }
         printf("\n%s", KNRM);
         printf("s = %s\n", line_in1.c_str());
-        jprint_string(res, "res");
-        jprint_string(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

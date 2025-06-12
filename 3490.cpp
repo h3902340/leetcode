@@ -189,10 +189,10 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_int(l, "l");
-        jprint_int(r, "r");
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint(l, "l");
+        jprint(r, "r");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

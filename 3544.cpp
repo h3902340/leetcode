@@ -120,8 +120,8 @@ int main() {
         // printf("nums = %s\n", line_in2.c_str());
         printf("k = %s\n", line_in3.c_str());
         printf("n = %zu\n", nums.size());
-        jprint_longlong(res, "res");
-        jprint_longlong(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

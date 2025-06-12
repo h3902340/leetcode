@@ -80,11 +80,11 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_string(s1, "s1");
-        jprint_string(s2, "s2");
-        jprint_string(baseStr, "baseStr");
-        jprint_string(res, "res");
-        jprint_string(ans, "ans");
+        jprint(s1, "s1");
+        jprint(s2, "s2");
+        jprint(baseStr, "baseStr");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

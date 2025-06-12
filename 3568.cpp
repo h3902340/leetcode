@@ -135,9 +135,9 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_vector_string(classroom, "classroom");
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint(classroom, "classroom");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

@@ -73,8 +73,8 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_list(res, "res");
-        jprint_list(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

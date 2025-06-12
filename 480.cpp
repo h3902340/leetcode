@@ -100,8 +100,8 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_vector_double(res, "res");
-        jprint_vector_double(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

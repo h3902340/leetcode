@@ -88,10 +88,10 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_vector(nums, "nums");
-        jprint_vector2d(queries, "queries");
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint(nums, "nums");
+        jprint(queries, "queries");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

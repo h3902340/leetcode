@@ -149,8 +149,8 @@ int main() {
         printf("workers = %s\n", line_in2.c_str());
         printf("pills = %s\n", line_in3.c_str());
         printf("strength = %s\n", line_in4.c_str());
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

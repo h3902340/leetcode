@@ -93,10 +93,10 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_int(n, "n");
-        jprint_int(k, "k");
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint(n, "n");
+        jprint(k, "k");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

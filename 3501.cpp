@@ -178,10 +178,10 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_string(s, "s");
-        jprint_vector2d(queries, "queries");
-        jprint_vector(res, "res");
-        jprint_vector(ans, "ans");
+        jprint(s, "s");
+        jprint(queries, "queries");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

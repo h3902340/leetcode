@@ -49,8 +49,8 @@ int main() {
         }
         printf("\n%s", KNRM);
         printf("edges = %s\n", line_in1.c_str());
-        jprint_vector(res, "res");
-        jprint_vector(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

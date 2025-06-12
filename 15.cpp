@@ -72,8 +72,8 @@ int main() {
             }
         }
         printf("\n%s", KNRM);
-        jprint_vector2d(res, "res");
-        jprint_vector2d(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

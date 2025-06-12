@@ -77,10 +77,10 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_vector(nums, "nums");
-        jprint_vector(queries, "queries");
-        jprint_vector(res, "res");
-        jprint_vector(ans, "ans");
+        jprint(nums, "nums");
+        jprint(queries, "queries");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

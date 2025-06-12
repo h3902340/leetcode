@@ -130,10 +130,10 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_string(str1, "str1");
-        jprint_string(str2, "str2");
-        jprint_string(res, "res");
-        jprint_string(ans, "ans");
+        jprint(str1, "str1");
+        jprint(str2, "str2");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

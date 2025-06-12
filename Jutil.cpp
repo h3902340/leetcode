@@ -309,31 +309,23 @@ vector<TreeNode*> jread_binary_tree(string line) {
     return res;
 }
 
-void jprint_int(int num, string name) {
-    printf("%s = %d\n", name.c_str(), num);
-}
+void jprint(int num, string name) { printf("%s = %d\n", name.c_str(), num); }
 
-void jprint_double(double num, string name) {
-    printf("%s = %f\n", name.c_str(), num);
-}
+void jprint(double num, string name) { printf("%s = %f\n", name.c_str(), num); }
 
-void jprint_long(long num, string name) {
-    printf("%s = %ld\n", name.c_str(), num);
-}
+void jprint(long num, string name) { printf("%s = %ld\n", name.c_str(), num); }
 
-void jprint_longlong(long long num, string name) {
+void jprint(long long num, string name) {
     printf("%s = %lld\n", name.c_str(), num);
 }
 
-void jprint_char(char c, string name) {
-    printf("%s = \"%c\"\n", name.c_str(), c);
-}
+void jprint(char c, string name) { printf("%s = \"%c\"\n", name.c_str(), c); }
 
-void jprint_string(string s, string name) {
+void jprint(string s, string name) {
     printf("%s = \"%s\"\n", name.c_str(), s.c_str());
 }
 
-void jprint_list(ListNode* vec, string name) {
+void jprint(ListNode* vec, string name) {
     if (vec == nullptr) {
         printf("%s = []\n", name.c_str());
         return;
@@ -346,7 +338,7 @@ void jprint_list(ListNode* vec, string name) {
     printf("]\n");
 }
 
-void jprint_vector(vector<int> vec, string name) {
+void jprint(vector<int> vec, string name) {
     if (vec.size() == 0) {
         printf("%s = []\n", name.c_str());
         return;
@@ -358,7 +350,7 @@ void jprint_vector(vector<int> vec, string name) {
     printf("]\n");
 }
 
-void jprint_vector_double(vector<double> vec, string name) {
+void jprint(vector<double> vec, string name) {
     printf("%s = [", name.c_str());
     if (vec.size() == 0) {
         printf("]\n");
@@ -371,7 +363,7 @@ void jprint_vector_double(vector<double> vec, string name) {
     printf("]\n");
 }
 
-void jprint_vector_char(vector<char> vec, string name) {
+void jprint(vector<char> vec, string name) {
     printf("%s = [", name.c_str());
     if (vec.size() == 0) {
         printf("]\n");
@@ -384,7 +376,7 @@ void jprint_vector_char(vector<char> vec, string name) {
     printf("]\n");
 }
 
-void jprint_vector_string(vector<string> vec, string name) {
+void jprint(vector<string> vec, string name) {
     printf("%s = [", name.c_str());
     if (vec.size() == 0) {
         printf("]\n");
@@ -397,7 +389,7 @@ void jprint_vector_string(vector<string> vec, string name) {
     printf("]\n");
 }
 
-void jprint_vector2d(vector<vector<int>> vec, string name) {
+void jprint(vector<vector<int>> vec, string name) {
     if (vec.size() == 0) {
         printf("%s = [[]]\n", name.c_str());
         return;
@@ -421,7 +413,7 @@ void jprint_vector2d(vector<vector<int>> vec, string name) {
     }
 }
 
-void jprint_vector2d_char(vector<vector<char>> vec, string name) {
+void jprint(vector<vector<char>> vec, string name) {
     printf("%s = [", name.c_str());
     if (vec.size() == 0) {
         printf("[]]\n");
@@ -446,7 +438,7 @@ void jprint_vector2d_char(vector<vector<char>> vec, string name) {
     }
 }
 
-void jprint_vector2d_string(vector<vector<string>> vec, string name) {
+void jprint(vector<vector<string>> vec, string name) {
     printf("%s = [", name.c_str());
     if (vec.size() == 0) {
         printf("[]]\n");
@@ -475,7 +467,7 @@ void jprint_vector_size(vector<int> vec, string name) {
     printf("%s: %zu\n", name.c_str(), vec.size());
 }
 
-void jprint_array(int vec[], int n, string name) {
+void jprint(int vec[], int n, string name) {
     if (n == 0) {
         printf("%s = []\n", name.c_str());
         return;
@@ -487,7 +479,7 @@ void jprint_array(int vec[], int n, string name) {
     printf("]\n");
 }
 
-void jprint_array_char(char vec[], int n, string name) {
+void jprint(char vec[], int n, string name) {
     printf("%s = [", name.c_str());
     if (n == 0) {
         printf("]\n");
@@ -504,7 +496,7 @@ void jprint_vector2d_size(vector<vector<int>> vec, string name) {
     printf("%s: %zux%zu\n", name.c_str(), vec.size(), vec[0].size());
 }
 
-void jprint_binary_tree(TreeNode* root, string name) {
+void jprint(TreeNode* root, string name) {
     printf("%s = ", name.c_str());
     if (root == nullptr) {
         printf("[]\n");

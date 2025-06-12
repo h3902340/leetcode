@@ -110,7 +110,7 @@ int main() {
     string line_out;
     while (getline(file_in, line_in1)) {
         auto nums = jread_vector(line_in1);
-        jprint_vector(nums, "nums");
+        jprint(nums, "nums");
         auto res = sol.minimumPairRemoval(nums);
         getline(file_out, line_out);
         auto ans = jread_int(line_out);
@@ -123,8 +123,8 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

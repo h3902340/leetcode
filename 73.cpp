@@ -84,8 +84,8 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_vector2d(matrix, "res");
-        jprint_vector2d(ans, "ans");
+        jprint(matrix, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

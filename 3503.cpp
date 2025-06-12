@@ -145,10 +145,10 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_string(s, "s");
-        jprint_string(t, "t");
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint(s, "s");
+        jprint(t, "t");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

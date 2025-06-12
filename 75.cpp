@@ -63,8 +63,8 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_vector(nums, "res");
-        jprint_vector(ans, "ans");
+        jprint(nums, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

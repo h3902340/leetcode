@@ -104,9 +104,9 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_binary_tree(root, "root");
-        jprint_vector(res, "res");
-        jprint_vector(ans, "ans");
+        jprint(root, "root");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

@@ -127,12 +127,12 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_int(n, "n");
-        jprint_vector(nums, "nums");
-        jprint_int(maxDiff, "maxDiff");
-        jprint_vector2d(queries, "queries");
-        jprint_vector(res, "res");
-        jprint_vector(ans, "ans");
+        jprint(n, "n");
+        jprint(nums, "nums");
+        jprint(maxDiff, "maxDiff");
+        jprint(queries, "queries");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

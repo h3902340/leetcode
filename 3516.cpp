@@ -56,8 +56,8 @@ int main() {
         printf("x = %s\n", line_in1.c_str());
         printf("y = %s\n", line_in2.c_str());
         printf("z = %s\n", line_in3.c_str());
-        jprint_int(res, "res");
-        jprint_int(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

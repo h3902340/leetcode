@@ -88,9 +88,9 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_vector_string(cmds, "cmds");
-        jprint_vector_double(res, "res");
-        jprint_vector_double(ans, "ans");
+        jprint(cmds, "cmds");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {

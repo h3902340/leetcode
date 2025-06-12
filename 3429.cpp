@@ -80,8 +80,8 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint_longlong(res, "res");
-        jprint_longlong(ans, "ans");
+        jprint(res, "res");
+        jprint(ans, "ans");
         printf("\n");
     }
     if (allPass) {
