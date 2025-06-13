@@ -593,6 +593,18 @@ bool anyOrderEqual(vector<int> a, vector<int> b) {
     return true;
 }
 
+bool anyOrderEqual(vector<vector<int>> a, vector<vector<int>> b) {
+    if (a.size() != b.size()) return false;
+    auto cmp = [](vector<int>& a, vector<int>& b) { return a[0] < b[0]; };
+    sort(a.begin(), a.end(), cmp);
+    sort(b.begin(), b.end(), cmp);
+    for (int i = 0; i < a.size(); i++) {
+        bool tmp = anyOrderEqual(a[i], b[i]);
+        if (!tmp) return false;
+    }
+    return true;
+}
+
 bool anyOrderEqual(vector<string> a, vector<string> b) {
     if (a.size() != b.size()) return false;
     sort(a.begin(), a.end());

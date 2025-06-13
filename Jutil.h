@@ -78,6 +78,7 @@ void jprint_time(chrono::steady_clock::time_point begin,
                  chrono::steady_clock::time_point end);
 
 bool anyOrderEqual(vector<int> a, vector<int> b);
+bool anyOrderEqual(vector<vector<int>> a, vector<vector<int>> b);
 bool anyOrderEqual(vector<string> a, vector<string> b);
 bool anyOrderEqual(vector<vector<string>> a, vector<vector<string>> b);
 bool listEqual(ListNode* a, ListNode* b);
