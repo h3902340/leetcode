@@ -20,18 +20,18 @@ class Solution {
                 continue;
             }
             if (s[i + k] < s[j + k]) {
-                // If
-                // i is the current best, j is the potential rival.
-                // i is unrivaled in (i,j).
-                // Because s[i..i+k] is equal to s[j..j+k], when i+k >= j,
-                // s[j..i+k] is equal to s[i..i-j+i+k].
-                // Again, if i-j+i+k >= j, then s[j..i-j+i+k] is equal to
-                // s[i..2(i-j)+i+k]. Repeat this process until we get c(i-j)+i+k
-                // < j where c is a constant. s[i..c(i-j)+i+k] will be equal to
-                // s[j..i+k]. Because i is unrival in (i,j-1], the characters in
-                // (i,j-1] are no greater than s[i]. The characters in (j,i+k]
-                // are also no greater than s[j]. Therefore, s[j] is unrivaled
-                // in (j,i+k]. j can choose max(j+1,i+k+1) as the next starting
+                // If j is only updated to j+1, the worst case will be O(n^2),
+                // for example, "aaa...aab" where there are n-1 "a". i is the
+                // current best, j is the potential rival. i is unrivaled in
+                // (i,j). Because s[i..i+k] is equal to s[j..j+k], when i+k >=
+                // j, s[j..i+k] is equal to s[i..i-j+i+k]. Again, if i-j+i+k >=
+                // j, then s[j..i-j+i+k] is equal to s[i..2(i-j)+i+k]. Repeat
+                // this process until we get c(i-j)+i+k < j where c is a
+                // constant. s[i..c(i-j)+i+k] will be equal to s[j..i+k].
+                // Because i is unrival in (i,j-1], the characters in (i,j-1]
+                // are no greater than s[i]. The characters in (j,i+k] are also
+                // no greater than s[j]. Therefore, s[j] is unrivaled in
+                // (j,i+k]. j can choose max(j+1,i+k+1) as the next starting
                 // point.
                 int t = i;
                 i = j;
