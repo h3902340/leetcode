@@ -309,6 +309,21 @@ vector<TreeNode*> jread_binary_tree(string line) {
     return res;
 }
 
+vector<Node*> jread_graph(string line) {
+    vector<vector<int>> arr = jread_vector2d(line);
+    vector<Node*> nodes(arr.size());
+    for (int i = 0; i < arr.size(); i++) {
+        nodes[i] = new Node(i + 1);
+    }
+    for (int i = 0; i < arr.size(); i++) {
+        for (int j = 0; j < arr[i].size(); j++) {
+            int index = arr[i][j] - 1;
+            nodes[i]->neighbors.push_back(nodes[index]);
+        }
+    }
+    return nodes;
+}
+
 void jprint(int num, string name) { printf("%s = %d\n", name.c_str(), num); }
 
 void jprint(double num, string name) { printf("%s = %f\n", name.c_str(), num); }
@@ -532,6 +547,31 @@ void jprint(TreeNode* root, string name) {
     printf("]\n");
 }
 
+void jprint(Node* root, string name) {
+    vector<vector<int>> arr;
+    stack<Node*> st;
+    st.push(root);
+    unordered_map<int, bool> vis;
+    while (!st.empty()) {
+        Node* t = st.top();
+        st.pop();
+        if (t == nullptr) continue;
+        int j = t->val - 1;
+        if (vis[j]) continue;
+        while (j >= arr.size()) {
+            arr.push_back({});
+        }
+        vis[j] = true;
+        for (int i = 0; i < t->neighbors.size(); i++) {
+            int index = t->neighbors[i]->val;
+            arr[j].push_back(index);
+            if (vis[index - 1]) continue;
+            st.push(t->neighbors[i]);
+        }
+    }
+    jprint(arr, name);
+}
+
 chrono::steady_clock::time_point jtimer() {
     return std::chrono::steady_clock::now();
 }
@@ -589,4 +629,50 @@ bool listEqual(ListNode* a, ListNode* b) {
         a = a->next;
         b = b->next;
     }
+}
+
+// this does not account for graph isomorphism
+bool graphEqual(Node* a, Node* b) {
+    stack<Node*> sta;
+    stack<Node*> stb;
+    sta.push(a);
+    stb.push(b);
+    unordered_map<int, bool> vis;
+    while (!sta.empty()) {
+        Node* ta = sta.top();
+        Node* tb = stb.top();
+        sta.pop();
+        stb.pop();
+        if (ta == nullptr) {
+            if (tb == nullptr) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        if (tb == nullptr) {
+            return false;
+        }
+        if (ta->val != tb->val) {
+            return false;
+        }
+        int a = ta->neighbors.size();
+        int b = tb->neighbors.size();
+        if (a != b) {
+            return false;
+        }
+        vis[ta->val] = true;
+        auto cmp = [](Node* a, Node* b) { return a->val < b->val; };
+        sort(ta->neighbors.begin(), ta->neighbors.end(), cmp);
+        sort(tb->neighbors.begin(), tb->neighbors.end(), cmp);
+        for (int i = 0; i < ta->neighbors.size(); i++) {
+            if (ta->neighbors[i]->val != tb->neighbors[i]->val) {
+                return false;
+            }
+            if (vis[ta->neighbors[i]->val]) continue;
+            sta.push(ta->neighbors[i]);
+            stb.push(tb->neighbors[i]);
+        }
+    }
+    return true;
 }

@@ -1,6 +1,24 @@
 #include <fstream>
 using namespace std;
 
+class Node {
+   public:
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+
 struct TreeNode {
     int val;
     TreeNode* left;
@@ -32,6 +50,7 @@ vector<vector<string>> jread_vector2d_string(string line);
 ListNode* jread_list(string line);
 vector<ListNode*> jread_vector_list(string line);
 vector<TreeNode*> jread_binary_tree(string line);
+vector<Node*> jread_graph(string line);
 
 void jprint(int num, string name);
 void jprint(double num, string name);
@@ -52,6 +71,7 @@ void jprint_vector2d_size(vector<vector<int>> vec, string name);
 void jprint(int vec[], int n, string name);
 void jprint(char vec[], int n, string name);
 void jprint(TreeNode* root, string name);
+void jprint(Node* root, string name);
 
 chrono::steady_clock::time_point jtimer();
 void jprint_time(chrono::steady_clock::time_point begin,
@@ -61,3 +81,4 @@ bool anyOrderEqual(vector<int> a, vector<int> b);
 bool anyOrderEqual(vector<string> a, vector<string> b);
 bool anyOrderEqual(vector<vector<string>> a, vector<vector<string>> b);
 bool listEqual(ListNode* a, ListNode* b);
+bool graphEqual(Node* a, Node* b);
