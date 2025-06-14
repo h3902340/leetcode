@@ -36,6 +36,7 @@ class Solution {
         // For example, A..A..A --> AB.AB.A --> ABCABCA, if there is one D left,
         // we can adjust the schedule: A...A..A --> AB..AB.A --> ABC.ABCA -->
         // ABCDABCA
+        // Idle case: A..A..A --> AB.AB.A --> ABCAB.A and there is no more task
         return max((freMax - 1) * (n + 1) + freMaxCount, t);
     }
 };
