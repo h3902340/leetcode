@@ -10,7 +10,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     long long sum;
     int index;
     int modCount;
@@ -26,13 +26,13 @@ class Solution {
    public:
     int minimumPairRemoval(vector<int>& nums) {
         int n = nums.size();
-        auto cmp = [](Node a, Node b) {
+        auto cmp = [](Data a, Data b) {
             if (a.sum == b.sum) {
                 return a.index > b.index;
             }
             return a.sum > b.sum;
         };
-        priority_queue<Node, vector<Node>, decltype(cmp)> pq(cmp);
+        priority_queue<Data, vector<Data>, decltype(cmp)> pq(cmp);
         int cnt = 0;
         for (int i = 0; i < n - 1; i++) {
             pre[i] = i - 1;
@@ -40,7 +40,7 @@ class Solution {
             if (nums[i] > nums[i + 1]) {
                 cnt++;
             }
-            Node node = {nums[i] + nums[i + 1], i, 0};
+            Data node = {nums[i] + nums[i + 1], i, 0};
             pq.emplace(node);
             modCount[i] = 0;
             temp[i] = nums[i];
@@ -50,7 +50,7 @@ class Solution {
         temp[n - 1] = nums[n - 1];
         int ans = 0;
         while (cnt > 0) {
-            Node t = pq.top();
+            Data t = pq.top();
             pq.pop();
             if (t.modCount != modCount[t.index]) continue;
             ans++;
@@ -73,7 +73,7 @@ class Solution {
                 }
                 modCount[left]++;
                 nxt[left] = right;
-                Node node = {temp[left] + mergedSum, left, modCount[left]};
+                Data node = {temp[left] + mergedSum, left, modCount[left]};
                 pq.emplace(node);
             }
             if (rr != -1) {
@@ -87,7 +87,7 @@ class Solution {
                     }
                 }
                 modCount[right]++;
-                Node node = {mergedSum + temp[rr], right, modCount[right]};
+                Data node = {mergedSum + temp[rr], right, modCount[right]};
                 pq.emplace(node);
             }
             temp[right] = mergedSum;

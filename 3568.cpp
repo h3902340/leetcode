@@ -7,7 +7,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     int i;
     int j;
     int energy;
@@ -19,7 +19,7 @@ const int N = 20;
 const int E = 50;
 const int L = 10;
 const int dir[4][2]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-Node q[M * N * E * (1 << L)];
+Data q[M * N * E * (1 << L)];
 int vis[M][N][1 << L];
 int litterMap[M][N];
 
@@ -35,7 +35,7 @@ class Solution {
             for (int j = 0; j < n; j++) {
                 int c = classroom[i][j];
                 if (c == 'S') {
-                    Node node = {i, j, energy, 0, 0};
+                    Data node = {i, j, energy, 0, 0};
                     q[r++] = node;
                 } else {
                     if (c == 'L') {
@@ -57,7 +57,7 @@ class Solution {
         int min = INT32_MAX;
         bool success = false;
         while (l < r) {
-            Node f = q[l++];
+            Data f = q[l++];
             if (f.litter == totalLitter) {
                 if (min > f.move) {
                     min = f.move;
@@ -80,7 +80,7 @@ class Solution {
                     if (vis[a][b][f.litter | bit] >= f.energy - 1) {
                         continue;
                     }
-                    Node node = {a, b, f.energy - 1, f.litter | bit,
+                    Data node = {a, b, f.energy - 1, f.litter | bit,
                                  f.move + 1};
                     q[r++] = node;
                     vis[a][b][node.litter] = node.energy;
@@ -88,14 +88,14 @@ class Solution {
                     if (vis[a][b][f.litter] == energy) {
                         continue;
                     }
-                    Node node = {a, b, energy, f.litter, f.move + 1};
+                    Data node = {a, b, energy, f.litter, f.move + 1};
                     q[r++] = node;
                     vis[a][b][node.litter] = energy;
                 } else {
                     if (vis[a][b][f.litter] >= f.energy - 1) {
                         continue;
                     }
-                    Node node = {a, b, f.energy - 1, f.litter, f.move + 1};
+                    Data node = {a, b, f.energy - 1, f.litter, f.move + 1};
                     q[r++] = node;
                     vis[a][b][node.litter] = node.energy;
                 }

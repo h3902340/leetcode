@@ -35,12 +35,6 @@ static void init() {
     }
     isInit = true;
 }
-struct Node {
-    long long mask;
-    int val;
-    int m;
-    int k;
-};
 
 int memo[M + 1][K + 1][M * 2 + 1][N + 1];
 

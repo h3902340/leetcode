@@ -7,7 +7,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     int key;
     int value;
 };
@@ -22,7 +22,7 @@ class Solution {
         }
         int j = 0;
         int u = mp.size();
-        vector<Node> nodes(u);
+        vector<Data> nodes(u);
         for (auto& e : mp) {
             nodes[j++] = {e.first, e.second};
         }
@@ -35,12 +35,12 @@ class Solution {
         return res;
     }
     // O(n) expected time
-    void kth_element(vector<Node>& nums, int i, int j, int k) {
+    void kth_element(vector<Data>& nums, int i, int j, int k) {
         srand(time(NULL));
         int l = i + 1;
         int r = j;
         int mid = rand() % (j - i + 1) + i;
-        Node p = nums[mid];
+        Data p = nums[mid];
         nums[mid] = nums[i];
         while (true) {
             while (l <= r) {

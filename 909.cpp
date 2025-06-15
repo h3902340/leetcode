@@ -8,7 +8,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     int i;
     int j;
 };
@@ -39,7 +39,7 @@ class Solution {
                     if (nxt == goal) {
                         return roll;
                     }
-                    Node tmp = indexToPos(nxt, n);
+                    Data tmp = indexToPos(nxt, n);
                     int b = board[tmp.i][tmp.j];
                     if (b == goal) {
                         return roll;
@@ -62,7 +62,7 @@ class Solution {
     }
 
    private:
-    Node indexToPos(int index, int n) {
+    Data indexToPos(int index, int n) {
         int n2 = n << 1;
         int q = (index - 1) / n2;
         int r = (index - 1) % n2;

@@ -7,14 +7,14 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     char c;
     int prei;
     int prej;
     int len;
 };
 const int NMAX = 1000;
-Node dp[NMAX][NMAX];
+Data dp[NMAX][NMAX];
 
 class Solution {
    public:
@@ -73,7 +73,7 @@ class Solution {
                 }
             }
         }
-        Node lcs = dp[n - 1][m - 1];
+        Data lcs = dp[n - 1][m - 1];
         int l = lcs.len;
         int totalLen = n + m - l;
         string res(totalLen, 0);

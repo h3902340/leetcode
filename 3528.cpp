@@ -10,7 +10,7 @@ using namespace std;
 // The problem is not clear enough. For conversions = [[0,2,6],[1,2,3]] seems to be a valid testcase, yet many solutions
 // do not account for this case. The problem doesn't allow the conversions that are in the opposite directions, but doesn't
 // clarify what the "opposite direction" means.
-struct Node {
+struct Data {
     int node;
     int v;
 };
@@ -20,7 +20,7 @@ struct Q {
 };
 const int MOD = 1000000007;
 const int NMAX = 1e5;
-vector<Node> adj[NMAX];
+vector<Data> adj[NMAX];
 Q q[NMAX];
 class Solution {
    public:

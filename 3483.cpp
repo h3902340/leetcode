@@ -7,10 +7,6 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
-    int mask;
-    int v;
-};
 const int N = 3;
 const int D = 10;
 bool memo[D][D][D];

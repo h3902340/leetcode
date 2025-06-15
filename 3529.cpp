@@ -7,7 +7,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     int i;
     int j;
 };
@@ -31,23 +31,23 @@ class Solution {
             }
         }
         buildFailure(pattern, p);
-        vector<Node> h = KMP(grid, pattern, m, n, p);
-        vector<Node> v = KMP_vertical(grid, pattern, m, n, p);
+        vector<Data> h = KMP(grid, pattern, m, n, p);
+        vector<Data> v = KMP_vertical(grid, pattern, m, n, p);
         for (auto& e : h) {
-            Node start = calcPosH(e, -p + 1, n);
-            Node end = calcPosH(e, 1, n);
+            Data start = calcPosH(e, -p + 1, n);
+            Data end = calcPosH(e, 1, n);
             unionH[start.i][start.j]++;
             unionH[end.i][end.j]--;
         }
-        Node cur = {0, 0};
+        Data cur = {0, 0};
         while (cur.i != m - 1 || cur.j != n - 1) {
-            Node nxt = calcPosH(cur, 1, n);
+            Data nxt = calcPosH(cur, 1, n);
             unionH[nxt.i][nxt.j] += unionH[cur.i][cur.j];
             cur = nxt;
         }
         for (auto& e : v) {
-            Node start = calcPosV(e, -p + 1, m);
-            Node end = calcPosV(e, 1, m);
+            Data start = calcPosV(e, -p + 1, m);
+            Data end = calcPosV(e, 1, m);
             unionV[start.i][start.j]++;
             unionV[end.i][end.j]--;
         }
@@ -57,7 +57,7 @@ class Solution {
             res++;
         }
         while (cur.i != m - 1 || cur.j != n - 1) {
-            Node nxt = calcPosV(cur, 1, m);
+            Data nxt = calcPosV(cur, 1, m);
             unionV[nxt.i][nxt.j] += unionV[cur.i][cur.j];
             cur = nxt;
             if (unionH[cur.i][cur.j] && unionV[cur.i][cur.j]) {
@@ -85,9 +85,9 @@ class Solution {
             }
         }
     }
-    vector<Node> KMP(vector<vector<char>>& grid, string pattern, int m, int n,
+    vector<Data> KMP(vector<vector<char>>& grid, string pattern, int m, int n,
                      int p) {
-        vector<Node> res;
+        vector<Data> res;
         int k = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -109,9 +109,9 @@ class Solution {
         }
         return res;
     }
-    vector<Node> KMP_vertical(vector<vector<char>>& grid, string pattern, int m,
+    vector<Data> KMP_vertical(vector<vector<char>>& grid, string pattern, int m,
                               int n, int p) {
-        vector<Node> res;
+        vector<Data> res;
         int k = 0;
         for (int j = 0; j < n; j++) {
             for (int i = 0; i < m; i++) {
@@ -133,7 +133,7 @@ class Solution {
         }
         return res;
     }
-    Node calcPosH(Node e, int dis, int n) {
+    Data calcPosH(Data e, int dis, int n) {
         e.j += dis;
         if (e.j < 0) {
             int q = (-e.j - 1) / n + 1;
@@ -146,7 +146,7 @@ class Solution {
         }
         return e;
     }
-    Node calcPosV(Node e, int dis, int m) {
+    Data calcPosV(Data e, int dis, int m) {
         e.i += dis;
         if (e.i < 0) {
             int q = (-e.i - 1) / m + 1;

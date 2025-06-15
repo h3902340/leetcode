@@ -7,13 +7,13 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     int mask;
     int sum;
     int index;
 };
 const int NMAX = 16;
-Node s[1 << NMAX];
+Data s[1 << NMAX];
 bool memo[1 << NMAX];
 
 class Solution {
@@ -39,7 +39,7 @@ class Solution {
         s[t].sum = nums[0];
         s[t].index = 0;
         while (t >= 0) {
-            Node top = s[t--];
+            Data top = s[t--];
             if (memo[top.mask]) {
                 continue;
             }

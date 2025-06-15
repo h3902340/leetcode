@@ -7,14 +7,14 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     int i;
     int v;
 };
 const int N = 1e5;
 const int LGN = 17;
 int dp[N][LGN];
-Node temp[N];
+Data temp[N];
 int labelToIndex[N];
 
 class Solution {
@@ -27,17 +27,17 @@ class Solution {
             temp[i].i = i;
             temp[i].v = nums[i];
         }
-        auto cmp = [](Node a, Node b) { return a.v < b.v; };
+        auto cmp = [](Data a, Data b) { return a.v < b.v; };
         sort(begin(temp), begin(temp) + n, cmp);
         int j = 1;
         for (int i = 0; i < n; i++) {
-            Node a = temp[i];
+            Data a = temp[i];
             labelToIndex[a.i] = i;
             if (j < i + 1) {
                 j = i + 1;
             }
             while (j < n) {
-                Node b = temp[j];
+                Data b = temp[j];
                 if (b.v - a.v > maxDiff) {
                     break;
                 }

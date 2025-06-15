@@ -7,14 +7,14 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     char c;
     int next;
     int len;
 };
 const int NMAX = 250;
 bool dp[NMAX][NMAX];
-Node memo[NMAX + 1];
+Data memo[NMAX + 1];
 class Solution {
    public:
     string lexicographicallySmallestString(string s) {

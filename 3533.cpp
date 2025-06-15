@@ -7,7 +7,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     int num;
     int index;
     int pos;
@@ -17,7 +17,7 @@ struct Node {
 const int KMAX = 100;
 const int NMAX = 13;
 const int DMAX = 79;
-Node s[1 << NMAX];
+Data s[1 << NMAX];
 bool memo[1 << NMAX][KMAX];
 int dp[DMAX];
 int digit[NMAX];
@@ -54,7 +54,7 @@ class Solution {
             s[t].mask = 1 << i;
         }
         while (t >= 0) {
-            Node top = s[t--];
+            Data top = s[t--];
             ans[top.index] = top.num;
             if (top.mask == allUsed) {
                 if (top.rem == 0) {

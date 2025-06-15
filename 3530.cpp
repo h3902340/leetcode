@@ -8,13 +8,13 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 const int NMAX = 22;
-struct Node {
+struct Data {
     int mask;
     int value;
     int count;
 };
 vector<int> adj[NMAX];
-Node s[1 << NMAX];
+Data s[1 << NMAX];
 int q[NMAX];
 int deg[NMAX];
 int ancestor[NMAX];
@@ -53,7 +53,7 @@ class Solution {
         int r = 0;
         for (int i = 0; i < n; i++) {
             if (deg[i] == 0) {
-                Node node;
+                Data node;
                 node.mask = 1 << i;
                 node.value = score[i];
                 node.count = 1;
@@ -75,7 +75,7 @@ class Solution {
         }
         r = rold;
         while (r > 0) {
-            Node f = s[--r];
+            Data f = s[--r];
             for (int i = 0; i < n; i++) {
                 int m = 1 << i;
                 if (f.mask & m) continue;
@@ -86,7 +86,7 @@ class Solution {
                 if (memo[mask] >= value) continue;
                 memo[mask] = value;
                 if (mask == cap - 1) continue;
-                Node node;
+                Data node;
                 node.mask = mask;
                 node.value = value;
                 node.count = count;

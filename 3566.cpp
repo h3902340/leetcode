@@ -7,13 +7,13 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Node {
+struct Data {
     int used;
     long long quot;
     int index;
 };
 const int NMAX = 12;
-Node q[1 << (NMAX + 1)];
+Data q[1 << (NMAX + 1)];
 
 class Solution {
    public:

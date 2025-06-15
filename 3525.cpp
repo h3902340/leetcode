@@ -3,7 +3,7 @@ using namespace std;
 
 // TODO: time is bad (240 ms)
 const int KMAX = 5;
-struct Node {
+struct Data {
     int cnt[KMAX]{0};
     int prod = 1;
 };
@@ -17,23 +17,23 @@ class Solution {
         while (n > d) {
             d *= 2;
         }
-        vector<Node> tree(d * 2);
+        vector<Data> tree(d * 2);
         for (int i = 0; i < n; i++) {
-            Node &node = tree[i + d];
+            Data &node = tree[i + d];
             int r = nums[i] % k;
             node.cnt[r] = 1;
             node.prod = r;
         }
         for (int i = d - 1; i > 0; i--) {
-            Node &p = tree[i];
-            Node &l = tree[i * 2];
-            Node &r = tree[i * 2 + 1];
+            Data &p = tree[i];
+            Data &l = tree[i * 2];
+            Data &r = tree[i * 2 + 1];
             p = mergeNodes(l, r, k);
         }
         vector<int> ans(q, 0);
         for (int i = 0; i < q; i++) {
             int index = queries[i][0] + d;
-            Node &c = tree[index];
+            Data &c = tree[index];
             int rem = queries[i][1] % k;
             c.prod = rem;
             for (int j = 0; j < k; j++) {
@@ -42,16 +42,16 @@ class Solution {
             c.cnt[rem] = 1;
             index >>= 1;
             while (index > 0) {
-                Node &p = tree[index];
-                Node &l = tree[index * 2];
-                Node &r = tree[index * 2 + 1];
+                Data &p = tree[index];
+                Data &l = tree[index * 2];
+                Data &r = tree[index * 2 + 1];
                 p = mergeNodes(l, r, k);
                 index >>= 1;
             }
             int l = queries[i][2] + d;
             int r = n - 1 + d;
-            Node left;
-            Node right;
+            Data left;
+            Data right;
             while (l <= r) {
                 if (l & 1) {
                     left = mergeNodes(left, tree[l++], k);
@@ -69,8 +69,8 @@ class Solution {
     }
 
    private:
-    Node mergeNodes(Node &l, Node &r, int k) {
-        Node p;
+    Data mergeNodes(Data &l, Data &r, int k) {
+        Data p;
         for (int j = 0; j < k; j++) {
             p.cnt[j] = l.cnt[j];
         }

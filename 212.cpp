@@ -14,7 +14,7 @@ struct Trie {
 const int WORDLEN = 10;
 const int WORDCOUNT = 3e4;
 Trie trie[WORDLEN * WORDCOUNT];
-struct Node {
+struct Data {
     int index;
     int i;
     int j;
@@ -22,7 +22,7 @@ struct Node {
 };
 const int M = 12;
 const int N = 12;
-Node s[M * N];
+Data s[M * N];
 const int dir[4][2]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 class Solution {
    public:
@@ -57,7 +57,7 @@ class Solution {
                 s[r].i = i;
                 s[r].j = j;
                 while (r >= 0) {
-                    Node& t = s[r];
+                    Data& t = s[r];
                     int wordIdx = trie[t.index].wordIdx;
                     if (wordIdx != -1) {
                         res.push_back(words[wordIdx]);
