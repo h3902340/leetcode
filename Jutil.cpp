@@ -578,8 +578,13 @@ chrono::steady_clock::time_point jtimer() {
 
 void jprint_time(chrono::steady_clock::time_point begin,
                  chrono::steady_clock::time_point end) {
+    jprint_time(begin, end, "time");
+}
+
+void jprint_time(chrono::steady_clock::time_point begin,
+                 chrono::steady_clock::time_point end, string name) {
     printf(
-        "time = %lld (ms)\n",
+        "%s = %lld (ms)\n", name.c_str(),
         chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
 }
 

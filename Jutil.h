@@ -76,6 +76,8 @@ void jprint(Node* root, string name);
 chrono::steady_clock::time_point jtimer();
 void jprint_time(chrono::steady_clock::time_point begin,
                  chrono::steady_clock::time_point end);
+void jprint_time(chrono::steady_clock::time_point begin,
+                 chrono::steady_clock::time_point end, string name);
 
 bool anyOrderEqual(vector<int> a, vector<int> b);
 bool anyOrderEqual(vector<vector<int>> a, vector<vector<int>> b);
