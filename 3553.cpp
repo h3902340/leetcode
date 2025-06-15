@@ -7,23 +7,29 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-// TODO: try Tarjan's offline LCA
-struct Neighbor {
+struct Edge {
     int v;
     int w;
 };
 const int NMAX = 1e5;
+const int K = 3;
+vector<Edge> adj[NMAX];
+int w[NMAX];
+
+// lca
+struct Data {
+    int u;
+    int i;
+};
 const int WALKMAX = NMAX * 2 - 1;
 const int LOGWALKMAX = 18;
-const int K = 3;
-vector<Neighbor> adj[NMAX];
-int depth[NMAX];
-int s[NMAX];
-int visitCount[NMAX];
-int w[NMAX];
+Data sta[NMAX];
+bool vis[NMAX];
 int walk[WALKMAX];
 int walkIndex[NMAX];
-int memo[WALKMAX][LOGWALKMAX];
+int rmq[WALKMAX][LOGWALKMAX];
+int depth[NMAX];
+
 class Solution {
    public:
     vector<int> minimumWeight(vector<vector<int>>& edges,
@@ -32,48 +38,13 @@ class Solution {
         int m = queries.size();
         for (int i = 0; i < n; i++) {
             adj[i].clear();
-            visitCount[i] = 0;
+            vis[i] = false;
         }
         for (auto e : edges) {
             adj[e[0]].push_back({e[1], e[2]});
             adj[e[1]].push_back({e[0], e[2]});
         }
-        adj[0].push_back({0, 0});
-        depth[0] = 0;
-        w[0] = 0;
-        int i = 0;
-        s[0] = 0;
-        int ws = 0;
-        while (i >= 0) {
-            int t = s[i];
-            walk[ws] = t;
-            walkIndex[t] = ws;
-            ws++;
-            visitCount[t]++;
-            if (visitCount[t] == adj[t].size()) {
-                i--;
-                continue;
-            }
-            for (auto e : adj[t]) {
-                if (visitCount[e.v] > 0) continue;
-                s[++i] = e.v;
-                depth[e.v] = depth[t] + 1;
-                w[e.v] = w[t] + e.w;
-                break;
-            }
-        }
-        for (int i = 0; i < ws; i++) {
-            memo[i][0] = walk[i];
-        }
-        int k = 1;
-        for (int j = 1; k < ws; j++) {
-            for (int i = 0; i + k * 2 - 1 < ws; i++) {
-                int a = memo[i][j - 1];
-                int b = memo[i + k][j - 1];
-                memo[i][j] = depth[a] < depth[b] ? a : b;
-            }
-            k *= 2;
-        }
+        buildLCA();
         vector<int> ans(m);
         for (int i = 0; i < m; i++) {
             ans[i] = 0;
@@ -89,6 +60,49 @@ class Solution {
     }
 
    private:
+    void buildLCA() {
+        depth[0] = 0;
+        w[0] = 0;
+        int r = 0;
+        sta[0] = {0, 0};
+        int ws = 0;
+        while (r >= 0) {
+            Data& t = sta[r];
+            walk[ws] = t.u;
+            walkIndex[t.u] = ws;
+            ws++;
+            vis[t.u] = true;
+            if (t.i == adj[t.u].size()) {
+                r--;
+                continue;
+            }
+            Edge& e = adj[t.u][t.i];
+            if (vis[e.v]) {
+                t.i++;
+                if (t.i == adj[t.u].size()) {
+                    r--;
+                    continue;
+                }
+                e = adj[t.u][t.i];
+            }
+            sta[++r] = {e.v, 0};
+            depth[e.v] = depth[t.u] + 1;
+            w[e.v] = w[t.u] + e.w;
+            t.i++;
+        }
+        for (int i = 0; i < ws; i++) {
+            rmq[i][0] = walk[i];
+        }
+        int k = 1;
+        for (int j = 1; k < ws; j++) {
+            for (int i = 0; i + k * 2 - 1 < ws; i++) {
+                int a = rmq[i][j - 1];
+                int b = rmq[i + k][j - 1];
+                rmq[i][j] = depth[a] < depth[b] ? a : b;
+            }
+            k *= 2;
+        }
+    }
     int lca(int a, int b) {
         a = walkIndex[a];
         b = walkIndex[b];
@@ -102,7 +116,7 @@ class Solution {
             j++;
         }
         j--;
-        int mina = memo[a][j];
+        int mina = rmq[a][j];
         k = 1;
         j = 0;
         while (a <= b - k + 1) {
@@ -111,7 +125,7 @@ class Solution {
         }
         j--;
         k /= 2;
-        int minb = memo[b - k + 1][j];
+        int minb = rmq[b - k + 1][j];
         return depth[mina] < depth[minb] ? mina : minb;
     }
 };
