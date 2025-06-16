@@ -20,6 +20,8 @@ class Solution {
                 swap(s[i + 1], s[j]);
             }
         }
+        // second pass is necessary, for example, "babaa", can't be correct
+        // without the second pass
         for (int i = n - 1; i >= 0; i--) {
             int j = i - 1;
             while (j >= 0 && s[i] == s[j]) {
