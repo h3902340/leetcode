@@ -1,0 +1,4 @@
+"ABAB"
+2
+"AABABBA"
+1
