@@ -365,6 +365,18 @@ void jprint(vector<int> vec, string name) {
     printf("]\n");
 }
 
+void jprint(vector<long long> vec, string name) {
+    if (vec.size() == 0) {
+        printf("%s = []\n", name.c_str());
+        return;
+    }
+    printf("%s = [%lld", name.c_str(), vec[0]);
+    for (int i = 1; i < vec.size(); i++) {
+        printf(",%lld", vec[i]);
+    }
+    printf("]\n");
+}
+
 void jprint(vector<double> vec, string name) {
     printf("%s = [", name.c_str());
     if (vec.size() == 0) {
@@ -490,6 +502,18 @@ void jprint(int vec[], int n, string name) {
     printf("%s = [%d", name.c_str(), vec[0]);
     for (int i = 1; i < n; i++) {
         printf(",%d", vec[i]);
+    }
+    printf("]\n");
+}
+
+void jprint(long long vec[], int n, string name) {
+    if (n == 0) {
+        printf("%s = []\n", name.c_str());
+        return;
+    }
+    printf("%s = [%lld", name.c_str(), vec[0]);
+    for (int i = 1; i < n; i++) {
+        printf(",%lld", vec[i]);
     }
     printf("]\n");
 }
