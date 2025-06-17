@@ -28,10 +28,12 @@ int powMod(int a, int b, int m) {
 static void init() {
     if (isInit) return;
     fact[0] = 1;
-    ifact[0] = 1;
     for (int i = 1; i <= M; i++) {
         fact[i] = (long long)fact[i - 1] * i % MOD;
-        ifact[i] = powMod(fact[i], MOD - 2, MOD);
+    }
+    ifact[M] = powMod(fact[M], MOD - 2, MOD);
+    for (int i = M; i >= 1; i--) {
+        ifact[i - 1] = (long long)ifact[i] * i % MOD;
     }
     isInit = true;
 }
