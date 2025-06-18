@@ -17,7 +17,9 @@ int dp[MASK];
 bool isGood[N];
 int takenMask[N];
 int dfsOrder[N];
+int subtreeSize[N];
 
+// time: O(N^2 * 2^D), space: O(N+2^D)
 class Solution {
    public:
     vector<int> val;
@@ -36,29 +38,33 @@ class Solution {
             check(i, vals[i]);
         }
         int sum = 0;
+        int idx = 0;
+        dfs(0, idx);
         for (int i = 0; i < n; i++) {
-            int idx = 0;
-            dfs(i, idx);
-            sum += calc(idx + 1, vals);
+            sum += calc(i, vals);
             if (sum >= MOD) {
                 sum -= MOD;
             }
         }
         return sum;
     }
-    void dfs(int i, int& idx) {
+    int dfs(int i, int& idx) {
         dfsOrder[idx] = i;
+        int& size = subtreeSize[idx];
+        size = 1;
         for (auto e : adj[i]) {
             idx++;
-            dfs(e, idx);
+            size += dfs(e, idx);
         }
+        return size;
     }
-    int calc(int n, vector<int>& vals) {
+    int calc(int idx, vector<int>& vals) {
         for (int j = 0; j < MASK; j++) {
             dp[j] = -1;
         }
         dp[0] = 0;
-        for (int idx = 0; idx < n; idx++) {
+        int end = idx + subtreeSize[idx];
+        for (; idx < end; idx++) {
             int i = dfsOrder[idx];
             if (!isGood[i]) continue;
             // this works like this: ...... --> ..A.... --> ..A..B..(A|B)... -->
