@@ -494,6 +494,18 @@ void jprint_vector_size(vector<int> vec, string name) {
     printf("%s: %zu\n", name.c_str(), vec.size());
 }
 
+void jprint(bool vec[], int n, string name) {
+    if (n == 0) {
+        printf("%s = []\n", name.c_str());
+        return;
+    }
+    printf("%s = [%d", name.c_str(), vec[0]);
+    for (int i = 1; i < n; i++) {
+        printf(",%d", vec[i]);
+    }
+    printf("]\n");
+}
+
 void jprint(int vec[], int n, string name) {
     if (n == 0) {
         printf("%s = []\n", name.c_str());

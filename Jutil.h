@@ -69,6 +69,7 @@ void jprint(vector<string> vec, string name);
 void jprint(vector<vector<string>> vec, string name);
 void jprint_vector_size(vector<int> vec, string name);
 void jprint_vector2d_size(vector<vector<int>> vec, string name);
+void jprint(bool vec[], int n, string name);
 void jprint(int vec[], int n, string name);
 void jprint(long long vec[], int n, string name);
 void jprint(char vec[], int n, string name);
