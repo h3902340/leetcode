@@ -276,16 +276,34 @@ vector<ListNode*> jread_vector_list(string line) {
 
 vector<TreeNode*> jread_binary_tree(string line) {
     vector<TreeNode*> res;
-    if (line[1] == ']') return res;
+    int i = 0;
+    while (line[i] == ' ') {
+        i++;
+    }
+    i++;
+    while (line[i] == ' ') {
+        i++;
+    }
+    if (line[i] == ']') return res;
     for (int i = 1; i < line.size(); i++) {
+        if (line[i] == ' ') continue;
         if (line[i] == 'n') {
             res.push_back(nullptr);
             i += 4;
             continue;
         }
+        bool isNeg = false;
+        if (line[i] == '-') {
+            isNeg = true;
+            i++;
+        }
         int d = 0;
         while (line[i] != ']' && line[i] != ',') {
-            d = d * 10 + line[i] - '0';
+            if (isNeg) {
+                d = d * 10 - line[i] + '0';
+            } else {
+                d = d * 10 + line[i] - '0';
+            }
             i++;
         }
         res.push_back(new TreeNode(d));
@@ -571,7 +589,7 @@ void jprint(TreeNode* root, string name) {
         r--;
     }
     l = 0;
-    printf("[%d", q[l]->val);
+    printf("[%d", q[l++]->val);
     while (l < r) {
         if (q[l] == nullptr) {
             printf(",null");
@@ -727,5 +745,24 @@ bool graphEqual(Node* a, Node* b) {
             stb.push(tb->neighbors[i]);
         }
     }
+    return true;
+}
+
+bool binaryTreeEqual(TreeNode* a, TreeNode* b) {
+    if (a == nullptr) {
+        if (b == nullptr) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    if (b == nullptr) {
+        return false;
+    }
+    if (a->val != b->val) return false;
+    bool isEqual = binaryTreeEqual(a->left, b->left);
+    if (!isEqual) return false;
+    isEqual = binaryTreeEqual(a->right, b->right);
+    if (!isEqual) return false;
     return true;
 }
