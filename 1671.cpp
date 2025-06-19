@@ -7,6 +7,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+// time: O(nlogn), space(n)
 const int N = 1000;
 int up[N - 1];
 int down[N];
@@ -70,7 +71,7 @@ class Solution {
             }
             down[j] = n - i;
         }
-        int res = n;
+        int res = 0;
         for (int i = 1; i < n - 1; i++) {
             // reason why this is correct:
             // The minimal removals must happen when i is the peak of both
@@ -80,11 +81,12 @@ class Solution {
             // up[i] and down[i] must be greater than 1 to form a valid
             // mountain.
             if (up[i] <= 1 || down[i] <= 1) continue;
-            int a = n - up[i] - down[i] + 1;
-            if (res > a) {
+            int a = up[i] + down[i];
+            if (res < a) {
                 res = a;
             }
         }
+        res = n - res + 1;
         return res;
     }
 };
