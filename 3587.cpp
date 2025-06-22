@@ -59,7 +59,7 @@ class Solution {
 };
 
 int main() {
-    string problemName = "Q1";
+    string problemName = "3587";
     auto begin = jtimer();
     Solution sol;
     ifstream file_in("testcases/" + problemName + "_in.txt");
