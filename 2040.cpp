@@ -47,7 +47,6 @@ class Solution {
             }
             ll r =
                 max((ll)nums1[0] * nums2[0], (ll)nums1[m - 1] * nums2[n - 1]);
-            ll min = r;
             while (l <= r) {
                 ll mid = (l + r) >> 1;
                 ll cnt = 0;
@@ -75,10 +74,9 @@ class Solution {
                     l = mid + 1;
                 } else {
                     r = mid - 1;
-                    min = mid;
                 }
             }
-            return min;
+            return l;
         }
         ll l = min((ll)nums1[0] * nums2[n - 1], (ll)nums2[0] * nums1[m - 1]);
         ll r = 0;
@@ -92,7 +90,6 @@ class Solution {
                 r = max(r, (ll)nums2[negIndex2] * nums1[negIndex1 + 1]);
             }
         }
-        ll min = r;
         while (l <= r) {
             ll mid = (l + r) >> 1;
             ll cnt = 0;
@@ -120,10 +117,9 @@ class Solution {
                 l = mid + 1;
             } else {
                 r = mid - 1;
-                min = mid;
             }
         }
-        return min;
+        return l;
     }
 };
 
