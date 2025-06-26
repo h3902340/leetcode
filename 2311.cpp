@@ -7,35 +7,25 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-const int N = 1000;
-int ones[N];
-
 class Solution {
    public:
     int longestSubsequence(string s, int k) {
         int n = s.size();
         int a = 0;
         int res = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = n - 1; i >= 0; i--) {
             if (s[i] == '0') {
                 res++;
             } else {
-                ones[a++] = i;
-            }
-        }
-        a--;
-        int b = 0;
-        while (a >= 0) {
-            int shift = n - 1 - ones[a];
-            if (shift > 30) {
-                break;
-            }
-            b += (1 << shift);
-            if (b <= k) {
-                res++;
-                a--;
-            } else {
-                break;
+                if (a > k) continue;
+                int shift = n - 1 - i;
+                if (shift > 30) {
+                    continue;
+                }
+                a += (1 << shift);
+                if (a <= k) {
+                    res++;
+                }
             }
         }
         return res;
