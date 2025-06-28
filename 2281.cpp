@@ -18,23 +18,20 @@ struct Data {
 const int MOD = 1e9 + 7;
 const int N = 1e5;
 Data st[N];
-int prefix[N + 1];
 class Solution {
    public:
     int totalStrength(vector<int>& strength) {
         int n = strength.size();
-        prefix[0] = 0;
-        for (int i = 0; i < n; i++) {
-            prefix[i + 1] = add(strength[i], prefix[i]);
-        }
         int begin = 0;
         int end = 0;
         int res = 0;
         int r = -1;
+        int prefix = 0;
         for (int i = 0; i < n; i++) {
             Data d;
             d.val = strength[i];
-            d.sum = prefix[i];
+            d.sum = prefix;
+            prefix = add(prefix, strength[i]);
             d.cnt = 1;
             while (r >= 0 && st[r].val > d.val) {
                 d.sum = add(d.sum, st[r].sum);
@@ -48,7 +45,7 @@ class Solution {
             st[++r] = d;
             begin = add(begin, d.begin);
             end = add(end, d.end);
-            res = add(res, sub(mul(end, prefix[i + 1]), begin));
+            res = add(res, sub(mul(end, prefix), begin));
         }
         return res;
     }
