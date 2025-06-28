@@ -1,6 +1,10 @@
 #include <fstream>
 #include <vector>
 #include <chrono>
+#include <algorithm>
+#include <stack>
+#include <unordered_map>
+
 using namespace std;
 
 class Node {
