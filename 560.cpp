@@ -5,47 +5,27 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-const int LO = -1e7;
-const int HI = 1e7;
-int freq[HI - LO + 1];
-
 class Solution {
    public:
     int subarraySum(vector<int>& nums, int k) {
         int n = nums.size();
-        int min = nums[0];
-        int max = nums[0];
+        unordered_map<int, int> freq;
+        freq[nums[0]]++;
         for (int i = 1; i < n; i++) {
             nums[i] += nums[i - 1];
-            if (min > nums[i]) {
-                min = nums[i];
-            }
-            if (max < nums[i]) {
-                max = nums[i];
-            }
-        }
-        for (int i = min; i <= max; i++) {
-            freq[i - min] = 0;
-        }
-        for (int i = 0; i < n; i++) {
-            freq[nums[i] - min]++;
+            freq[nums[i]]++;
         }
 
-        int res = 0;
-        if (k >= min && k <= max) {
-            res += freq[k - min];
-        }
+        int res = freq[k];
         if (k == 0) {
-            for (int i = min; i <= max; i++) {
-                res += freq[i - min] * (freq[i - min] - 1) >> 1;
+            for (auto f : freq) {
+                res += f.second * (f.second - 1) >> 1;
             }
         } else {
             for (int i = 0; i < n; i++) {
                 int right = nums[i] + k;
-                if (min <= right && right <= max) {
-                    res += freq[right - min];
-                }
-                freq[nums[i] - min]--;
+                res += freq[right];
+                freq[nums[i]]--;
             }
         }
         return res;
