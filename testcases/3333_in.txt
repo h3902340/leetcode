@@ -1,0 +1,6 @@
+"aabbccdd"
+7
+"aabbccdd"
+8
+"aaabbb"
+3
