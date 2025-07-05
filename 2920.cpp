@@ -37,13 +37,10 @@ class Solution {
         }
         int w = coins[i] >> d;
         int a = w - k;
-        for (auto e : adj[i]) {
-            if (e == p) continue;
-            a += dfs(e, d, i, coins, k);
-        }
         int b = w >> 1;
         for (auto e : adj[i]) {
             if (e == p) continue;
+            a += dfs(e, d, i, coins, k);
             b += dfs(e, d + 1, i, coins, k);
         }
         int res = max(a, b);
