@@ -124,6 +124,23 @@ vector<int> jread_vector(string line) {
     return res;
 }
 
+vector<bool> jread_vector_bool(string line) {
+    vector<bool> res;
+    if (line[1] == ']') return res;
+    for (int i = 1; i < line.size(); i++) {
+        if (line[i] == ' ') continue;
+        if (line[i] == 't') {
+            res.push_back(true);
+            i += 4;
+        } else {
+            res.push_back(false);
+            i += 5;
+        }
+        if (line[i] == ']') break;
+    }
+    return res;
+}
+
 vector<double> jread_vector_double(string line) {
     vector<double> res;
     if (line[1] == ']') return res;
