@@ -24,10 +24,11 @@ class Solution {
         // differences is odd, s1 can't be transformed into s2. So cutting x in
         // half won't affect the outcome since the flipping operations will all
         // be paired. Let dp[i] be the min cost for the first i differences.
-        // Let a[i] be the cost of "continuous flip" from the i-th difference to
-        // the (i+1)-th difference. Then, dp[i]=min{dp[i-2]+a[i-1],dp[i-1]+x}.
-        // Because only dp[i-1] and dp[i-2] are used to construct dp[i], the dp
-        // can be compressed into 2 variables. pre = dp[i-2], cur = dp[i-1].
+        // Let a[i] be the cost of "continuous flip" (flipping using only the
+        // adjacent flip operation) from the i-th difference to the (i+1)-th
+        // difference. Then, dp[i]=min{dp[i-2]+a[i-1],dp[i-1]+x}. Because only
+        // dp[i-1] and dp[i-2] are used to construct dp[i], the dp can be
+        // compressed into 2 variables. pre = dp[i-2], cur = dp[i-1].
         int pre = 0;
         int cur = x;
         bool isOdd = true;
