@@ -6,11 +6,13 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 const int N = 5e4;
+const int LEN = N << 5;
 const int BUCKET_SIZE = 256;
 const int MASK = 255;
-void radixSort(vector<int> &nums, int n) {
-    vector<int> buckets(BUCKET_SIZE);
-    vector<int> temp(n);
+int buckets[BUCKET_SIZE];
+vector<int> temp(LEN);
+vector<int> all(LEN);
+void radixSort(vector<int>& nums, int n) {
     for (int j = 0; j < 32; j += 8) {
         for (int i = 0; i < n; i++) {
             buckets[(nums[i] >> j) & MASK]++;
@@ -21,16 +23,15 @@ void radixSort(vector<int> &nums, int n) {
         for (int i = n - 1; i >= 0; i--) {
             temp[--buckets[(nums[i] >> j) & MASK]] = nums[i];
         }
-        fill(buckets.begin(), buckets.end(), 0);
+        fill(begin(buckets), end(buckets), 0);
         nums.swap(temp);
     }
 }
 
 class Solution {
    public:
-    int subarrayBitwiseORs(vector<int> &arr) {
+    int subarrayBitwiseORs(vector<int>& arr) {
         int n = arr.size();
-        vector<int> all(n << 5);
         int k = 0;
         for (int i = 0; i < n; i++) {
             all[k++] = arr[i];
