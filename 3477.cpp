@@ -23,7 +23,7 @@ class Solution {
         int pre = n;
         int cur = (pre + 1) >> 1;
         int c = b;
-        while (b > 1) {
+        while (pre != 1) {
             b >>= 1;
             int j = 0;
             for (int i = 0; i < cur; i++) {
@@ -42,7 +42,7 @@ class Solution {
         int res = 0;
         for (int i = 0; i < n; i++) {
             int a = fruits[i];
-            int idx = 1;
+            int idx = b;
             if (tree[idx] < a) {
                 res++;
                 continue;
