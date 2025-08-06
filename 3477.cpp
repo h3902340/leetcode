@@ -23,6 +23,9 @@ class Solution {
         int pre = n;
         int cur = (pre + 1) >> 1;
         int c = b;
+        if (pre != 1 && pre & 1) {
+            tree[b + pre] = 0;
+        }
         while (pre != 1) {
             b >>= 1;
             int j = 0;
@@ -31,13 +34,12 @@ class Solution {
                 j += 2;
             }
             h++;
-            if (pre & 1) {
-                tree[c + j - 1] = 0;
-                tree[b + cur - 1] = tree[c + j - 2];
-            }
             pre = cur;
             cur = (cur + 1) >> 1;
             c >>= 1;
+            if (pre != 1 && pre & 1) {
+                tree[b + pre] = 0;
+            }
         }
         int res = 0;
         for (int i = 0; i < n; i++) {
