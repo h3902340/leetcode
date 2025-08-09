@@ -31,7 +31,6 @@ double jread_double(string line) {
     for (; i < line.size(); i++) {
         if (line[i] == '.') {
             isAfterDot = true;
-            i++;
             continue;
         }
         if (isAfterDot) {
