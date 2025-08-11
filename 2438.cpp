@@ -28,28 +28,17 @@ class Solution {
    public:
     vector<int> productQueries(int n, vector<vector<int>>& queries) {
         int i = 0;
-        int a = 1;
-        while (!(n & a)) {
-            i++;
-            a <<= 1;
-        }
-        prefix[0] = a % MOD;
-        inverse[0] = inv(prefix[0]);
+        int a = n & -n;
+        prefix[i] = a;
+        inverse[i] = inv(a);
         i++;
-        int j = 1;
-        while (i < D) {
-            a <<= 1;
-            while (i < D && !(n & a)) {
-                i++;
-                a <<= 1;
-            }
-            if (i == D) {
-                break;
-            }
-            prefix[j] = mul(prefix[j - 1], a);
-            inverse[j] = inv(prefix[j]);
-            j++;
+        n ^= a;
+        while (n > 0) {
+            int a = n & -n;
+            prefix[i] = mul(prefix[i - 1], a);
+            inverse[i] = inv(prefix[i]);
             i++;
+            n ^= a;
         }
         int m = queries.size();
         vector<int> res(m);
