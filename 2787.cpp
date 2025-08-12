@@ -17,24 +17,17 @@ int add(int a, int b) {
     }
     return a;
 }
-int _pow(int a, int b, int v) {
-    if (a == 0) return 0;
-    if (a == 1) return v;
-    if (b == 0) return v;
-    if (b & 1) {
-        return _pow(a, b - 1, v * a);
-    }
-    return _pow(a * a, b >> 1, v);
-}
-int pow(int a, int b) { return _pow(a, b, 1); }
 static void init() {
     for (int j = 1; j <= X; j++) {
         dp[0][j] = 1;
         for (int i = 1; i <= N; i++) {
             dp[i][j] = 0;
         }
-        for (int k = 1; k <= N; k++) {
-            int a = pow(k, j);
+    }
+    for (int k = 1; k <= N; k++) {
+        int a = 1;
+        for (int j = 1; j <= X; j++) {
+            a *= k;
             if (a > N) {
                 break;
             }
