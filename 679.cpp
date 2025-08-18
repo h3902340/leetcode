@@ -16,7 +16,7 @@ const int ALL = 1 << (OPWIDTH * OPCNT);
 const int MASK = (1 << OPWIDTH) - 1;
 const Fraction ERR = {0, 0};
 const int POSTFIX = 2;
-const int LEN = (N << 1) - 1;
+const int LEN = N + OPCNT;
 // 01+2+3+, 01+23++
 const int postfix[POSTFIX][LEN] = {{0, 1, 4, 2, 4, 3, 4},
                                    {0, 1, 4, 2, 3, 4, 4}};
