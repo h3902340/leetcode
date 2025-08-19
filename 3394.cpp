@@ -1,4 +1,4 @@
-#include <vector>
+#include "Jutil.h"
 using namespace std;
 
 class Solution
