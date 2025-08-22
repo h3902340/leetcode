@@ -1,9 +1,17 @@
 #include "Jutil.h"
+#include <iostream>
 using namespace std;
 
 #define KNRM "\x1B[0m"
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
+
+static const char _ = []() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    return 0;
+}();
 
 class Solution {
    public:
