@@ -6,61 +6,38 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 const int DIM = 9;
-int mp[DIM];
+int mp[DIM * 3];
 class Solution {
    public:
     bool isValidSudoku(vector<vector<char>>& board) {
         for (int i = 0; i < DIM; i++) {
+            memset(mp, 0, sizeof(mp));
             for (int j = 0; j < DIM; j++) {
-                mp[j] = 0;
-            }
-            for (int j = 0; j < DIM; j++) {
-                if (board[i][j] == '.') {
-                    continue;
-                }
-                int key = board[i][j] - '1';
-                mp[key]++;
-                if (mp[key] == 2) {
+                bool res = isValid(board[i][j], 0);
+                if (!res) {
                     return false;
                 }
-            }
-        }
-        for (int j = 0; j < DIM; j++) {
-            for (int i = 0; i < DIM; i++) {
-                mp[i] = 0;
-            }
-            for (int i = 0; i < DIM; i++) {
-                if (board[i][j] == '.') {
-                    continue;
-                }
-                int key = board[i][j] - '1';
-                mp[key]++;
-                if (mp[key] == 2) {
+                res = isValid(board[j][i], 1);
+                if (!res) {
                     return false;
                 }
-            }
-        }
-        for (int i = 0; i < DIM; i += 3) {
-            for (int j = 0; j < DIM; j += 3) {
-                for (int k = 0; k < DIM; k++) {
-                    mp[k] = 0;
-                }
-                for (int k = 0; k < 3; k++) {
-                    for (int l = 0; l < 3; l++) {
-                        int ch = board[i + k][j + l];
-                        if (ch == '.') {
-                            continue;
-                        }
-                        int key = ch - '1';
-                        mp[key]++;
-                        if (mp[key] == 2) {
-                            return false;
-                        }
-                    }
+                int x = (i / 3) * 3 + j / 3;
+                int y = (i % 3) * 3 + j % 3;
+                res = isValid(board[x][y], 2);
+                if (!res) {
+                    return false;
                 }
             }
         }
         return true;
+    }
+    bool isValid(char c, int idx) {
+        if (c == '.') {
+            return true;
+        }
+        int key = c - '1' + idx * DIM;
+        mp[key]++;
+        return mp[key] == 1;
     }
 };
 
