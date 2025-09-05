@@ -10,14 +10,11 @@ class Solution {
    public:
     int makeTheIntegerZero(ll num1, int num2) {
         int i = 0;
-        while (true) {
+        while (num1 >= 0) {
             if (__builtin_popcountll(num1) <= i && i <= num1) {
                 return i;
             }
             num1 -= num2;
-            if (num1 < 0) {
-                return -1;
-            }
             i++;
         }
         return -1;
