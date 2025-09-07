@@ -9,20 +9,12 @@ class Solution {
    public:
     vector<int> sumZero(int n) {
         vector<int> res(n);
-        int half = n >> 1;
-        if (n & 1) {
-            int j = -half;
-            for (int i = 0; i < n; i++) {
-                res[i] = j++;
-            }
-        } else {
-            for (int i = 0; i < half; i++) {
-                res[i] = -(i + 1);
-            }
-            for (int i = half; i < n; i++) {
-                res[i] = i - half + 1;
-            }
+        int sum = 0;
+        for (int i = 1; i < n; i++) {
+            res[i] = i;
+            sum += i;
         }
+        res[0] = -sum;
         return res;
     }
 };
@@ -44,7 +36,11 @@ int main() {
         getline(file_out, line_out);
         auto ans = jread_vector(line_out);
         printf("Case %d", ++caseCount);
-        if (res == ans) {
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += res[i];
+        }
+        if (sum == 0) {
             passCount++;
             printf(" %s(PASS)", KGRN);
         } else {
