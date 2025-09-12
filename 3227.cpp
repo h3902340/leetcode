@@ -6,7 +6,8 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 const int A = 'a';
-const int mask = 0b100000100000100010001;
+const int mask = (1 << ('a' - A)) + (1 << ('e' - A)) + (1 << ('i' - A)) +
+                 (1 << ('o' - A)) + (1 << ('u' - A));
 class Solution {
    public:
     bool doesAliceWin(string s) {
