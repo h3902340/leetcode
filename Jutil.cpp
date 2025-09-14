@@ -437,6 +437,19 @@ void jprint(vector<char> vec, string name) {
     printf("]\n");
 }
 
+void jprint(vector<bool> vec, string name) {
+    printf("%s = [", name.c_str());
+    if (vec.size() == 0) {
+        printf("]\n");
+        return;
+    }
+    printf("\"%s\"", vec[0] ? "true" : "false");
+    for (int i = 1; i < vec.size(); i++) {
+        printf(",\"%s\"", vec[i] ? "true" : "false");
+    }
+    printf("]\n");
+}
+
 void jprint(vector<string> vec, string name) {
     printf("%s = [", name.c_str());
     if (vec.size() == 0) {

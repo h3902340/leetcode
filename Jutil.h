@@ -3,12 +3,12 @@
 #include <cstring>
 #include <fstream>
 #include <map>
+#include <queue>
 #include <set>
 #include <stack>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <queue>
 
 using namespace std;
 
@@ -75,6 +75,7 @@ void jprint(vector<int> vec, string name);
 void jprint(vector<long long> vec, string name);
 void jprint(vector<double> vec, string name);
 void jprint(vector<char> vec, string name);
+void jprint(vector<bool> vec, string name);
 void jprint(vector<vector<int>> vec, string name);
 void jprint(vector<vector<char>> vec, string name);
 void jprint(vector<string> vec, string name);
