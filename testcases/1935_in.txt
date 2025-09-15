@@ -1,0 +1,6 @@
+"hello world"
+"ad"
+"leet code"
+"lt"
+"leet code"
+"e"
