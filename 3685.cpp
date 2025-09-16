@@ -5,6 +5,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+// TODO: someone has faster solution
 const int K = 4e3;
 bool dp[K + 1];
 class Solution {
