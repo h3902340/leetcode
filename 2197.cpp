@@ -26,13 +26,19 @@ class Solution {
         return nums;
     }
     int gcd(int a, int b) {
-        if (b == 0) {
-            return a;
+        int atz = __builtin_ctz(a);
+        int btz = __builtin_ctz(b);
+        int d = min(atz, btz);
+        a >>= atz;
+        b >>= btz;
+        while (a != b) {
+            if (a < b) {
+                swap(a, b);
+            }
+            a -= b;
+            a >>= __builtin_ctz(a);
         }
-        if (a < b) {
-            swap(a, b);
-        }
-        return gcd(b, a % b);
+        return a <<= d;
     }
 };
 
