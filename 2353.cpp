@@ -19,44 +19,48 @@ struct Comp {
                 if (a.name[i] == b.name[i]) {
                     continue;
                 }
-                return a.name[i] < b.name[i];
+                return a.name[i] > b.name[i];
             }
-            return az < bz;
+            return az > bz;
         }
-        return a.rate > b.rate;
+        return a.rate < b.rate;
     }
 };
 class FoodRatings {
    public:
-    unordered_map<string, set<Food, Comp>> cuisineToFood;
+    unordered_map<string, priority_queue<Food, vector<Food>, Comp>>
+        cuisineToFood;
     unordered_map<string, string> nameToCuisine;
     unordered_map<string, int> nameToRating;
     FoodRatings(vector<string>& foods, vector<string>& cuisines,
                 vector<int>& ratings) {
         int n = foods.size();
         for (int i = 0; i < n; i++) {
-            if (!cuisineToFood.count(cuisines[i])) {
-                set<Food, Comp> se;
-                cuisineToFood[cuisines[i]] = se;
-            }
-            cuisineToFood[cuisines[i]].insert({foods[i], ratings[i]});
+            cuisineToFood[cuisines[i]].push({foods[i], ratings[i]});
             nameToCuisine[foods[i]] = cuisines[i];
             nameToRating[foods[i]] = ratings[i];
         }
     }
 
-    void changeRating(string food, int newRating) {
+    void changeRating(const string& food, int newRating) {
         string type = nameToCuisine[food];
         int score = nameToRating[food];
         Food f = {food, score};
         Food newf = {food, newRating};
-        cuisineToFood[type].erase(f);
-        cuisineToFood[type].insert(newf);
+        cuisineToFood[type].push(newf);
         nameToRating[food] = newRating;
     }
 
-    string highestRated(string cuisine) {
-        return (*cuisineToFood[cuisine].begin()).name;
+    string highestRated(const string& cuisine) {
+        auto& pq = cuisineToFood[cuisine];
+        while (!pq.empty()) {
+            Food t = pq.top();
+            if (nameToRating[t.name] == t.rate) {
+                return t.name;
+            }
+            pq.pop();
+        }
+        return "";
     }
 };
 
