@@ -65,7 +65,6 @@ class FoodRatings {
 };
 
 int main() {
-    printf("1\n");
     string problemName = "2353";
     auto begin = jtimer();
     vector<string> cmd = {"FoodRatings",  "highestRated", "highestRated",
@@ -81,11 +80,10 @@ int main() {
     vector<int> ratings = {9, 12, 8, 15, 14, 7};
     vector<string> ans = {"", "kimchi", "ramen", "", "sushi", "", "ramen"};
     FoodRatings sol(foods, cuisunes, ratings);
-    ifstream file_in("testcases/" + problemName + "_in.txt");
-    ifstream file_out("testcases/" + problemName + "_out.txt");
     bool allPass = true;
     int caseCount = 0;
     int passCount = 0;
+    printf("Case %d\n", ++caseCount);
     for (int i = 0; i < cmd.size(); i++) {
         string& e = cmd[i];
         if (e == "FoodRatings") {
@@ -102,6 +100,7 @@ int main() {
         }
     }
     if (allPass) {
+        passCount++;
         printf("%sALL CORRECT [%d/%d]\n%s", KGRN, passCount, caseCount, KNRM);
     } else {
         printf("%sWRONG ANSWER [%d/%d]\n%s", KRED, passCount, caseCount, KNRM);
