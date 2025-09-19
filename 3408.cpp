@@ -10,44 +10,95 @@ struct Task {
     int taskId;
     int priority;
 };
-struct Comp {
-    bool operator()(const Task& a, const Task& b) const {
+const int TASK_ID = 1e5;
+const int USER_NIL = -1;
+int taskToUser[TASK_ID + 1];
+int taskToPriority[TASK_ID + 1];
+// builtin priority_queue is better
+Task heap[TASK_ID + 1];
+int n;
+class TaskManager {
+   public:
+    TaskManager(vector<vector<int>>& tasks) {
+        n = tasks.size();
+        for (int i = n - 1; i >= 0; i--) {
+            int userId = tasks[i][0];
+            int taskId = tasks[i][1];
+            int priority = tasks[i][2];
+            heap[i].userId = userId;
+            heap[i].taskId = taskId;
+            heap[i].priority = priority;
+            taskToUser[taskId] = userId;
+            taskToPriority[taskId] = priority;
+            down(i);
+        }
+    }
+    void down(int i) {
+        while (true) {
+            int l = (i << 1) + 1;
+            if (l >= n) {
+                return;
+            }
+            int r = l + 1;
+            int bigChild = l;
+            if (r < n) {
+                if (isLessThan(heap[l], heap[r])) {
+                    bigChild = r;
+                }
+            }
+            if (isLessThan(heap[i], heap[bigChild])) {
+                swap(heap[i], heap[bigChild]);
+                i = bigChild;
+            } else {
+                return;
+            }
+        }
+    }
+    void up(int i) {
+        while (i != 0) {
+            int bigChild = i;
+            if ((i & 1) == 0) {
+                if (isLessThan(heap[i], heap[i - 1])) {
+                    bigChild--;
+                }
+            }
+            int p = (i - 1) >> 1;
+            if (isLessThan(heap[p], heap[bigChild])) {
+                swap(heap[p], heap[bigChild]);
+                i = p;
+            } else {
+                return;
+            }
+        }
+    }
+    bool isLessThan(Task& a, Task& b) {
         if (a.priority == b.priority) {
             return a.taskId < b.taskId;
         }
         return a.priority < b.priority;
     }
-};
-const int TASK_ID = 1e5;
-const int USER_NIL = -1;
-int taskToUser[TASK_ID + 1];
-int taskToPriority[TASK_ID + 1];
-class TaskManager {
-   public:
-    priority_queue<Task, vector<Task>, Comp> pq;
-    TaskManager(vector<vector<int>>& tasks) {
-        for (auto& t : tasks) {
-            add(t[0], t[1], t[2]);
-        }
-    }
-
     void add(int userId, int taskId, int priority) {
-        pq.push({userId, taskId, priority});
+        heap[n] = {userId, taskId, priority};
+        up(n);
+        n++;
         taskToUser[taskId] = userId;
         taskToPriority[taskId] = priority;
     }
 
     void edit(int taskId, int newPriority) {
-        pq.push({taskToUser[taskId], taskId, newPriority});
+        heap[n] = {taskToUser[taskId], taskId, newPriority};
+        up(n);
+        n++;
         taskToPriority[taskId] = newPriority;
     }
 
     void rmv(int taskId) { taskToUser[taskId] = USER_NIL; }
 
     int execTop() {
-        while (!pq.empty()) {
-            Task t = pq.top();
-            pq.pop();
+        while (n != 0) {
+            Task t = heap[0];
+            heap[0] = heap[--n];
+            down(0);
             if (taskToUser[t.taskId] == USER_NIL) {
                 continue;
             }
@@ -99,7 +150,10 @@ int main() {
             continue;
         }
         if (c == "execTop") {
-            if (sol.execTop() != ans[i]) {
+            int res = sol.execTop();
+            if (res != ans[i]) {
+                printf("wrong i:%d\n", i);
+                printf("res:%d,ans[i]:%d\n", res, ans[i]);
                 allPass = false;
                 break;
             }
