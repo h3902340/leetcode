@@ -7,27 +7,38 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+const int ROW = 1000;
+const int C = 26;
+const int BASE = 10;
+const int A = 'A';
+const int ZERO = '0';
+const int PLUS = '+';
+const int EQUAL = '=';
+int table[ROW + 1][C];
 class Spreadsheet {
    public:
-    vector<vector<int>> table;
     Spreadsheet(int rows) {
-        table = vector<vector<int>>(rows + 1, vector<int>(26));
+        for (int i = 0; i <= ROW; i++) {
+            for (int j = 0; j < C; j++) {
+                table[i][j] = 0;
+            }
+        }
     }
 
     void setCell(string cell, int value) {
-        int col = cell[0] - 'A';
+        int col = cell[0] - A;
         int row = 0;
         for (int i = 1; i < cell.size(); i++) {
-            row = row * 10 + (cell[i] - '0');
+            row = row * BASE + (cell[i] - ZERO);
         }
         table[row][col] = value;
     }
 
     void resetCell(string cell) {
-        int col = cell[0] - 'A';
+        int col = cell[0] - A;
         int row = 0;
         for (int i = 1; i < cell.size(); i++) {
-            row = row * 10 + (cell[i] - '0');
+            row = row * BASE + (cell[i] - ZERO);
         }
         table[row][col] = 0;
     }
@@ -35,35 +46,35 @@ class Spreadsheet {
     int getValue(string formula) {
         int i = 1;
         int a = 0;
-        if (formula[i] >= 'A') {
-            int col = formula[i] - 'A';
+        int col = formula[i] - A;
+        if (col >= 0) {
             int row = 0;
             i++;
             for (; i < formula.size(); i++) {
-                if (formula[i] == '+') break;
-                row = row * 10 + (formula[i] - '0');
+                if (formula[i] == PLUS) break;
+                row = row * BASE + (formula[i] - ZERO);
             }
             a = table[row][col];
         } else {
             for (; i < formula.size(); i++) {
-                if (formula[i] == '+') break;
-                a = a * 10 + (formula[i] - '0');
+                if (formula[i] == PLUS) break;
+                a = a * BASE + (formula[i] - ZERO);
             }
         }
         i++;
         int b = 0;
-        if (formula[i] >= 'A') {
-            int col = formula[i] - 'A';
+        col = formula[i] - A;
+        if (col >= 0) {
             int row = 0;
             i++;
             for (; i < formula.size(); i++) {
-                if (formula[i] == '=') break;
-                row = row * 10 + (formula[i] - '0');
+                if (formula[i] == EQUAL) break;
+                row = row * BASE + (formula[i] - ZERO);
             }
             b = table[row][col];
         } else {
             for (; i < formula.size(); i++) {
-                b = b * 10 + (formula[i] - '0');
+                b = b * BASE + (formula[i] - ZERO);
             }
         }
         return a + b;
