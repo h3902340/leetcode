@@ -5,6 +5,10 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+struct Res {
+    int sum;
+    vector<int> path;
+};
 class Solution {
    public:
     int minimumTotal(vector<vector<int>>& t) {
@@ -16,6 +20,31 @@ class Solution {
             }
         }
         return t[0][0];
+    }
+    Res minimumTotal2(vector<vector<int>>& t) {
+        int n = t.size();
+        for (int i = n - 2; i >= 0; i--) {
+            for (int j = 0; j <= i; j++) {
+                if (t[i + 1][j] > t[i + 1][j + 1]) {
+                    t[i][j] += t[i + 1][j + 1];
+                    t[i + 1][j] = INT32_MAX;
+                } else {
+                    t[i][j] += t[i + 1][j];
+                    t[i + 1][j] = INT32_MIN;
+                }
+            }
+        }
+        vector<int> path(n);
+        path[0] = 0;
+        int k = 0;
+        for (int i = 1; i < n; i++) {
+            if (t[i][k] == INT32_MAX) {
+                path[i] = ++k;
+            } else {
+                path[i] = k;
+            }
+        }
+        return {t[0][0], path};
     }
 };
 
@@ -32,11 +61,11 @@ int main() {
     string line_out;
     while (getline(file_in, line_in)) {
         auto triangle = jread_vector2d(line_in);
-        auto res = sol.minimumTotal(triangle);
+        auto res = sol.minimumTotal2(triangle);
         getline(file_out, line_out);
         auto ans = jread_int(line_out);
         printf("Case %d", ++caseCount);
-        if (res == ans) {
+        if (res.sum == ans) {
             passCount++;
             printf(" %s(PASS)", KGRN);
         } else {
@@ -44,7 +73,8 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        jprint(res, "res");
+        jprint(res.sum, "res.sum");
+        jprint(res.path, "res.path");
         jprint(ans, "ans");
         printf("\n");
     }
