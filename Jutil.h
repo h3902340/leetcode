@@ -52,6 +52,7 @@ long long jread_longlong(string line);
 char jread_char(string line);
 string jread_string(string line);
 vector<int> jread_vector(string line);
+vector<long long> jread_vector_longlong(string line);
 vector<bool> jread_vector_bool(string line);
 vector<double> jread_vector_double(string line);
 vector<char> jread_vector_char(string line);

@@ -123,6 +123,32 @@ vector<int> jread_vector(string line) {
     return res;
 }
 
+vector<long long> jread_vector_longlong(string line) {
+    vector<long long> res;
+    if (line[1] == ']') return res;
+    for (int i = 1; i < line.size(); i++) {
+        if (line[i] == ' ') continue;
+        bool isNeg = false;
+        if (line[i] == '-') {
+            isNeg = true;
+            i++;
+        }
+        long long num = 0;
+        while (line[i] != ',' && line[i] != ']') {
+            num *= 10;
+            if (isNeg) {
+                num -= (line[i] - '0');
+            } else {
+                num += (line[i] - '0');
+            }
+            i++;
+        }
+        res.push_back(num);
+        if (line[i] == ']') break;
+    }
+    return res;
+}
+
 vector<bool> jread_vector_bool(string line) {
     vector<bool> res;
     if (line[1] == ']') return res;
