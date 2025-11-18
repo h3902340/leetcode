@@ -7,7 +7,7 @@ using namespace std;
 
 const int N = 4e4;
 int pre[N + 1];
-// time: O(NlogN), space: O(N)
+// time: O(Nsqrt(N)), space: O(N)
 class Solution {
    public:
     int numberOfSubstrings(string s) {
