@@ -14,9 +14,6 @@ const int N = 1e5;
 int temp[2][N];
 int buckets[BUCKET_SIZE];
 void radixSort(int n) {
-    for (int i = 0; i < BUCKET_SIZE; i++) {
-        buckets[i] = 0;
-    }
     bool p = false;
     for (int i = 0; i < n; i++) {
         temp[p][i] ^= BIAS;
