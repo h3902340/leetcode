@@ -18,7 +18,7 @@ const int BITPOS = BITX + BITY;
 const int MX = (1 << BITX) - 1;
 const int MY = (1 << BITY) - 1;
 const ll MPOS = (1L << BITPOS) - 1;
-const int MSLOPE = 40;
+const int MSLOPE = BITPOS + BITX;
 const ll MG = MPOS | ((1L << (BITSIGN + 1)) - 1) << MSLOPE;
 ll temp[2][N * (N - 1) >> 1];
 int buckets[BUCKET_SIZE];
