@@ -10,12 +10,12 @@ using namespace std;
 const int MOD = 1e9 + 7;
 const int N = 5e4;
 
-int dp[N];
+int dp[N + 2];
 int qmax[N];
 int qmin[N];
 
 class Solution {
-   public:
+public:
     int countPartitions(vector<int>& nums, int k) {
         int n = nums.size();
         int lmax = 0;
@@ -23,6 +23,8 @@ class Solution {
         int lmin = 0;
         int rmin = -1;
         int i = 0;
+        dp[0] = -1;
+        dp[1] = 0;
         for (int j = 0; j < n; j++) {
             while (lmax <= rmax && qmax[rmax] < nums[j]) {
                 rmax--;
@@ -41,29 +43,12 @@ class Solution {
                 }
                 i++;
             }
-            if (j == 0) {
-                dp[j] = 1;
-                continue;
-            }
-            if (i == 0) {
-                dp[j] = dp[j - 1] + 1;
-            } else if (i == 1) {
-                dp[j] = dp[j - 1];
-            } else {
-                dp[j] = dp[j - 1] - dp[i - 2];
-                if (dp[j] < 0) {
-                    dp[j] += MOD;
-                }
-            }
-            if (dp[j] >= MOD) {
-                dp[j] -= MOD;
-            }
-            dp[j] += dp[j - 1];
-            if (dp[j] >= MOD) {
-                dp[j] -= MOD;
+            dp[j + 2] = ((dp[j + 1] << 1) - dp[i]) % MOD;
+            if (dp[j + 2] < 0) {
+                dp[j + 2] += MOD;
             }
         }
-        int res = dp[n - 1] - dp[n - 2];
+        int res = dp[n + 1] - dp[n];
         if (res < 0) {
             res += MOD;
         }
