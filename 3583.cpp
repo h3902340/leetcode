@@ -10,25 +10,27 @@ using namespace std;
 #define ll long long
 const int MOD = 1e9 + 7;
 const int U = 1e5;
-int fre[2][U + 1];
+int fre[U + 1];
+ll fre2[U + 1];
 
 class Solution {
    public:
     int specialTriplets(vector<int>& nums) {
         ll res = 0;
         for (auto& e : nums) {
-            fre[0][e]++;
-        }
-        for (auto& e : nums) {
-            fre[0][e]--;
+            res += fre2[e];
             int e2 = e << 1;
             if (e2 <= U) {
-                res += (ll)fre[1][e2] * fre[0][e2];
+                fre2[e2] += fre[e2];
             }
-            fre[1][e]++;
+            fre[e]++;
         }
         for (auto& e : nums) {
-            fre[1][e] = 0;
+            fre[e] = 0;
+            int e2 = e << 1;
+            if (e2 <= U) {
+                fre2[e2] = 0;
+            }
         }
         return res % MOD;
     }
