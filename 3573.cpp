@@ -14,7 +14,7 @@ const int K = N >> 1;
 ll dp[K + 1][3];
 
 class Solution {
-public:
+   public:
     long long maximumProfit(vector<int>& prices, int k) {
         int n = prices.size();
         for (int j = 0; j <= k; j++) {
@@ -29,7 +29,8 @@ public:
             if (dp[0][2] < prices[i]) {
                 dp[0][2] = prices[i];
             }
-            for (int j = 1; j <= k; j++) {
+            int cap = min((i + 1) >> 1, k);
+            for (int j = 1; j <= cap; j++) {
                 if (dp[j][1] < dp[j][0] - prices[i]) {
                     dp[j][1] = dp[j][0] - prices[i];
                 }
@@ -42,6 +43,11 @@ public:
                 if (dp[j][0] < dp[j - 1][2] - prices[i]) {
                     dp[j][0] = dp[j - 1][2] - prices[i];
                 }
+            }
+            if (cap < k) {
+                dp[cap + 1][0] = dp[cap][0];
+                dp[cap + 1][1] = dp[cap][1];
+                dp[cap + 1][2] = dp[cap][2];
             }
         }
         return dp[k][0];
