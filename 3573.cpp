@@ -7,52 +7,44 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-// TODO: rolling DP
+#define ll long long
 const int N = 1e3;
 const int K = N >> 1;
 // 0: nothing, 1: buy, 2: sell
-long long dp[N][K + 1][3];
+ll dp[K + 1][3];
 
 class Solution {
-   public:
+public:
     long long maximumProfit(vector<int>& prices, int k) {
         int n = prices.size();
         for (int j = 0; j <= k; j++) {
-            dp[0][j][0] = 0;
-            dp[0][j][1] = -prices[0];
-            dp[0][j][2] = prices[0];
+            dp[j][0] = 0;
+            dp[j][1] = -prices[0];
+            dp[j][2] = prices[0];
         }
         for (int i = 1; i < n; i++) {
-            dp[i][0][0] = 0;
-            dp[i][0][1] = dp[i - 1][0][1];
-            if (dp[i][0][1] < -prices[i]) {
-                dp[i][0][1] = -prices[i];
+            if (dp[0][1] < -prices[i]) {
+                dp[0][1] = -prices[i];
             }
-            dp[i][0][2] = dp[i - 1][0][2];
-            if (dp[i][0][2] < prices[i]) {
-                dp[i][0][2] = prices[i];
+            if (dp[0][2] < prices[i]) {
+                dp[0][2] = prices[i];
             }
-        }
-        for (int j = 1; j <= k; j++) {
-            for (int i = 1; i < n; i++) {
-                dp[i][j][0] = dp[i - 1][j][0];
-                if (dp[i][j][0] < dp[i - 1][j - 1][1] + prices[i]) {
-                    dp[i][j][0] = dp[i - 1][j - 1][1] + prices[i];
+            for (int j = 1; j <= k; j++) {
+                if (dp[j][1] < dp[j][0] - prices[i]) {
+                    dp[j][1] = dp[j][0] - prices[i];
                 }
-                if (dp[i][j][0] < dp[i - 1][j - 1][2] - prices[i]) {
-                    dp[i][j][0] = dp[i - 1][j - 1][2] - prices[i];
+                if (dp[j][2] < dp[j][0] + prices[i]) {
+                    dp[j][2] = dp[j][0] + prices[i];
                 }
-                dp[i][j][1] = dp[i - 1][j][1];
-                if (dp[i][j][1] < dp[i - 1][j][0] - prices[i]) {
-                    dp[i][j][1] = dp[i - 1][j][0] - prices[i];
+                if (dp[j][0] < dp[j - 1][1] + prices[i]) {
+                    dp[j][0] = dp[j - 1][1] + prices[i];
                 }
-                dp[i][j][2] = dp[i - 1][j][2];
-                if (dp[i][j][2] < dp[i - 1][j][0] + prices[i]) {
-                    dp[i][j][2] = dp[i - 1][j][0] + prices[i];
+                if (dp[j][0] < dp[j - 1][2] - prices[i]) {
+                    dp[j][0] = dp[j - 1][2] - prices[i];
                 }
             }
         }
-        return dp[n - 1][k][0];
+        return dp[k][0];
     }
 };
 
