@@ -6,30 +6,35 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 #define ll long long
-const int N = 1e5;
-ll prefix[N];
-ll modded[N];
-
 class Solution {
-   public:
+public:
     long long maxProfit(vector<int>& prices, vector<int>& strategy, int k) {
         int n = prices.size();
-        prefix[0] = prices[0] * strategy[0];
-        modded[0] = prices[0];
-        for (int i = 1; i < n; i++) {
-            prefix[i] = prefix[i - 1] + prices[i] * strategy[i];
-            modded[i] = modded[i - 1] + prices[i];
+        ll res = 0;
+        for (int i = 0; i < k; i++) {
+            strategy[i] *= prices[i];
+            res += strategy[i];
         }
+        ll a = 0;
+        for (int i = k; i < n; i++) {
+            strategy[i] *= prices[i];
+            a += strategy[i];
+        }
+        res += a;
         int half = k >> 1;
-        ll res = prefix[n - 1];
-        for (int i = 0; i <= n - k; i++) {
-            ll left = 0;
-            if (i > 0) {
-                left = prefix[i - 1];
+        for (int i = half; i < k; i++) {
+            a += prices[i];
+        }
+        int cap = n - k;
+        for (int i = 0; i < cap; i++) {
+            if (res < a) {
+                res = a;
             }
-            ll mid = modded[k - 1 + i] - modded[half - 1 + i];
-            ll right = prefix[n - 1] - prefix[k - 1 + i];
-            res = max(res, left + mid + right);
+            a += strategy[i] - strategy[i + k] + prices[i + k] -
+                 prices[i + half];
+        }
+        if (res < a) {
+            res = a;
         }
         return res;
     }
