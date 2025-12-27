@@ -6,73 +6,57 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 #define ll long long
-struct Room {
-    int i;
-    ll end;
-};
+const int N = 100;
+const int BIT_ID = 7;
+const int MASK_ID = (1 << BIT_ID) - 1;
+int cnt[N];
+
 class Solution {
    public:
     int mostBooked(int n, vector<vector<int>>& meetings) {
         int m = meetings.size();
         auto cmp = [](vector<int>& a, vector<int>& b) { return a[0] < b[0]; };
         sort(meetings.begin(), meetings.end(), cmp);
-        vector<int> cnt(n);
-        vector<Room> tmp(n);
-        auto cmp2 = [](Room& a, Room& b) {
-            if (a.end == b.end) {
-                return a.i > b.i;
-            }
-            return a.end > b.end;
-        };
-        priority_queue<Room, vector<Room>, decltype(cmp2)> pq(cmp2);
+        priority_queue<ll, vector<ll>, greater<ll>> used;
+        priority_queue<int, vector<int>, greater<int>> free;
         for (int i = 0; i < n; i++) {
-            pq.push({i, 0});
+            free.push(i);
         }
         for (int i = 0; i < m; i++) {
-            int index = n;
-            int j = 0;
-            while (!pq.empty() && pq.top().end <= meetings[i][0]) {
-                Room t = pq.top();
-                tmp[j++] = t;
-                if (index > t.i) {
-                    index = t.i;
+            while (!used.empty()) {
+                ll t = used.top();
+                int id = t & MASK_ID;
+                ll end = t >> BIT_ID;
+                if (end > meetings[i][0]) {
+                    break;
                 }
-                pq.pop();
+                free.push(id);
+                used.pop();
             }
-            if (index == n) {
-                Room t = pq.top();
-                tmp[j++] = t;
-                pq.pop();
-                index = t.i;
-                ll end = t.end;
-                while (!pq.empty() && pq.top().end == end) {
-                    t = pq.top();
-                    tmp[j++] = t;
-                    if (index > t.i) {
-                        index = t.i;
-                    }
-                    pq.pop();
-                }
-            }
-            for (int k = 0; k < j; k++) {
-                if (tmp[k].i == index) {
-                    if (tmp[k].end > meetings[i][0]) {
-                        tmp[k].end += meetings[i][1] - meetings[i][0];
-                    } else {
-                        tmp[k].end = meetings[i][1];
-                    }
-                    cnt[tmp[k].i]++;
-                }
-                pq.push(tmp[k]);
+            if (free.empty()) {
+                ll t = used.top();
+                used.pop();
+                int id = t & MASK_ID;
+                ll end = t >> BIT_ID;
+                end += meetings[i][1] - meetings[i][0];
+                cnt[id]++;
+                used.push((end << BIT_ID) | id);
+            } else {
+                int id = free.top();
+                free.pop();
+                ll end = meetings[i][1];
+                cnt[id]++;
+                used.push((end << BIT_ID) | id);
             }
         }
         int res = 0;
-        int best = cnt[0];
-        for (int i = 1; i < n; i++) {
+        int best = 0;
+        for (int i = 0; i < n; i++) {
             if (best < cnt[i]) {
                 res = i;
                 best = cnt[i];
             }
+            cnt[i] = 0;
         }
         return res;
     }
