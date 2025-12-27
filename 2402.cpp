@@ -9,13 +9,13 @@ using namespace std;
 const int N = 100;
 const int BIT_ID = 7;
 const int MASK_ID = (1 << BIT_ID) - 1;
+const auto cmp = [](vector<int>& a, vector<int>& b) { return a[0] < b[0]; };
 int cnt[N];
 
 class Solution {
    public:
     int mostBooked(int n, vector<vector<int>>& meetings) {
         int m = meetings.size();
-        auto cmp = [](vector<int>& a, vector<int>& b) { return a[0] < b[0]; };
         sort(meetings.begin(), meetings.end(), cmp);
         priority_queue<ll, vector<ll>, greater<ll>> used;
         priority_queue<int, vector<int>, greater<int>> free;
