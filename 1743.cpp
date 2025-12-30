@@ -6,26 +6,28 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 const int N = 1e5;
-int deg[N];
-int nei[N];
-int inv[N];
+const int U = 1e5;
+const int T = (U << 1) + 1;
+int deg[N + 1];
+int nei[N + 1];
+int inv[N + 1];
+int mp[T];
 
 class Solution {
    public:
     vector<int> restoreArray(vector<vector<int>>& adjacentPairs) {
         int m = adjacentPairs.size();
         int n = m + 1;
-        unordered_map<int, int> mp;
-        int k = 0;
+        int k = 1;
         for (int i = 0; i < m; i++) {
-            int u = adjacentPairs[i][0];
-            int v = adjacentPairs[i][1];
-            if (!mp.count(u)) {
+            int u = adjacentPairs[i][0] + U;
+            int v = adjacentPairs[i][1] + U;
+            if (mp[u] == 0) {
                 mp[u] = k;
                 inv[k] = u;
                 k++;
             }
-            if (!mp.count(v)) {
+            if (mp[v] == 0) {
                 mp[v] = k;
                 inv[k] = v;
                 k++;
@@ -37,15 +39,16 @@ class Solution {
             nei[u] ^= v;
             nei[v] ^= u;
         }
-        int i = 0;
-        for (; i < n; i++) {
+        int i = 1;
+        for (; i <= n; i++) {
             if (deg[i] == 1) {
                 break;
             }
         }
         vector<int> res(n);
         for (int j = 0; j < n; j++) {
-            res[j] = inv[i];
+            res[j] = inv[i] - U;
+            mp[inv[i]] = 0;
             int p = nei[i];
             nei[i] = 0;
             nei[p] ^= i;
