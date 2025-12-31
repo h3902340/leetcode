@@ -7,72 +7,73 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Coor {
-    int i;
-    int j;
-};
 const int N = 2e4;
-Coor q[N];
-const int DIR = 4;
-const Coor dir[DIR]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+const int DIR_LEN = 8;
+const int DIR[DIR_LEN][2] = {{0, 1},   {1, 0},  {0, -1}, {-1, 0},
+                             {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+int parent[N + 2];
+int find(int u) {
+    int p = u;
+    while (parent[p] >= 0) {
+        p = parent[p];
+    }
+    while (parent[u] >= 0) {
+        int tmp = parent[u];
+        parent[u] = p;
+        u = tmp;
+    }
+    return p;
+}
+void unite(int u, int v) {
+    int a = find(u);
+    int b = find(v);
+    if (b != a) {
+        parent[b] = a;
+    }
+}
+void init(int n) {
+    for (int i = 0; i < n; i++) {
+        parent[i] = -1;
+    }
+}
 
 class Solution {
    public:
     int latestDayToCross(int row, int col, vector<vector<int>>& cells) {
-        int l = 0;
-        int r = cells.size();
-        int res = l;
-        vector<vector<int>> grid(row, vector<int>(col));
-        while (l <= r) {
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
-                    grid[i][j] = 0;
+        int n = cells.size();
+        init(n + 2);
+        int s = 0;
+        int t = n + 1;
+        int i = 0;
+        for (; i < n; i++) {
+            int x = cells[i][0];
+            int y = cells[i][1];
+            int v = (x - 1) * col + y;
+            parent[v] = -2;
+            for (int j = 0; j < DIR_LEN; j++) {
+                int x2 = x + DIR[j][0];
+                int y2 = y + DIR[j][1];
+                if (x2 == 0 || x2 > row || y2 == 0 || y2 > col) {
+                    continue;
+                }
+                int v2 = (x2 - 1) * col + y2;
+                if (parent[v2] != -1) {
+                    unite(v, v2);
                 }
             }
-            int mid = (l + r) >> 1;
-            for (int i = 0; i < mid; i++) {
-                grid[cells[i][0] - 1][cells[i][1] - 1] = 1;
+            if (y == 1) {
+                unite(s, v);
+            } else if (y == col) {
+                unite(t, v);
             }
-            int x = 0;
-            int y = 0;
-            for (int j = 0; j < col; j++) {
-                if (grid[0][j] == 0) {
-                    q[y++] = {0, j};
-                    grid[0][j] = 1;
-                }
+            if (i < col - 1) {
+                continue;
             }
-            bool canCross = false;
-            while (x < y) {
-                Coor f = q[x++];
-                if (f.i == row - 1) {
-                    canCross = true;
-                    break;
-                }
-                grid[f.i][f.j] = 1;
-                for (int i = 0; i < DIR; i++) {
-                    int a = f.i + dir[i].i;
-                    int b = f.j + dir[i].j;
-                    if (a < 0 || a >= row || b < 0 || b >= col) continue;
-                    if (grid[a][b] == 1) continue;
-                    if (a == row - 1) {
-                        canCross = true;
-                        break;
-                    }
-                    q[y++] = {a, b};
-                    grid[a][b] = 1;
-                }
-                if (canCross) {
-                    break;
-                }
-            }
-            if (canCross) {
-                l = mid + 1;
-                res = mid;
-            } else {
-                r = mid - 1;
+            if (find(s) == find(t)) {
+                break;
             }
         }
-        return res;
+        return i;
     }
 };
 
