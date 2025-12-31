@@ -8,7 +8,6 @@ int find(int u) {
     while (parent[p] != -1) {
         p = parent[p];
     }
-    // collapsing
     while (parent[u] != -1) {
         int tmp = parent[u];
         parent[u] = p;
