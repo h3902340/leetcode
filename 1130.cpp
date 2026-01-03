@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "Jutil.h"
 using namespace std;
 
@@ -7,6 +5,7 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+#define lg2(n) (31 - __builtin_clz(n))
 const int N = 40;
 const int LGN = 6;
 int dp[N][N];
@@ -15,7 +14,7 @@ class Solution {
    public:
     int mctFromLeafValues(vector<int>& arr) {
         int n = arr.size();
-        int lgn = log2(n);
+        int lgn = lg2(n);
         for (int i = 0; i < n; i++) {
             dp[i][i] = 0;
             rmq[i][0] = arr[i];
@@ -44,7 +43,7 @@ class Solution {
         return dp[0][n - 1];
     }
     int findMax(int i, int j) {
-        int k = log2(j - i + 1);
+        int k = lg2(j - i + 1);
         return max(rmq[i][k], rmq[j - (1 << k) + 1][k]);
     }
 };
