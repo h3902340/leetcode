@@ -8,21 +8,15 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 class Solution {
-   public:
+public:
     vector<int> lexicalOrder(int n) {
         vector<int> out(n);
-        int d = 0;
-        int a = n;
-        while (a > 0) {
-            d++;
-            a /= 10;
-        }
         out[0] = 1;
         for (int i = 1; i < n; i++) {
             int prev = out[i - 1];
             int b = prev * 10;
             if (b > n) {
-                while (prev + 1 > n) {
+                if (prev == n) {
                     prev /= 10;
                 }
                 prev++;
