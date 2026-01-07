@@ -351,20 +351,24 @@ vector<TreeNode*> jread_binary_tree(string line) {
         res.push_back(new TreeNode(d));
         if (line[i] == ']') break;
     }
+    int j = 1;
+    int k = 2;
     for (int i = 0; i < res.size(); i++) {
         if (res[i] == nullptr) continue;
-        if (i * 2 + 1 < res.size()) {
-            res[i]->left = res[i * 2 + 1];
+        if (j < res.size()) {
+            res[i]->left = res[j];
         } else {
             res[i]->left = nullptr;
             res[i]->right = nullptr;
             continue;
         }
-        if (i * 2 + 2 < res.size()) {
-            res[i]->right = res[i * 2 + 2];
+        if (k < res.size()) {
+            res[i]->right = res[k];
         } else {
             res[i]->right = nullptr;
         }
+        j += 2;
+        k += 2;
     }
     return res;
 }
