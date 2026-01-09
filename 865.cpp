@@ -51,7 +51,7 @@ int main() {
         getline(file_out, line_out);
         auto ans = jread_binary_tree(line_out)[0];
         printf("Case %d", ++caseCount);
-        if (res == ans) {
+        if (binaryTreeEqual(res, ans)) {
             passCount++;
             printf(" %s(PASS)", KGRN);
         } else {
