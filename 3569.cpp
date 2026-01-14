@@ -1,6 +1,4 @@
-#include <map>
-#include <set>
-#include <vector>
+#include <cmath>
 
 #include "Jutil.h"
 using namespace std;
@@ -30,7 +28,7 @@ static void init() {
     for (int i = 2; i <= NUMMAX; i++) {
         prime[i] = true;
     }
-    int cap = sqrt(NUMMAX);
+    int cap = sqrt((double)NUMMAX);
     for (int i = 2; i <= cap; i++) {
         if (prime[i]) {
             for (int j = i + i; j <= NUMMAX; j += i) {
@@ -200,8 +198,10 @@ int main() {
             allPass = false;
         }
         printf("\n%s", KNRM);
-        // jprint(res, "res");
-        // jprint(ans, "ans");
+        if (res.size() < 10) {
+            jprint(res, "res");
+            jprint(ans, "ans");
+        }
         printf("\n");
     }
     if (allPass) {
