@@ -11,7 +11,6 @@ struct Data {
     int v;
 };
 const int N = 5e4;
-const auto cmp = [](Data& a, Data& b) { return a.y < b.y; };
 const int LEN = N << 1;
 Data arr[2][LEN];
 const int BIT = 8;
