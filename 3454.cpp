@@ -65,7 +65,7 @@ struct SegmentTree {
     int c;
     int v;
 };
-SegmentTree tree[1 << (32 - __builtin_clz(LEN))];
+SegmentTree tree[1 << (33 - __builtin_clz(LEN))];
 void init(int i, int l, int r) {
     SegmentTree& node = tree[i];
     node.l = l;
@@ -117,6 +117,12 @@ void update(int i, int l, int r, bool isAdd) {
         update(i * 2 + 2, mid, r, isAdd);
     }
 }
+struct Step {
+    int y;
+    ll d;
+    int v;
+};
+Step steps[LEN];
 
 class Solution {
    public:
@@ -159,21 +165,17 @@ class Solution {
         for (int i = 1; i < j; i++) {
             ll d = (ll)tree[0].v * (arr[0][i].y - y);
             total += d;
+            steps[i] = {y, d, tree[0].v};
             update(0, arr[0][i].l, arr[0][i].r, arr[0][i].isAdd);
             y = arr[0][i].y;
         }
-        init(0, 0, m - 1);
-        update(0, arr[0][0].l, arr[0][0].r, arr[0][0].isAdd);
-        y = arr[0][0].y;
         ll a = 0;
         for (int i = 1; i < j; i++) {
-            ll d = (ll)tree[0].v * (arr[0][i].y - y);
+            ll d = steps[i].d;
             if (((a + d) << 1) >= total) {
-                return y + ((double)total / 2 - a) / tree[0].v;
+                return steps[i].y + ((double)total / 2 - a) / steps[i].v;
             }
             a += d;
-            update(0, arr[0][i].l, arr[0][i].r, arr[0][i].isAdd);
-            y = arr[0][i].y;
         }
         return 0;
     }
