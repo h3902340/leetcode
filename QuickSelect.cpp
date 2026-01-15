@@ -1,6 +1,7 @@
 #include "Jutil.h"
 using namespace std;
 
+// Actually slow? See 3806. It took 2200 ms.
 int kth_element(vector<int>& nums, int i, int j, int k) {
     if (k == 0 || k == j - i + 1) {
         return 0;
