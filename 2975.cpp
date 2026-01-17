@@ -70,7 +70,6 @@ class Solution {
         vFences.push_back(n);
         int x = hFences.size();
         int y = vFences.size();
-        radixSort(hFences, x);
         radixSort(vFences, y);
         init();
         for (int i = 0; i < x; i++) {
