@@ -10,90 +10,81 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Data {
-    long long sum;
-    int index;
-    int modCount;
-};
-
-const int NMAX = 1e5;
-long long temp[NMAX];
-int pre[NMAX];
-int nxt[NMAX];
-int modCount[NMAX - 1];
+#define ll long long
+#define pa pair<ll, int>
+const int N = 1e5;
+int l[N];
+int r[N];
+ll s[N];
 
 class Solution {
    public:
     int minimumPairRemoval(vector<int>& nums) {
         int n = nums.size();
-        auto cmp = [](Data a, Data b) {
-            if (a.sum == b.sum) {
-                return a.index > b.index;
+        priority_queue<pa, vector<pa>, greater<pa>> pq;
+        int bad = 0;
+        for (int i = 0; i < n; i++) {
+            l[i] = i - 1;
+            r[i] = i + 1;
+            s[i] = nums[i];
+            if (i + 1 < n) {
+                pq.emplace(nums[i] + nums[i + 1], i);
+                if (nums[i] > nums[i + 1]) {
+                    bad++;
+                }
             }
-            return a.sum > b.sum;
-        };
-        priority_queue<Data, vector<Data>, decltype(cmp)> pq(cmp);
-        int cnt = 0;
-        for (int i = 0; i < n - 1; i++) {
-            pre[i] = i - 1;
-            nxt[i] = i + 1;
-            if (nums[i] > nums[i + 1]) {
-                cnt++;
-            }
-            Data node = {nums[i] + nums[i + 1], i, 0};
-            pq.emplace(node);
-            modCount[i] = 0;
-            temp[i] = nums[i];
         }
-        pre[n - 1] = n - 2;
-        nxt[n - 1] = -1;
-        temp[n - 1] = nums[n - 1];
-        int ans = 0;
-        while (cnt > 0) {
-            Data t = pq.top();
+        int res = 0;
+        while (bad > 0) {
+            if (pq.empty()) {
+                break;
+            }
+            pa t = pq.top();
             pq.pop();
-            if (t.modCount != modCount[t.index]) continue;
-            ans++;
-            int left = pre[t.index];
-            int right = nxt[t.index];
-            int rr = nxt[right];
-            if (temp[t.index] > temp[right]) {
-                cnt--;
+            if (r[t.second] == n) {
+                continue;
             }
-            long long mergedSum = temp[t.index] + temp[right];
-            if (left != -1) {
-                if (temp[left] > temp[t.index]) {
-                    if (temp[left] <= mergedSum) {
-                        cnt--;
+            if (s[t.second] + s[r[t.second]] != t.first) {
+                continue;
+            }
+            res++;
+            ll tmp = s[t.second];
+            s[t.second] = t.first;
+            int nxt = r[r[t.second]];
+            if (nxt < n) {
+                pq.emplace(s[t.second] + s[nxt], t.second);
+                if (s[r[t.second]] > s[nxt]) {
+                    if (s[t.second] <= s[nxt]) {
+                        bad--;
                     }
                 } else {
-                    if (temp[left] > mergedSum) {
-                        cnt++;
+                    if (s[t.second] > s[nxt]) {
+                        bad++;
                     }
                 }
-                modCount[left]++;
-                nxt[left] = right;
-                Data node = {temp[left] + mergedSum, left, modCount[left]};
-                pq.emplace(node);
+                l[nxt] = t.second;
             }
-            if (rr != -1) {
-                if (temp[right] > temp[rr]) {
-                    if (mergedSum <= temp[rr]) {
-                        cnt--;
+            int pre = l[t.second];
+            if (pre >= 0) {
+                pq.emplace(s[pre] + s[t.second], pre);
+                if (s[pre] > tmp) {
+                    if (s[pre] <= s[t.second]) {
+                        bad--;
                     }
                 } else {
-                    if (mergedSum > temp[rr]) {
-                        cnt++;
+                    if (s[pre] > s[t.second]) {
+                        bad++;
                     }
                 }
-                modCount[right]++;
-                Data node = {mergedSum + temp[rr], right, modCount[right]};
-                pq.emplace(node);
             }
-            temp[right] = mergedSum;
-            pre[right] = left;
+            if (tmp > s[r[t.second]]) {
+                bad--;
+            }
+            r[r[t.second]] = n;
+            l[r[t.second]] = -1;
+            r[t.second] = nxt;
         }
-        return ans;
+        return res;
     }
 };
 
