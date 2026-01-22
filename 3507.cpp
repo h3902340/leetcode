@@ -1,159 +1,123 @@
-#include <vector>
-#include <unordered_set>
-#include <queue>
+#include "Jutil.h"
 using namespace std;
 
-// TODO: time is bad (3 ms), most of the submissions are 0 ms
-struct Node
-{
-    Node *left;
-    Node *right;
-    int leftIndex;
-    int rightIndex;
-    int leftRange;
-    int rightRange;
-    int leftSum;
-    int rightSum;
-    int sum;
-    Node() : left(nullptr), right(nullptr), leftIndex(-1), rightIndex(-1), leftRange(0), rightRange(0), leftSum(0), rightSum(0), sum(0) {}
-};
-struct nodeGreater
-{
-    bool operator()(const Node &a, const Node &b) const
-    {
-        if (a.sum == b.sum)
-        {
-            return a.leftIndex > b.leftIndex;
-        }
-        return a.sum > b.sum;
-    }
-};
-class Solution
-{
-public:
-    int minimumPairRemoval(vector<int> &nums)
-    {
+#define KNRM "\x1B[0m"
+#define KRED "\x1B[31m"
+#define KGRN "\x1B[32m"
+
+#define ll long long
+#define pa pair<ll, int>
+const int N = 1e5;
+int l[N];
+int r[N];
+ll s[N];
+
+class Solution {
+   public:
+    int minimumPairRemoval(vector<int>& nums) {
         int n = nums.size();
-        if (n == 1)
-            return 0;
-        if (n == 2)
-            return nums[0] > nums[1];
-        int ans = 0;
-        int decreasingPair = 0;
-        vector<Node> nodes(n - 1);
-        for (int i = 0; i < n - 1; i++)
-        {
-            int l = nums[i];
-            int r = nums[i + 1];
-            decreasingPair += l > r;
-            nodes[i].leftIndex = i;
-            nodes[i].rightIndex = i + 1;
-            nodes[i].leftRange = 1;
-            nodes[i].rightRange = 1;
-            nodes[i].leftSum = l;
-            nodes[i].rightSum = r;
-            nodes[i].sum = l + r;
-            nums[i] = 1;
-        }
-        nums[n - 1] = 1;
-        nodes[0].right = &nodes[1];
-        for (int i = 1; i < n - 2; i++)
-        {
-            nodes[i].right = &nodes[i + 1];
-            nodes[i].left = &nodes[i - 1];
-        }
-        nodes[n - 2].left = &nodes[n - 3];
-        vector<Node> nodesCopy(n - 1);
-        for (int i = 0; i < n - 1; i++)
-        {
-            nodesCopy[i] = nodes[i];
-        }
-        make_heap(nodesCopy.begin(), nodesCopy.end(), nodeGreater());
-        while (decreasingPair > 0)
-        {
-            Node f = nodesCopy.front();
-            pop_heap(nodesCopy.begin(), nodesCopy.end(), nodeGreater());
-            nodesCopy.pop_back();
-            int l_new = nums[f.leftIndex];
-            int r_new = nums[f.rightIndex];
-            if (l_new == f.leftRange && r_new == f.rightRange)
-            {
-                if (f.left)
-                {
-                    Node *leftNode = f.left;
-                    if (leftNode->leftSum > f.leftSum)
-                    {
-                        if (leftNode->leftSum <= f.sum)
-                        {
-                            decreasingPair--;
-                        }
-                    }
-                    else
-                    {
-                        if (leftNode->leftSum > f.sum)
-                        {
-                            decreasingPair++;
-                        }
-                    }
-                    leftNode->rightRange += f.rightRange;
-                    nums[leftNode->rightIndex] = leftNode->rightRange;
-                    leftNode->right = f.right;
-                    leftNode->rightSum = f.sum;
-                    leftNode->sum = leftNode->leftSum + leftNode->rightSum;
-                    nodesCopy.push_back(*leftNode);
-                    push_heap(nodesCopy.begin(), nodesCopy.end(), nodeGreater());
+        priority_queue<pa, vector<pa>, greater<pa>> pq;
+        int bad = 0;
+        for (int i = 0; i < n; i++) {
+            l[i] = i - 1;
+            r[i] = i + 1;
+            s[i] = nums[i];
+            if (i + 1 < n) {
+                pq.emplace(nums[i] + nums[i + 1], i);
+                if (nums[i] > nums[i + 1]) {
+                    bad++;
                 }
-                if (f.right)
-                {
-                    Node *rightNode = f.right;
-                    if (rightNode->rightSum < f.rightSum)
-                    {
-                        if (rightNode->rightSum >= f.sum)
-                        {
-                            decreasingPair--;
-                        }
-                    }
-                    else
-                    {
-                        if (rightNode->rightSum < f.sum)
-                        {
-                            decreasingPair++;
-                        }
-                    }
-                    rightNode->leftRange += f.leftRange;
-                    nums[rightNode->leftIndex] = rightNode->leftRange;
-                    rightNode->left = f.left;
-                    rightNode->leftSum = f.sum;
-                    rightNode->sum = rightNode->leftSum + rightNode->rightSum;
-                    nodesCopy.push_back(*rightNode);
-                    push_heap(nodesCopy.begin(), nodesCopy.end(), nodeGreater());
-                }
-                if (f.leftSum > f.rightSum)
-                {
-                    decreasingPair--;
-                }
-                ans++;
             }
         }
-        return ans;
+        int res = 0;
+        while (bad > 0) {
+            if (pq.empty()) {
+                break;
+            }
+            pa t = pq.top();
+            pq.pop();
+            if (r[t.second] == n) {
+                continue;
+            }
+            if (s[t.second] + s[r[t.second]] != t.first) {
+                continue;
+            }
+            res++;
+            ll tmp = s[t.second];
+            s[t.second] = t.first;
+            int nxt = r[r[t.second]];
+            if (nxt < n) {
+                pq.emplace(s[t.second] + s[nxt], t.second);
+                if (s[r[t.second]] > s[nxt]) {
+                    if (s[t.second] <= s[nxt]) {
+                        bad--;
+                    }
+                } else {
+                    if (s[t.second] > s[nxt]) {
+                        bad++;
+                    }
+                }
+                l[nxt] = t.second;
+            }
+            int pre = l[t.second];
+            if (pre >= 0) {
+                pq.emplace(s[pre] + s[t.second], pre);
+                if (s[pre] > tmp) {
+                    if (s[pre] <= s[t.second]) {
+                        bad--;
+                    }
+                } else {
+                    if (s[pre] > s[t.second]) {
+                        bad++;
+                    }
+                }
+            }
+            if (tmp > s[r[t.second]]) {
+                bad--;
+            }
+            r[r[t.second]] = n;
+            l[r[t.second]] = -1;
+            r[t.second] = nxt;
+        }
+        return res;
     }
 };
 
-vector<int> nums = {2, 2, -1, 3, -2, 2, 1, 1, 1, 0, -1};
-// 1. {2, 2, -1, 3, -2, 2, 1, 1, 1, 0, -1} // 5 {0, -1}
-// 2. {2, 2, -1, 3, -2, 2, 1, 1, 1, -1} // 4 {-2, 2}
-// 3. {2, 2, -1, 3, 0, 1, 1, 1, -1} // 3 {1,-1}
-// 4. {2, 2, -1, 3, 0, 1, 1, 0} // 3 {2,-1}
-// 5. {2, 1, 3, 0, 1, 1, 0} // 3 {0,1}
-// 6. {2, 1, 3, 1, 1, 0} // 3 {1,0}
-// 7. {2, 1, 3, 1, 1} // 2 {1,1}
-// 8. {2, 1, 3, 2} // 2 {2,1}
-// 9. {3, 3, 2} // 1 {3,2}
-// {3, 5}
-int main()
-{
+int main() {
+    string problemName = "3507";
+    auto begin = jtimer();
     Solution sol;
-    int ans = sol.minimumPairRemoval(nums);
-    printf("ans = %d\n", ans); // 9
+    ifstream file_in("testcases/" + problemName + "_in.txt");
+    ifstream file_out("testcases/" + problemName + "_out.txt");
+    bool allPass = true;
+    int caseCount = 0;
+    int passCount = 0;
+    string line_in;
+    string line_out;
+    while (getline(file_in, line_in)) {
+        auto nums = jread_vector(line_in);
+        auto res = sol.minimumPairRemoval(nums);
+        getline(file_out, line_out);
+        auto ans = jread_int(line_out);
+        printf("Case %d", ++caseCount);
+        if (res == ans) {
+            passCount++;
+            printf(" %s(PASS)", KGRN);
+        } else {
+            printf(" %s(WRONG)", KRED);
+            allPass = false;
+        }
+        printf("\n%s", KNRM);
+        jprint(res, "res");
+        jprint(ans, "ans");
+        printf("\n");
+    }
+    if (allPass) {
+        printf("%sALL CORRECT [%d/%d]\n%s", KGRN, passCount, caseCount, KNRM);
+    } else {
+        printf("%sWRONG ANSWER [%d/%d]\n%s", KRED, passCount, caseCount, KNRM);
+    }
+    auto end = jtimer();
+    jprint_time(begin, end);
     return 0;
 }
