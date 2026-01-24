@@ -5,13 +5,11 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+#define lg2(n) (31 - __builtin_clz(n))
 const int N = 1e5;
-const int TREE_SIZE = 1 << (33 - __builtin_clz(N));
-struct SegmentTree {
-    int l;
-    int r;
-    int v;
-};
+const int LGN = lg2(N) + 1;
+int rmq[N][LGN];
+int len[N];
 int gcd(int a, int b) {
     if (a == 0) {
         return b;
@@ -33,70 +31,46 @@ int gcd(int a, int b) {
     }
     return a <<= d;
 }
-SegmentTree tree[TREE_SIZE];
-int mp[N];
-void init(int i, int l, int r) {
-    SegmentTree& node = tree[i];
-    node.l = l;
-    node.r = r;
-    node.v = 0;
-    if (node.l + 1 == node.r) {
-        mp[node.l] = i;
-        return;
+void init(vector<int>& arr, int n) {
+    int lgn = lg2(n);
+    for (int i = 0; i < n; i++) {
+        rmq[i][0] = arr[i];
     }
-    int mid = (l + r) >> 1;
-    init(i * 2 + 1, l, mid);
-    init(i * 2 + 2, mid, r);
-}
-void updateParent(int i) {
-    if (i == 0) return;
-    i = (i - 1) >> 1;
-    tree[i].v = gcd(tree[i * 2 + 1].v, tree[i * 2 + 2].v);
-    updateParent(i);
-}
-void update(int l, int v) {
-    tree[mp[l]].v = v;
-    updateParent(mp[l]);
-}
-int query(int i, int l, int r) {
-    if (tree[i].l == l && tree[i].r == r) {
-        return tree[i].v;
-    }
-    int mid = (tree[i].l + tree[i].r) >> 1;
-    if (r <= mid) {
-        return query(i * 2 + 1, l, r);
-    } else if (mid <= l) {
-        return query(i * 2 + 2, l, r);
-    } else {
-        int a = query(i * 2 + 1, l, mid);
-        int b = query(i * 2 + 2, mid, r);
-        return gcd(a, b);
+    int k = 1;
+    for (int l = 1; l <= lgn; l++) {
+        int cap = n - (k << 1) + 1;
+        for (int i = 0; i < cap; i++) {
+            rmq[i][l] = gcd(rmq[i][l - 1], rmq[i + k][l - 1]);
+        }
+        k <<= 1;
     }
 }
-int len[N];
+int findGCD(int i, int j) {
+    int k = lg2(j - i + 1);
+    return gcd(rmq[i][k], rmq[j - (1 << k) + 1][k]);
+}
 
 class Solution {
    public:
     int minStable(vector<int>& nums, int maxC) {
         int n = nums.size();
-        init(0, 0, n);
+        init(nums, n);
         int a = 0;
-        int j = 0;
-        for (int i = 0; i < n; i++) {
-            update(i, nums[i]);
-            a = gcd(a, nums[i]);
+        int i = 0;
+        for (int j = 0; j < n; j++) {
+            a = gcd(a, nums[j]);
             while (a == 1) {
-                len[j] = i - j;
-                j++;
-                if (j > i) {
+                len[i] = j - i;
+                i++;
+                if (i > j) {
                     a = 0;
                     break;
                 }
-                a = query(0, j, i + 1);
+                a = findGCD(i, j);
             }
         }
-        for (int i = j; i < n; i++) {
-            len[i] = n - i;
+        for (int j = i; j < n; j++) {
+            len[j] = n - j;
         }
         int l = 0;
         int r = n;
