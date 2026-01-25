@@ -15,6 +15,11 @@ int walk[WALKMAX];
 int walkIndex[N];
 int rmq[WALKMAX][LOGWALKMAX];
 int depth[N];
+const int M = N - 1;
+int to[M << 1];
+int nxt[M << 1];
+int head[N];
+int eCnt;
 void buildLCA() {
     depth[0] = 0;
     int r = 0;
@@ -81,13 +86,6 @@ int lca(int a, int b) {
     int minb = rmq[b - k + 1][j];
     return depth[mina] < depth[minb] ? mina : minb;
 }
-
-// CSR Graph
-const int M = N - 1;
-int to[M << 1];
-int nxt[M << 1];
-int head[N];
-int eCnt;
 void addEdge(int u, int v) {
     to[eCnt] = v;
     nxt[eCnt] = head[u];
@@ -97,6 +95,7 @@ void init(int n) {
     eCnt = 0;
     for (int i = 0; i < n; i++) {
         head[i] = -1;
+        vis[i] = false;
     }
 }
 
