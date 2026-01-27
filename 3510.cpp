@@ -11,78 +11,138 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 #define ll long long
-#define pa pair<ll, int>
+struct Data {
+    ll v;
+    int i;
+};
 const int N = 1e5;
+Data heap[N << 1];
+int idx;
 int l[N];
 int r[N];
 ll s[N];
+bool isLess(Data& a, Data& b) {
+    if (a.v == b.v) {
+        return a.i < b.i;
+    }
+    return a.v < b.v;
+}
+const int top = 1;
+void push(Data a) {
+    int i = idx;
+    heap[idx++] = a;
+    while (i > top) {
+        int p = i >> 1;
+        if (isLess(heap[p], heap[i])) {
+            break;
+        }
+        swap(heap[p], heap[i]);
+        i = p;
+    }
+}
+void heapify(int i) {
+    int p = i;
+    int l = i << 1;
+    int r = l + 1;
+    while (l < idx) {
+        if (r < idx && isLess(heap[r], heap[l])) {
+            l = r;
+        }
+        if (isLess(heap[p], heap[l])) {
+            break;
+        }
+        swap(heap[p], heap[l]);
+        p = l;
+        l = p << 1;
+        r = l + 1;
+    }
+}
+void pop() {
+    idx--;
+    heap[top] = heap[idx];
+    heapify(top);
+}
+void init(vector<int>& nums, int n, int& bad) {
+    l[0] = -1;
+    r[0] = 1;
+    s[0] = nums[0];
+    for (int i = 1; i < n; i++) {
+        heap[i] = {nums[i - 1] + nums[i], i - 1};
+        l[i] = i - 1;
+        r[i] = i + 1;
+        s[i] = nums[i];
+        if (nums[i - 1] > nums[i]) {
+            bad++;
+        }
+    }
+    idx = n;
+    n--;
+    if ((n & 1) == 0) {
+        int p = n >> 1;
+        if (isLess(heap[n], heap[p])) {
+            swap(heap[n], heap[p]);
+        }
+        n--;
+    }
+    int p = n >> 1;
+    for (int i = p; i >= top; i--) {
+        heapify(i);
+    }
+}
 
 class Solution {
    public:
     int minimumPairRemoval(vector<int>& nums) {
         int n = nums.size();
-        priority_queue<pa, vector<pa>, greater<pa>> pq;
         int bad = 0;
-        for (int i = 0; i < n; i++) {
-            l[i] = i - 1;
-            r[i] = i + 1;
-            s[i] = nums[i];
-            if (i + 1 < n) {
-                pq.emplace(nums[i] + nums[i + 1], i);
-                if (nums[i] > nums[i + 1]) {
-                    bad++;
-                }
-            }
-        }
+        init(nums, n, bad);
         int res = 0;
         while (bad > 0) {
-            if (pq.empty()) {
-                break;
-            }
-            pa t = pq.top();
-            pq.pop();
-            if (r[t.second] == n) {
+            Data t = heap[top];
+            pop();
+            int& right = r[t.i];
+            if (right == n) {
                 continue;
             }
-            if (s[t.second] + s[r[t.second]] != t.first) {
+            if (s[t.i] + s[right] != t.v) {
                 continue;
             }
             res++;
-            ll tmp = s[t.second];
-            s[t.second] = t.first;
-            int nxt = r[r[t.second]];
+            ll tmp = s[t.i];
+            s[t.i] = t.v;
+            int nxt = r[right];
             if (nxt < n) {
-                pq.emplace(s[t.second] + s[nxt], t.second);
-                if (s[r[t.second]] > s[nxt]) {
-                    if (s[t.second] <= s[nxt]) {
+                push({s[t.i] + s[nxt], t.i});
+                if (s[right] > s[nxt]) {
+                    if (s[t.i] <= s[nxt]) {
                         bad--;
                     }
                 } else {
-                    if (s[t.second] > s[nxt]) {
+                    if (s[t.i] > s[nxt]) {
                         bad++;
                     }
                 }
-                l[nxt] = t.second;
+                l[nxt] = t.i;
             }
-            int pre = l[t.second];
+            int pre = l[t.i];
             if (pre >= 0) {
-                pq.emplace(s[pre] + s[t.second], pre);
+                push({s[pre] + s[t.i], pre});
                 if (s[pre] > tmp) {
-                    if (s[pre] <= s[t.second]) {
+                    if (s[pre] <= s[t.i]) {
                         bad--;
                     }
                 } else {
-                    if (s[pre] > s[t.second]) {
+                    if (s[pre] > s[t.i]) {
                         bad++;
                     }
                 }
             }
-            if (tmp > s[r[t.second]]) {
+            if (tmp > s[right]) {
                 bad--;
             }
-            r[r[t.second]] = n;
-            l[r[t.second]] = -1;
-            r[t.second] = nxt;
+            r[right] = n;
+            l[right] = -1;
+            right = nxt;
         }
         return res;
     }
@@ -101,7 +161,6 @@ int main() {
     string line_out;
     while (getline(file_in, line_in1)) {
         auto nums = jread_vector(line_in1);
-        jprint(nums, "nums");
         auto res = sol.minimumPairRemoval(nums);
         getline(file_out, line_out);
         auto ans = jread_int(line_out);
