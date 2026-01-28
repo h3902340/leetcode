@@ -14,6 +14,9 @@ using namespace std;
 struct Data {
     ll v;
     int i;
+    bool operator<(const Data& rhs) const {
+        return v == rhs.v ? i < rhs.i : v < rhs.v;
+    }
 };
 const int N = 1e5;
 Data heap[N << 1];
@@ -21,45 +24,39 @@ int idx;
 int l[N];
 int r[N];
 ll s[N];
-bool isLess(Data& a, Data& b) {
-    if (a.v == b.v) {
-        return a.i < b.i;
-    }
-    return a.v < b.v;
-}
 const int top = 1;
 void push(Data a) {
-    int i = idx;
-    heap[idx++] = a;
+    int i = idx++;
     while (i > top) {
         int p = i >> 1;
-        if (isLess(heap[p], heap[i])) {
+        if (heap[p] < a) {
             break;
         }
-        swap(heap[p], heap[i]);
+        heap[i] = heap[p];
         i = p;
     }
+    heap[i] = a;
 }
 void heapify(int i) {
-    int p = i;
+    Data a = heap[i];
     int l = i << 1;
     int r = l + 1;
     while (l < idx) {
-        if (r < idx && isLess(heap[r], heap[l])) {
+        if (r < idx && heap[r] < heap[l]) {
             l = r;
         }
-        if (isLess(heap[p], heap[l])) {
+        if (a < heap[l]) {
             break;
         }
-        swap(heap[p], heap[l]);
-        p = l;
-        l = p << 1;
+        heap[i] = heap[l];
+        i = l;
+        l = i << 1;
         r = l + 1;
     }
+    heap[i] = a;
 }
 void pop() {
-    idx--;
-    heap[top] = heap[idx];
+    heap[top] = heap[--idx];
     heapify(top);
 }
 void init(vector<int>& nums, int n, int& bad) {
@@ -76,14 +73,6 @@ void init(vector<int>& nums, int n, int& bad) {
         }
     }
     idx = n;
-    n--;
-    if ((n & 1) == 0) {
-        int p = n >> 1;
-        if (isLess(heap[n], heap[p])) {
-            swap(heap[n], heap[p]);
-        }
-        n--;
-    }
     int p = n >> 1;
     for (int i = p; i >= top; i--) {
         heapify(i);
