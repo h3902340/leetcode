@@ -5,53 +5,70 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-struct Data {
-    int v;
-    int w;
-};
+#define ll long long
 const int N = 5e4;
-vector<Data> adj[N];
+const int M = 1e5;
+ll to[M << 1];
+int nxt[M << 1];
+int head[N];
+int eCnt;
 int dis[N];
 bool vis[N];
-auto cmp = [](Data& a, Data& b) { return a.w > b.w; };
+void addEdge(int u, int v, int w) {
+    to[eCnt] = (ll)w << 32 | v;
+    nxt[eCnt] = head[u];
+    head[u] = eCnt++;
+}
+void init(int n) {
+    eCnt = 0;
+    for (int i = 0; i < n; i++) {
+        head[i] = -1;
+        dis[i] = INT32_MAX;
+        vis[i] = false;
+    }
+}
 
 class Solution {
    public:
     int minCost(int n, vector<vector<int>>& edges) {
-        priority_queue<Data, vector<Data>, decltype(cmp)> pq(cmp);
-        for (int i = 0; i < n; i++) {
-            adj[i].clear();
-            dis[i] = -1;
-            vis[i] = false;
-        }
+        priority_queue<ll, vector<ll>, greater<ll>> pq;
+        init(n);
         for (auto& e : edges) {
             int u = e[0];
             int v = e[1];
             int w = e[2];
-            adj[u].push_back({v, w});
-            adj[v].push_back({u, w << 1});
+            addEdge(u, v, w);
+            addEdge(v, u, w << 1);
         }
-        for (auto& e : adj[0]) {
-            dis[e.v] = e.w;
+        for (int i = head[0]; i != -1; i = nxt[i]) {
+            ll e = to[i];
+            int v = e;
+            int w = e >> 32;
+            dis[v] = w;
             pq.push(e);
         }
         int res = -1;
         while (!pq.empty()) {
-            Data t = pq.top();
+            ll t = pq.top();
+            int v = t;
+            int w = t >> 32;
             pq.pop();
-            if (vis[t.v]) {
+            if (vis[v]) {
                 continue;
             }
-            vis[t.v] = true;
-            if (t.v == n - 1) {
-                res = t.w;
+            vis[v] = true;
+            if (v == n - 1) {
+                res = w;
                 break;
             }
-            for (auto& e : adj[t.v]) {
-                int a = t.w + e.w;
-                if (dis[e.v] == -1 || dis[e.v] > a) {
-                    dis[e.v] = a;
-                    pq.push({e.v, a});
+            for (int i = head[v]; i != -1; i = nxt[i]) {
+                ll e = to[i];
+                int ev = e;
+                int ew = e >> 32;
+                int a = w + ew;
+                if (dis[ev] > a) {
+                    dis[ev] = a;
+                    pq.push((ll)a << 32 | ev);
                 }
             }
         }
