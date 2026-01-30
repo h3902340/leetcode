@@ -7,7 +7,6 @@ using namespace std;
 
 const int N = 1e5;
 const int M = N - 1;
-const int C = 3;
 int to[M << 1];
 int nxt[M << 1];
 int head[N];
@@ -24,9 +23,7 @@ void init(int n) {
     }
 }
 int par[N];
-int lev[N];
-bool dp[N][C];
-bool can[N];
+int q[N];
 
 class Solution {
    public:
@@ -39,111 +36,47 @@ class Solution {
             addEdge(u, v);
             addEdge(v, u);
         }
-        lev[0] = 0;
-        par[0] = -1;
-        int l = 0;
-        int r = 1;
-        while (l < r) {
-            int u = lev[l++];
-            for (int i = head[u]; i != -1; i = nxt[i]) {
-                int v = to[i];
-                if (par[u] == v) {
-                    continue;
-                }
-                par[v] = u;
-                lev[r++] = v;
-            }
-        }
         vector<int> res(n, -1);
         for (int i = 0; i < n; i++) {
-            for (int k = 0; k < C; k++) {
-                can[k] = true;
-            }
+            bool ok = true;
             for (int j = head[i]; j != -1; j = nxt[j]) {
                 int v = to[j];
-                if (res[v] != -1) {
-                    can[res[v]] = false;
-                }
-            }
-            for (int k = 0; k < C; k++) {
-                dp[i][k] = false;
-            }
-            for (int k = 0; k < C; k++) {
-                if (!can[k]) {
-                    continue;
-                }
-                dp[i][k] = true;
-                if (k > 0) {
-                    dp[i - 1][k] = false;
-                }
-                res[i] = k;
-                if (check(n, res)) {
+                if (res[v] == 0) {
+                    ok = false;
                     break;
                 }
             }
+            if (ok) {
+                res[i] = 0;
+            }
         }
-        return res;
-    }
-    bool check(int n, vector<int>& res) {
-        for (int i = n - 1; i >= 0; i--) {
-            int u = lev[i];
-            if (res[u] != -1) {
+        for (int i = 0; i < n; i++) {
+            if (res[i] != -1) {
+                continue;
+            }
+            par[i] = -1;
+            q[0] = i;
+            res[i] = 1;
+            int l = 0;
+            int r = 1;
+            while (l < r) {
+                int u = q[l++];
+                int c = res[u] ^ 3;
                 for (int j = head[u]; j != -1; j = nxt[j]) {
                     int v = to[j];
                     if (par[u] == v) {
                         continue;
                     }
-                    int c = res[v];
-                    if (c == -1) {
-                        int cnt = 0;
-                        for (int k = 0; k < C; k++) {
-                            if (dp[v][k]) {
-                                cnt++;
-                                c = k;
-                            }
-                        }
-                        if (cnt > 1) {
-                            c = -1;
-                        }
+                    if (res[v] == 0) {
+                        continue;
                     }
-                    if (res[u] == c) {
-                        return false;
-                    }
+                    par[v] = u;
+                    q[r++] = v;
+                    res[v] = c;
                 }
-                continue;
-            }
-            for (int k = 0; k < C; k++) {
-                dp[u][k] = true;
-            }
-            for (int j = head[u]; j != -1; j = nxt[j]) {
-                int v = to[j];
-                if (par[u] == v) {
-                    continue;
-                }
-                int cnt = 0;
-                int c = -1;
-                for (int k = 0; k < C; k++) {
-                    if (dp[v][k]) {
-                        cnt += dp[v][k];
-                        c = k;
-                    }
-                }
-                if (cnt == 1) {
-                    dp[u][c] = false;
-                }
-            }
-            bool ok = false;
-            for (int k = 0; k < C; k++) {
-                if (dp[u][k]) {
-                    ok = true;
-                    break;
-                }
-            }
-            if (!ok) {
-                return false;
             }
         }
-        return true;
+        return res;
     }
 };
 
