@@ -5,24 +5,16 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-const char U = 'z' + 1;
-
 class Solution {
    public:
     char nextGreatestLetter(vector<char>& letters, char target) {
         int n = letters.size();
-        char res = U;
         for (int i = 0; i < n; i++) {
             if (letters[i] > target) {
-                if (res > letters[i]) {
-                    res = letters[i];
-                }
+                return letters[i];
             }
         }
-        if (res == U) {
-            return letters[0];
-        }
-        return res;
+        return letters[0];
     }
 };
 
