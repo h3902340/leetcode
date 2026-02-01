@@ -37,10 +37,7 @@ class RBTree {
    public:
     RBTree() { clear(); }
     RBTree& operator=(const RBTree& a) {
-        tree = vector<RB>(a.tree.size());
-        for (int i = 0; i < a.tree.size(); i++) {
-            tree[i] = a.tree[i];
-        }
+        tree = a.tree;
         root = a.root;
         return *this;
     }
