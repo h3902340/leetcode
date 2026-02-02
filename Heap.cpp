@@ -2,6 +2,7 @@
 using namespace std;
 
 #define ll long long
+const int N = 1e7;
 struct Data {
     ll v;
     int i;
@@ -13,45 +14,52 @@ struct Data {
         return *this;
     }
 };
-const int N = 1e7;
-const int top = 1;
-Data heap[N << 1];
-int idx;
-void push(Data a) {
-    int i = idx++;
-    while (i > top) {
-        int p = i >> 1;
-        if (heap[p] < a) {
-            break;
+class Heap {
+    const int top = 1;
+    Data heap[N << 1];
+    int idx;
+
+   public:
+    Data top() { return heap[top]; }
+    bool empty() { return idx == 0; }
+    void push(Data a) {
+        int i = idx++;
+        while (i > top) {
+            int p = i >> 1;
+            if (heap[p] < a) {
+                break;
+            }
+            heap[i] = heap[p];
+            i = p;
         }
-        heap[i] = heap[p];
-        i = p;
+        heap[i] = a;
     }
-    heap[i] = a;
-}
-void heapify(int i) {
-    Data a = heap[i];
-    int l = i << 1;
-    int r = l + 1;
-    while (l < idx) {
-        if (r < idx && heap[r] < heap[l]) {
-            l = r;
-        }
-        if (a < heap[l]) {
-            break;
-        }
-        heap[i] = heap[l];
-        i = l;
-        l = i << 1;
-        r = l + 1;
+    void pop() {
+        heap[top] = heap[--idx];
+        heapify(top);
     }
-    heap[i] = a;
-}
-void pop() {
-    heap[top] = heap[--idx];
-    heapify(top);
-}
-void init() { idx = 0; }
+    void clear() { idx = 0; }
+
+   private:
+    void heapify(int i) {
+        Data a = heap[i];
+        int l = i << 1;
+        int r = l + 1;
+        while (l < idx) {
+            if (r < idx && heap[r] < heap[l]) {
+                l = r;
+            }
+            if (a < heap[l]) {
+                break;
+            }
+            heap[i] = heap[l];
+            i = l;
+            l = i << 1;
+            r = l + 1;
+        }
+        heap[i] = a;
+    }
+};
 
 int main() {
     vector<Data> arr(N);
@@ -59,8 +67,9 @@ int main() {
         arr[i] = {(ll)rand() << 32 | rand(), rand()};
     }
     auto start = jtimer();
+    Heap heap;
     for (int i = 0; i < N; i++) {
-        push(arr[i]);
+        heap.push(arr[i]);
     }
     auto end = jtimer();
     printf("[%d pushes]\n", N);
@@ -77,7 +86,7 @@ int main() {
     printf("[%d pops]\n", N);
     auto start3 = jtimer();
     for (int i = 0; i < N; i++) {
-        pop();
+        heap.pop();
     }
     auto end3 = jtimer();
     printf("my heap: ");
