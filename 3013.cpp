@@ -12,24 +12,30 @@ class FenwickTree {
     int hi;
 
    public:
-    ll tree[N];
+    struct Data {
+        int cnt;
+        ll sum;
+    };
+    Data tree[N];
     void init(int n) {
         sz = n;
         hi = 1 << (31 - __builtin_clz(n - 1));
         for (int i = 1; i < sz; i++) {
-            tree[i] = 0;
+            tree[i] = {0, 0};
         }
     }
-    void add(int i, int delta) {
+    void add(int i, int c, int v) {
         while (i < sz) {
-            tree[i] += delta;
+            tree[i].cnt += c;
+            tree[i].sum += v;
             i += i & -i;
         }
     }
-    ll query(int i) {
-        ll s = 0;
+    Data query(int i) {
+        Data s = {0, 0};
         while (i > 0) {
-            s += tree[i];
+            s.cnt += tree[i].cnt;
+            s.sum += tree[i].sum;
             i -= i & -i;
         }
         return s;
@@ -39,7 +45,7 @@ class FenwickTree {
         int acc = 0;
         for (int i = hi; i > 0; i >>= 1) {
             int x = res | i;
-            int y = acc + tree[x];
+            int y = acc + tree[x].cnt;
             if (x >= sz) {
                 continue;
             }
@@ -78,8 +84,7 @@ void radixSort(int n) {
         swap(p, q);
     }
 }
-FenwickTree cnt;
-FenwickTree sum;
+FenwickTree tree;
 class HashMap {
     int sz;
     int table[N << 1];
@@ -147,22 +152,18 @@ class Solution {
             mp.insert(buf[0][i], j + 1);
         }
         j++;
-        cnt.init(j + 1);
-        sum.init(j + 1);
+        tree.init(j + 1);
         for (int i = 1; i <= dist + 1; i++) {
             int idx = mp.getVal(nums[i]);
-            cnt.add(idx, 1);
-            sum.add(idx, nums[i]);
+            tree.add(idx, 1, nums[i]);
         }
         ll res = getAns(k - 1);
         j = 1;
         for (int i = dist + 2; i < n; i++) {
             int idx = mp.getVal(nums[j]);
-            cnt.add(idx, -1);
-            sum.add(idx, -nums[j]);
+            tree.add(idx, -1, -nums[j]);
             idx = mp.getVal(nums[i]);
-            cnt.add(idx, 1);
-            sum.add(idx, nums[i]);
+            tree.add(idx, 1, nums[i]);
             ll a = getAns(k - 1);
             if (res > a) {
                 res = a;
@@ -172,13 +173,12 @@ class Solution {
         return res + nums[0];
     }
     ll getAns(int k) {
-        int idx = cnt.find(k);
-        int acc = cnt.query(idx);
-        ll res = sum.query(idx);
-        if (acc < k) {
-            res += (ll)buf[0][idx] * (k - acc);
+        int idx = tree.find(k);
+        FenwickTree::Data d = tree.query(idx);
+        if (d.cnt < k) {
+            d.sum += (ll)buf[0][idx] * (k - d.cnt);
         }
-        return res;
+        return d.sum;
     }
 };
 
