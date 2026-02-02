@@ -39,10 +39,6 @@ class Trie {
     int root;
 
    public:
-    Trie& operator=(const Trie& a) {
-        root = a.root;
-        return *this;
-    }
     void init() {
         root = nodes.size();
         nodes.push_back(create());
@@ -173,11 +169,7 @@ class Solution {
                 if (par[u] == v) {
                     continue;
                 }
-                Trie& b = tree[v];
-                if (a.size() < b.size()) {
-                    swap(a, b);
-                }
-                a.merge(b);
+                a.merge(tree[v]);
             }
             for (auto& qu : que[u]) {
                 if (a.size() < qu.k) {
