@@ -7,8 +7,58 @@ using namespace std;
 
 #define ll long long
 const int N = 1000;
+class CHT {
+    struct Line {
+        int a;
+        ll b;
+        int j;
+        double x;
+    };
+
+    Line deque[N + 1];
+    int l;
+    int r;
+
+   public:
+    void init() {
+        l = 0;
+        r = 1;
+        deque[0] = {0, 0, -1, INT32_MAX};
+    }
+    void push(int a, ll b, int j) {
+        Line line = {a, b, j, INT32_MAX};
+        double p1 = solve(deque[r - 1], line);
+        if (size() > 1) {
+            double p2 = solve(deque[r - 2], line);
+            while (p1 < p2) {
+                r--;
+                p1 = solve(deque[r - 1], line);
+                if (size() == 1) {
+                    break;
+                }
+                p2 = solve(deque[r - 2], line);
+            }
+        }
+        deque[r - 1].x = p1;
+        deque[r++] = line;
+    }
+    int size() { return r - l; }
+    int getJ(int x) {
+        while (x > deque[l].x) {
+            l++;
+        }
+        return deque[l].j;
+    }
+
+   private:
+    double solve(Line& l1, Line& l2) {
+        return (double)(l2.b - l1.b) / (l1.a - l2.a);
+    }
+};
 ll dp[N];
 int seg[N];
+CHT cht;
+
 class Solution {
    public:
     long long minPartitionScore(vector<int>& nums, int k) {
@@ -17,23 +67,22 @@ class Solution {
             nums[i] += nums[i - 1];
         }
         ll l = 0;
-        ll r = (ll)nums[n - 1] * nums[n - 1];
+        ll r = (ll)nums[n - 1] * nums[n - 1] >> 1;
         while (l <= r) {
             ll mid = (l + r) >> 1;
-            dp[0] = (ll)nums[0] * nums[0] + mid;
-            seg[0] = 1;
-            for (int i = 1; i < n; i++) {
-                ll a = nums[i];
-                dp[i] = a * a + mid;
+            cht.init();
+            for (int i = 0; i < n; i++) {
+                int j = cht.getJ(nums[i]);
+                int a = nums[i];
+                dp[i] = mid;
                 seg[i] = 1;
-                for (int j = 0; j < i; j++) {
-                    a = nums[i] - nums[j];
-                    ll b = a * a + dp[j] + mid;
-                    if (dp[i] > b) {
-                        seg[i] = 1 + seg[j];
-                        dp[i] = b;
-                    }
+                if (j >= 0) {
+                    a -= nums[j];
+                    seg[i] += seg[j];
+                    dp[i] += dp[j];
                 }
+                dp[i] += (ll)a * a;
+                cht.push(-2 * nums[i], dp[i] + (ll)nums[i] * nums[i], i);
             }
             if (seg[n - 1] == k) {
                 return (dp[n - 1] - k * mid + nums[n - 1]) >> 1;
