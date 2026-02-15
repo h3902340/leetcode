@@ -1,0 +1,6 @@
+["apple","apply","banana","bandit"]
+2
+["car","cat","cartoon"]
+3
+["bat","dog","dog","doggy","bat"]
+3
