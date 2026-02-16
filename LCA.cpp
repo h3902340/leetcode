@@ -12,7 +12,7 @@ class LCA {
         int i;
     };
     Data st[N];
-    bool vis[N];
+    int par[N];
     int walk[WALKMAX];
     int walkIndex[N];
     int rmq[WALKMAX][LOGWALKMAX];
@@ -27,7 +27,6 @@ class LCA {
         eCnt = 0;
         for (int i = 0; i < n; i++) {
             head[i] = -1;
-            vis[i] = false;
         }
     }
     void addEdge(int u, int v) {
@@ -39,28 +38,29 @@ class LCA {
         depth[0] = 0;
         int r = 0;
         st[0] = {0, head[0]};
+        par[0] = -1;
         int ws = 0;
         while (r >= 0) {
             Data& t = st[r];
             walk[ws] = t.u;
             walkIndex[t.u] = ws;
             ws++;
-            vis[t.u] = true;
             if (t.i == -1) {
                 r--;
                 continue;
             }
-            int e = to[t.i];
-            if (vis[e]) {
+            int v = to[t.i];
+            if (par[t.u] == v) {
                 t.i = nxt[t.i];
                 if (t.i == -1) {
                     r--;
                     continue;
                 }
-                e = to[t.i];
+                v = to[t.i];
             }
-            st[++r] = {e, head[e]};
-            depth[e] = depth[t.u] + 1;
+            par[v] = t.u;
+            st[++r] = {v, head[v]};
+            depth[v] = depth[t.u] + 1;
             t.i = nxt[t.i];
         }
         for (int i = 0; i < ws; i++) {
@@ -92,8 +92,9 @@ class LCA {
 LCA g;
 
 int main() {
-    int n = 4;
-    vector<vector<int>> edges = {{0, 1}, {1, 2}, {1, 3}};
+    int n = 100;
+    vector<vector<int>> edges = {{0, 1}, {1, 2}, {1, 3}, {4, 2},
+                                 {3, 5}, {4, 6}, {4, 7}, {1, 8}};
     int m = edges.size();
     g.init(n);
     for (int i = 0; i < m; i++) {
