@@ -1,10 +1,10 @@
 #include "Jutil.h"
 using namespace std;
 
-#define lg2(x) (32 - __builtin_clz(x))
+#define lg2(x) (31 - __builtin_clz(x))
 const int N = 1e5;
 const int WALKMAX = (N << 1) - 1;
-const int LOGWALKMAX = lg2(WALKMAX);
+const int LOGWALKMAX = lg2(WALKMAX) + 1;
 const int M = N - 1;
 class LCA {
     struct Data {
@@ -82,41 +82,28 @@ class LCA {
         if (a > b) {
             swap(a, b);
         }
-        int k = 1;
-        int j = 0;
-        while (a + k - 1 <= b) {
-            k <<= 1;
-            j++;
-        }
-        j--;
+        int j = lg2(b - a + 1);
+        int k = 1 << j;
         int mina = rmq[a][j];
-        k = 1;
-        j = 0;
-        while (a <= b - k + 1) {
-            k <<= 1;
-            j++;
-        }
-        j--;
-        k >>= 1;
         int minb = rmq[b - k + 1][j];
         return depth[mina] < depth[minb] ? mina : minb;
     }
 };
-LCA lca;
+LCA g;
 
 int main() {
     int n = 4;
     vector<vector<int>> edges = {{0, 1}, {1, 2}, {1, 3}};
     int m = edges.size();
-    lca.init(n);
+    g.init(n);
     for (int i = 0; i < m; i++) {
         int u = edges[i][0];
         int v = edges[i][1];
-        lca.addEdge(u, v);
-        lca.addEdge(v, u);
+        g.addEdge(u, v);
+        g.addEdge(v, u);
     }
-    lca.build();
-    int res = lca.lca(2, 3);
+    g.build();
+    int res = g.lca(2, 3);
     printf("res: %d\n", res);  // res: 1
     return 0;
 }
