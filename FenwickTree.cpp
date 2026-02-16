@@ -8,18 +8,20 @@ class FenwickTree {
 
    public:
     FenwickTree(int n) {
-        sz = n;
+        sz = n + 1;
         for (int i = 1; i < sz; i++) {
             tree[i] = 0;
         }
     }
     void add(int i, int delta) {
+        i++;
         while (i < sz) {
             tree[i] += delta;
             i += i & -i;
         }
     }
     int query(int i) {
+        i++;
         int s = 0;
         while (i > 0) {
             s += tree[i];
@@ -33,11 +35,11 @@ int main() {
     int n = 10;
     // Fenwick Tree is 1-indexed
     vector<vector<int>> delta = {{0, 2}, {5, 1}, {7, -4}};
-    FenwickTree tree(n + 1);
+    FenwickTree tree(n);
     for (auto& d : delta) {
-        tree.add(d[0] + 1, d[1]);
+        tree.add(d[0], d[1]);
     }
-    for (int i = 1; i <= n; i++) {
+    for (int i = 0; i < n; i++) {
         printf("%d,", tree.query(i));
     }
     printf("\n");  // 2,2,2,2,2,3,3,-1,-1,-1,
