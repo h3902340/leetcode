@@ -14,7 +14,6 @@ class LCA {
     Data st[N];
     int par[N];
     int walk[WALKMAX];
-    int walkIndex[N];
     int rmq[WALKMAX][LOGWALKMAX];
     int depth[N];
     int to[M << 1];
@@ -23,6 +22,9 @@ class LCA {
     int eCnt;
 
    public:
+    int ws;
+    int tin[N];
+    int tout[N];
     void init(int n) {
         eCnt = 0;
         for (int i = 0; i < n; i++) {
@@ -39,27 +41,25 @@ class LCA {
         int r = 0;
         st[0] = {0, head[0]};
         par[0] = -1;
-        int ws = 0;
+        ws = 0;
+        tin[0] = 0;
         while (r >= 0) {
             Data& t = st[r];
             walk[ws] = t.u;
-            walkIndex[t.u] = ws;
-            ws++;
+            if (t.i != -1 && par[t.u] == to[t.i]) {
+                t.i = nxt[t.i];
+            }
             if (t.i == -1) {
                 r--;
+                tout[t.u] = ws;
+                ws++;
                 continue;
             }
+            ws++;
             int v = to[t.i];
-            if (par[t.u] == v) {
-                t.i = nxt[t.i];
-                if (t.i == -1) {
-                    r--;
-                    continue;
-                }
-                v = to[t.i];
-            }
             par[v] = t.u;
             st[++r] = {v, head[v]};
+            tin[v] = ws;
             depth[v] = depth[t.u] + 1;
             t.i = nxt[t.i];
         }
@@ -77,8 +77,8 @@ class LCA {
         }
     }
     int lca(int a, int b) {
-        a = walkIndex[a];
-        b = walkIndex[b];
+        a = tout[a];
+        b = tout[b];
         if (a > b) {
             swap(a, b);
         }
