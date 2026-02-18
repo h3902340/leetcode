@@ -3,7 +3,7 @@ using namespace std;
 
 const int N = 1e5;
 class FenwickTree {
-    int tree[N];
+    int tree[N + 1];
     int sz;
 
    public:
