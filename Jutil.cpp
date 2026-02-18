@@ -1,5 +1,7 @@
 #include "Jutil.h"
 
+bool jread_bool(string line) { return line[0] == 't'; }
+
 int jread_int(string line) {
     int i = 0;
     bool isNeg = false;

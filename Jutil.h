@@ -46,6 +46,7 @@ struct ListNode {
     ListNode(int x, ListNode* next) : val(x), next(next) {}
 };
 
+bool jread_bool(string line);
 int jread_int(string line);
 double jread_double(string line);
 long jread_long(string line);
