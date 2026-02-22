@@ -9,14 +9,14 @@ const int LO = -12;
 const int HI = 38;
 const int B = HI - LO + 1;
 const int U = 6;
-int p[3]{2, 3, 5};
-int EXP[U + 1]{0,
-               -LO - LO* B - LO * B * B,
-               -LO + 1 - LO* B - LO * B * B,
-               -LO + (-LO + 1) * B - LO * B * B,
-               -LO + 2 - LO* B - LO * B * B,
-               -LO - LO* B + (-LO + 1) * B* B,
-               -LO + 1 + (-LO + 1) * B - LO * B * B};
+const int p[3]{2, 3, 5};
+const int EXP[U + 1]{0,
+                     -LO - LO* B - LO * B * B,
+                     -LO + 1 - LO* B - LO * B * B,
+                     -LO + (-LO + 1) * B - LO * B * B,
+                     -LO + 2 - LO* B - LO * B * B,
+                     -LO - LO* B + (-LO + 1) * B* B,
+                     -LO + 1 + (-LO + 1) * B - LO * B * B};
 
 class Solution {
    public:
