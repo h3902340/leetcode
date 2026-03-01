@@ -1,0 +1,6 @@
+"abca"
+3
+"aabca"
+2
+"yybyzybz"
+2
