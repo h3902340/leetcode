@@ -6,12 +6,9 @@ using namespace std;
 #define KGRN "\x1B[32m"
 
 class Solution {
-public:
+   public:
     int bitwiseComplement(int n) {
-        if (n == 0) {
-            return 1;
-        }
-        return ((1 << (32 - __builtin_clz(n))) - 1) ^ n;
+        return ((1 << (32 - __builtin_clz(n | 1))) - 1) ^ n;
     }
 };
 
