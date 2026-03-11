@@ -5,6 +5,16 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+class Solution {
+public:
+    int bitwiseComplement(int n) {
+        if (n == 0) {
+            return 1;
+        }
+        return ((1 << (32 - __builtin_clz(n))) - 1) ^ n;
+    }
+};
+
 int main() {
     string problemName = "1009";
     auto begin = jtimer();
@@ -17,8 +27,8 @@ int main() {
     string line_in;
     string line_out;
     while (getline(file_in, line_in)) {
-        auto grid = jread_vector2d(line_in);
-        auto res = sol.canPartitionGrid(grid);
+        auto n = jread_int(line_in);
+        auto res = sol.bitwiseComplement(n);
         getline(file_out, line_out);
         auto ans = jread_int(line_out);
         printf("Case %d", ++caseCount);
