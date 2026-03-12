@@ -9,20 +9,20 @@ struct Data {
     int x;
     int y;
     int w;
+    bool operator>(const Data& a) const { return w > a.w; }
 };
 const int R = 100;
 const int C = 100;
 const int DIR[5] = {0, 1, 0, -1, 0};
 int dis[R][C];
 bool vis[R][C];
-const auto cmp = [](Data& a, Data& b) { return a.w > b.w; };
 
 class Solution {
    public:
     int minimumEffortPath(vector<vector<int>>& heights) {
         int r = heights.size();
         int c = heights[0].size();
-        priority_queue<Data, vector<Data>, decltype(cmp)> pq(cmp);
+        priority_queue<Data, vector<Data>, greater<Data>> pq;
         for (int i = 0; i < r; i++) {
             for (int j = 0; j < c; j++) {
                 dis[i][j] = -1;
@@ -37,6 +37,9 @@ class Solution {
             pq.pop();
             if (vis[t.x][t.y]) {
                 continue;
+            }
+            if (t.x == r - 1 && t.y == c - 1) {
+                return dis[t.x][t.y];
             }
             vis[t.x][t.y] = true;
             for (int i = 0; i < 4; i++) {
