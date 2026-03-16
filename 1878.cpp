@@ -8,8 +8,6 @@ using namespace std;
 const int M = 50;
 const int N = 50;
 int a1[M][N];
-int a2[M][N];
-int a3[M][N];
 int a4[M][N];
 
 class Solution {
@@ -19,20 +17,17 @@ class Solution {
         int n = grid[0].size();
         for (int i = 0; i < m; i++) {
             a1[i][0] = grid[i][0];
-            a2[i][n - 1] = grid[i][n - 1];
-            a3[i][n - 1] = grid[i][n - 1];
             a4[i][0] = grid[i][0];
         }
         for (int j = 1; j < n; j++) {
-            int k = n - 1 - j;
             for (int i = 0; i < m; i++) {
+                a1[i][j] = grid[i][j];
+                a4[i][j] = grid[i][j];
                 if (i + 1 < m) {
-                    a1[i][j] = a1[i + 1][j - 1] + grid[i][j];
-                    a2[i][k] = a2[i + 1][k + 1] + grid[i][k];
+                    a1[i][j] += a1[i + 1][j - 1];
                 }
                 if (i - 1 >= 0) {
-                    a3[i][k] = a3[i - 1][k + 1] + grid[i][k];
-                    a4[i][j] = a4[i - 1][j - 1] + grid[i][j];
+                    a4[i][j] += a4[i - 1][j - 1];
                 }
             }
         }
@@ -46,16 +41,17 @@ class Solution {
         for (int l = 1; l < cap; l++) {
             for (int i = l; i + l < m; i++) {
                 for (int j = l; j + l < n; j++) {
-                    int a =
-                        (a1[i - l][j] - a1[i][j - l]) + a2[i - l + 1][j + 1] +
-                        (a3[i + l][j] - a3[i][j + l]) + a4[i + l - 1][j - 1];
-                    if (j + l + 1 < n) {
-                        a -= a2[i + 1][j + l + 1];
+                    int p1 = a1[i - l][j] - a1[i][j - l];
+                    int p2 = a4[i][j + l] - a4[i - l][j];
+                    int p3 = a1[i + 1][j + l - 1];
+                    int p4 = a4[i + l - 1][j - 1];
+                    if (i + l + 1 < m) {
+                        p3 -= a1[i + l + 1][j - 1];
                     }
                     if (j - l - 1 >= 0) {
-                        a -= a4[i - 1][j - l - 1];
+                        p4 -= a4[i - 1][j - l - 1];
                     }
-                    pq.push(a);
+                    pq.push(p1 + p2 + p3 + p4);
                 }
             }
         }
