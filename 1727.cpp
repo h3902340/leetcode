@@ -5,33 +5,44 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
+struct Data {
+    int h;
+    int i;
+};
 const int N = 1e5;
-int nums[N];
+Data h[2][N];
+bool seen[N];
 class Solution {
    public:
     int largestSubmatrix(vector<vector<int>>& matrix) {
         int m = matrix.size();
         int n = matrix[0].size();
         int res = 0;
-        for (int j = 0; j < n; j++) {
-            res += matrix[0][j];
-        }
-        for (int i = 1; i < m; i++) {
+        int p = 0;
+        int q = 1;
+        int x = 0;
+        int y = 0;
+        for (int i = 0; i < m; i++) {
+            y = 0;
+            for (int j = 0; j < x; j++) {
+                if (matrix[i][h[p][j].i]) {
+                    h[q][y++] = {h[p][j].h + 1, h[p][j].i};
+                    seen[h[p][j].i] = true;
+                }
+            }
             for (int j = 0; j < n; j++) {
-                if (matrix[i][j]) {
-                    matrix[i][j] += matrix[i - 1][j];
+                if (!seen[j] && matrix[i][j]) {
+                    h[q][y++] = {1, j};
                 }
-                nums[j] = matrix[i][j];
+                seen[j] = false;
             }
-            sort(begin(nums), begin(nums) + n);
-            int h = 0;
-            for (int j = n - 1; j >= 0; j--) {
-                h = nums[j];
-                if (h == 0) {
-                    break;
-                }
-                res = max(res, h * (n - j));
+            int l = 0;
+            for (int j = 0; j < y; j++) {
+                l = h[q][j].h;
+                res = max(res, l * (j + 1));
             }
+            swap(p, q);
+            swap(x, y);
         }
         return res;
     }
