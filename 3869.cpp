@@ -11,8 +11,9 @@ int d[N];
 int sz;
 bool good[136];
 bool isInit = false;
-ll memo[N][10][4][136][2];
+ll memo[N][10][4][136];
 void init() {
+    memset(memo, -1, sizeof(memo));
     for (int i = 0; i < 10; i++) {
         good[i] = true;
     }
@@ -44,7 +45,6 @@ class Solution {
         if (r < 10) {
             return r + 1;
         }
-        memset(memo, -1, sizeof(memo));
         sz = 0;
         while (r > 0) {
             d[sz++] = r % 10;
@@ -59,8 +59,8 @@ class Solution {
         return res;
     }
     ll dfs(int i, int pre, int dir, int s, bool free) {
-        if (memo[i][pre][dir][s][free] != -1) {
-            return memo[i][pre][dir][s][free];
+        if (free && memo[i][pre][dir][s] != -1) {
+            return memo[i][pre][dir][s];
         }
         int cap = free ? 9 : d[i];
         if (i == 0) {
@@ -86,7 +86,9 @@ class Solution {
                     res++;
                 }
             }
-            memo[i][pre][dir][s][free] = res;
+            if (free) {
+                memo[i][pre][dir][s] = res;
+            }
             return res;
         }
         ll res = 0;
@@ -128,7 +130,9 @@ class Solution {
                 res += dfs(i - 1, j, 3, s + j, free || j < d[i]);
             }
         }
-        memo[i][pre][dir][s][free] = res;
+        if (free) {
+            memo[i][pre][dir][s] = res;
+        }
         return res;
     }
 };
