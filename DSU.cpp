@@ -4,11 +4,13 @@ using namespace std;
 const int N = 1e5;
 class DSU {
     int parent[N];
+    int sz[N];
 
    public:
     void init(int n) {
         for (int i = 0; i < n; i++) {
             parent[i] = -1;
+            sz[i] = 1;
         }
     }
     int find(int u) {
@@ -27,7 +29,13 @@ class DSU {
         int a = find(u);
         int b = find(v);
         if (b != a) {
-            parent[b] = a;
+            if (sz[b] < sz[a]) {
+                parent[b] = a;
+                sz[a] += sz[b];
+            } else {
+                parent[a] = b;
+                sz[b] += sz[a];
+            }
         }
     }
 };
