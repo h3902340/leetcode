@@ -9,7 +9,7 @@ using namespace std;
 const int MOD = 1e9 + 7;
 const int M = 15;
 const int N = 15;
-ll dp[2][M][N];
+ll dp[2][M][2];
 class Solution {
    public:
     int maxProductPath(vector<vector<int>>& grid) {
@@ -19,26 +19,27 @@ class Solution {
         dp[1][0][0] = grid[0][0];
         for (int i = 1; i < m; i++) {
             dp[0][i][0] = dp[0][i - 1][0] * grid[i][0];
-            dp[1][i][0] = dp[1][i - 1][0] * grid[i][0];
+            dp[1][i][0] = dp[0][i][0];
         }
+        int p = 0;
+        int q = 1;
         for (int j = 1; j < n; j++) {
-            dp[0][0][j] = dp[0][0][j - 1] * grid[0][j];
-            dp[1][0][j] = dp[1][0][j - 1] * grid[0][j];
-        }
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                dp[0][i][j] = grid[i][j];
-                dp[1][i][j] = grid[i][j];
+            dp[0][0][q] = dp[0][0][p] * grid[0][j];
+            dp[1][0][q] = dp[0][0][q];
+            for (int i = 1; i < m; i++) {
+                dp[0][i][q] = grid[i][j];
+                dp[1][i][q] = grid[i][j];
                 if (grid[i][j] > 0) {
-                    dp[0][i][j] *= min(dp[0][i - 1][j], dp[0][i][j - 1]);
-                    dp[1][i][j] *= max(dp[1][i - 1][j], dp[1][i][j - 1]);
+                    dp[0][i][q] *= min(dp[0][i - 1][q], dp[0][i][p]);
+                    dp[1][i][q] *= max(dp[1][i - 1][q], dp[1][i][p]);
                 } else {
-                    dp[0][i][j] *= max(dp[1][i - 1][j], dp[1][i][j - 1]);
-                    dp[1][i][j] *= min(dp[0][i - 1][j], dp[0][i][j - 1]);
+                    dp[0][i][q] *= max(dp[1][i - 1][q], dp[1][i][p]);
+                    dp[1][i][q] *= min(dp[0][i - 1][q], dp[0][i][p]);
                 }
             }
+            swap(p, q);
         }
-        ll res = max(dp[0][m - 1][n - 1], dp[1][m - 1][n - 1]);
+        ll res = max(dp[0][m - 1][p], dp[1][m - 1][p]);
         if (res < 0) {
             return -1;
         }
