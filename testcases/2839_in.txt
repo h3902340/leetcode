@@ -1,0 +1,4 @@
+"abcd"
+"cdab"
+"abcd"
+"dacb"
