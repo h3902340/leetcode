@@ -1,0 +1,8 @@
+"TFTF"
+"ab"
+"TFTF"
+"abc"
+"F"
+"d"
+"TFFTFF"
+"aa"
