@@ -11,19 +11,28 @@ struct Data {
     int h;
     int d;
     bool operator<(const Data& a) const { return p < a.p; }
+    Data& operator=(const Data& a) {
+        i = a.i;
+        p = a.p;
+        h = a.h;
+        d = a.d;
+        return *this;
+    }
 };
+const int N = 1e5;
+Data arr[N];
+Data temp[N];
 class Solution {
    public:
     vector<int> survivedRobotsHealths(vector<int>& positions,
                                       vector<int>& healths, string directions) {
         int n = positions.size();
-        vector<Data> arr(n);
         for (int i = 0; i < n; i++) {
             arr[i] = {i, positions[i], healths[i], directions[i]};
         }
-        sort(begin(arr), end(arr));
+        sort(begin(arr), begin(arr) + n);
         int j = -1;
-        vector<Data> temp;
+        int k = 0;
         for (int i = 0; i < n; i++) {
             if (arr[i].d == 'L') {
                 while (j >= 0 && arr[j].h < arr[i].h) {
@@ -37,18 +46,17 @@ class Solution {
                         arr[j].h--;
                     }
                 } else {
-                    temp.push_back(arr[i]);
+                    temp[k++] = arr[i];
                 }
                 continue;
             }
             arr[++j] = arr[i];
         }
         for (int i = j; i >= 0; i--) {
-            temp.push_back(arr[i]);
+            temp[k++] = arr[i];
         }
         auto cmp = [](Data& a, Data& b) { return a.i < b.i; };
-        sort(begin(temp), end(temp), cmp);
-        int k = temp.size();
+        sort(begin(temp), begin(temp) + k, cmp);
         vector<int> res(k);
         for (int i = 0; i < k; i++) {
             res[i] = temp[i].h;
