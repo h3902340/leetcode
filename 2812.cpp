@@ -11,95 +11,22 @@ struct Data {
     int d;
 };
 const int N = 400;
-const int NN = N * N;
-Data q[NN];
-class DSU {
-    int parent[NN];
-    int sz[NN];
-
-   public:
-    void init(int n) {
-        for (int i = 0; i < n; i++) {
-            parent[i] = -1;
-            sz[i] = 1;
-        }
-    }
-    int find(int u) {
-        int p = u;
-        while (parent[p] != -1) {
-            p = parent[p];
-        }
-        while (parent[u] != -1) {
-            int tmp = parent[u];
-            parent[u] = p;
-            u = tmp;
-        }
-        return p;
-    }
-    void unite(int u, int v) {
-        int a = find(u);
-        int b = find(v);
-        if (b != a) {
-            if (sz[b] < sz[a]) {
-                parent[b] = a;
-                sz[a] += sz[b];
-            } else {
-                parent[a] = b;
-                sz[b] += sz[a];
-            }
-        }
-    }
-    bool connected(int u, int v) { return find(u) == find(v); }
-};
-DSU dsu;
-const int dir[5]{0, 1, 0, -1, 0};
-const int dir2[9]{0, 1, 1, -1, 1, 0, -1, -1, 0};
+Data q[N * N];
+int dir[5]{0, 1, 0, -1, 0};
+deque<Data> q2;
 
 class Solution {
    public:
     int maximumSafenessFactor(vector<vector<int>>& grid) {
         int n = grid.size();
-        if (n == 1) {
-            return 0;
-        }
-        dsu.init(n * n);
-        int s = 0;
-        int t = n * n - 1;
-        for (int i = 1; i < n; i++) {
-            dsu.unite(s, i * n);
-            dsu.unite(t, (i - 1) * n + n - 1);
-        }
-        for (int j = 1; j < n - 1; j++) {
-            dsu.unite(s, (n - 1) * n + j);
-            dsu.unite(t, j);
-        }
         int l = 0;
         int r = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j]) {
-                    if (i == 0 && j == 0) {
-                        return 0;
-                    }
-                    if (i == n - 1 && j == n - 1) {
-                        return 0;
-                    }
                     q[r++] = {i, j, 1};
-                    for (int k = 0; k < 8; k++) {
-                        int x = i + dir2[k];
-                        int y = j + dir2[k + 1];
-                        if (x < 0 || y < 0 || x >= n || y >= n) {
-                            continue;
-                        }
-                        if (grid[x][y]) {
-                            dsu.unite(x * n + y, i * n + j);
-                        }
-                    }
                 }
             }
-        }
-        if (dsu.connected(s, t)) {
-            return 0;
         }
         while (l < r) {
             Data u = q[l++];
@@ -112,30 +39,39 @@ class Solution {
                 if (grid[x][y]) {
                     continue;
                 }
-                if (x == 0 && y == 0) {
-                    return u.d;
-                }
-                if (x == n - 1 && y == n - 1) {
-                    return u.d;
-                }
-                grid[x][y] = 1;
+                grid[x][y] = u.d + 1;
                 q[r++] = {x, y, u.d + 1};
-                for (int k2 = 0; k2 < 8; k2++) {
-                    int x2 = x + dir2[k2];
-                    int y2 = y + dir2[k2 + 1];
-                    if (x2 < 0 || y2 < 0 || x2 >= n || y2 >= n) {
-                        continue;
-                    }
-                    if (grid[x2][y2]) {
-                        dsu.unite(x * n + y, x2 * n + y2);
-                    }
-                }
-            }
-            if (dsu.connected(s, t)) {
-                return u.d;
             }
         }
-        return 0;
+        q2.clear();
+        q2.push_back({0, 0, grid[0][0]});
+        int res = grid[0][0];
+        grid[0][0] = 0;
+        while (!q2.empty()) {
+            Data u = q2.front();
+            q2.pop_front();
+            res = min(res, u.d);
+            if (u.i == n - 1 && u.j == n - 1) {
+                break;
+            }
+            for (int k = 0; k < 4; k++) {
+                int x = u.i + dir[k];
+                int y = u.j + dir[k + 1];
+                if (x < 0 || y < 0 || x >= n || y >= n) {
+                    continue;
+                }
+                if (!grid[x][y]) {
+                    continue;
+                }
+                if (grid[x][y] < res) {
+                    q2.push_back({x, y, grid[x][y]});
+                } else {
+                    q2.push_front({x, y, grid[x][y]});
+                }
+                grid[x][y] = 0;
+            }
+        }
+        return res - 1;
     }
 };
 
