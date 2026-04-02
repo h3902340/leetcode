@@ -13,7 +13,7 @@ struct Data {
 const int N = 400;
 Data q[N * N];
 int dir[5]{0, 1, 0, -1, 0};
-deque<Data> q2;
+Data q2[N * N * 2];
 
 class Solution {
    public:
@@ -43,13 +43,13 @@ class Solution {
                 q[r++] = {x, y, u.d + 1};
             }
         }
-        q2.clear();
-        q2.push_back({0, 0, grid[0][0]});
+        l = n * n;
+        r = l;
+        q2[r++] = {0, 0, grid[0][0]};
         int res = grid[0][0];
         grid[0][0] = 0;
-        while (!q2.empty()) {
-            Data u = q2.front();
-            q2.pop_front();
+        while (l < r) {
+            Data u = q2[l++];
             res = min(res, u.d);
             if (u.i == n - 1 && u.j == n - 1) {
                 break;
@@ -64,9 +64,9 @@ class Solution {
                     continue;
                 }
                 if (grid[x][y] < res) {
-                    q2.push_back({x, y, grid[x][y]});
+                    q2[r++] = {x, y, grid[x][y]};
                 } else {
-                    q2.push_front({x, y, grid[x][y]});
+                    q2[--l] = {x, y, grid[x][y]};
                 }
                 grid[x][y] = 0;
             }
