@@ -1,0 +1,9 @@
+["hello","i","am","leetcode","hello"]
+"hello"
+1
+["a","b","leetcode"]
+"leetcode"
+0
+["i","eat","leetcode"]
+"ate"
+0
