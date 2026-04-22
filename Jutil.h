@@ -106,3 +106,4 @@ bool anyOrderEqual(vector<vector<string>> a, vector<vector<string>> b);
 bool listEqual(ListNode* a, ListNode* b);
 bool graphEqual(Node* a, Node* b);
 bool binaryTreeEqual(TreeNode* a, TreeNode* b);
+bool vectorDoubleEqual(vector<double> a, vector<double> b, double tol);

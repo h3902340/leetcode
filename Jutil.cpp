@@ -840,3 +840,16 @@ bool binaryTreeEqual(TreeNode* a, TreeNode* b) {
     if (!isEqual) return false;
     return true;
 }
+
+bool vectorDoubleEqual(vector<double> a, vector<double> b, double tol) {
+    if (a.size() != b.size()) {
+        return false;
+    }
+    for (int i = 0; i < a.size(); i++) {
+        double d = a[i] - b[i];
+        if (d > tol || d < -tol) {
+            return false;
+        }
+    }
+    return true;
+}
