@@ -5,7 +5,6 @@ using namespace std;
 #define KRED "\x1B[31m"
 #define KGRN "\x1B[32m"
 
-#define ll long long
 const int MOD = 1e9 + 7;
 int add(int a, int b) {
     a += b;
@@ -14,7 +13,6 @@ int add(int a, int b) {
     }
     return a;
 }
-int mul(int a, int b) { return (ll)a * b % MOD; }
 
 class Solution {
    public:
@@ -24,16 +22,11 @@ class Solution {
         int res = 0;
         for (int i = 0; i < n; i++) {
             if (s[i] == '0') {
-                if (cnt > 0) {
-                    res = add(res, mul(cnt + 1, cnt) >> 1);
-                    cnt = 0;
-                }
+                cnt = 0;
             } else {
                 cnt++;
             }
-        }
-        if (cnt > 0) {
-            res = add(res, mul(cnt + 1, cnt) >> 1);
+            res = add(res, cnt);
         }
         return res;
     }
