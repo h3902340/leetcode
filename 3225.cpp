@@ -7,10 +7,10 @@ using namespace std;
 
 #define ll long long
 const int N = 100;
-ll dp[N][N + 1][N + 1];
-ll pre[N][N + 1];
-ll pre2[N][N + 1][N + 1];
-ll pre3[N][N + 1][N + 1];
+ll dp[N + 1][N + 1];
+ll pre[N + 1];
+ll pre2[N + 1][N + 1];
+ll pre3[N + 1][N + 1];
 ll col[N][N + 1];
 class Solution {
    public:
@@ -27,40 +27,37 @@ class Solution {
         for (int j = 0; j <= n; j++) {
             for (int k = 0; k <= n; k++) {
                 if (j < k) {
-                    dp[0][j][k] = col[0][k] - col[0][j];
+                    dp[j][k] = col[0][k] - col[0][j];
                 } else {
-                    dp[0][j][k] = col[1][j] - col[1][k];
+                    dp[j][k] = col[1][j] - col[1][k];
                 }
             }
         }
         for (int i = 1; i < n - 1; i++) {
             for (int k = 0; k <= n; k++) {
-                pre[i - 1][k] = 0;
+                pre[k] = 0;
                 for (int j = 0; j < k; j++) {
-                    pre[i - 1][k] = max(pre[i - 1][k], dp[i - 1][j][k]);
+                    pre[k] = max(pre[k], dp[j][k]);
                 }
-                pre2[i - 1][k][k] = dp[i - 1][k][k] - col[i][k] + col[i][k];
+                pre2[k][k] = dp[k][k];
                 for (int j = k + 1; j <= n; j++) {
-                    pre2[i - 1][j][k] =
-                        max(pre2[i - 1][j - 1][k],
-                            dp[i - 1][j][k] - col[i][j] + col[i][k]);
+                    pre2[j][k] =
+                        max(pre2[j - 1][k], dp[j][k] - col[i][j] + col[i][k]);
                 }
-                pre3[i - 1][n][k] = dp[i - 1][n][k];
+                pre3[n][k] = dp[n][k];
                 for (int j = n - 1; j >= k; j--) {
-                    pre3[i - 1][j][k] =
-                        max(pre3[i - 1][j + 1][k], dp[i - 1][j][k]);
+                    pre3[j][k] = max(pre3[j + 1][k], dp[j][k]);
                 }
             }
             for (int j = 0; j <= n; j++) {
                 for (int k = 0; k <= n; k++) {
                     if (j < k) {
-                        dp[i][j][k] =
-                            max({pre[i - 1][j] + col[i][k] - col[i][j],
-                                 pre2[i - 1][k][j] + col[i][k] - col[i][j],
-                                 pre3[i - 1][k][j]});
+                        dp[j][k] = max({pre[j] + col[i][k] - col[i][j],
+                                        pre2[k][j] + col[i][k] - col[i][j],
+                                        pre3[k][j]});
                     } else {
-                        dp[i][j][k] = max(pre[i - 1][j], pre3[i - 1][j][j]) +
-                                      col[i + 1][j] - col[i + 1][k];
+                        dp[j][k] = max(pre[j], pre3[j][j]) + col[i + 1][j] -
+                                   col[i + 1][k];
                     }
                 }
             }
@@ -68,7 +65,7 @@ class Solution {
         ll res = 0;
         for (int j = 0; j <= n; j++) {
             for (int k = 0; k <= n; k++) {
-                res = max(res, dp[n - 2][j][k]);
+                res = max(res, dp[j][k]);
             }
         }
         return res;
